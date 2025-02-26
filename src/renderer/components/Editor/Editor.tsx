@@ -5,15 +5,8 @@ import {ContentEditable} from '@lexical/react/LexicalContentEditable';
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
 import {
-  $convertFromMarkdownString,
-  $convertToMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
-import { CodeNode, CodeHighlightNode } from "@lexical/code";
-import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { ListNode, ListItemNode } from "@lexical/list";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { Klass, LexicalNode } from "lexical";
 import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
@@ -47,7 +40,7 @@ export default function Editor() {
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                className="outline-none min-h-[250px]"
+                className="outline-none"
                 aria-placeholder={'メモを入力してください...'}
                 placeholder={<div className="text-gray-400">メモを入力してください...</div>}
               />
