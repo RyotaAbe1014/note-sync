@@ -15,7 +15,9 @@ import { ListNode, ListItemNode } from "@lexical/list";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { Klass, LexicalNode } from "lexical";
 import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import CodeHighlightPlugin from './CodeHighlightPlugin';
+import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
+import { ToolbarPlugin } from './plugins/ToolbarPlugin';
+
 const theme = {
   // Theme styling goes here
   //...
@@ -48,20 +50,28 @@ export default function Editor() {
   };
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <RichTextPlugin
-        contentEditable={
-          <ContentEditable
-            aria-placeholder={'Enter some text...'}
-            placeholder={<div>Enter some text...</div>}
+    <div className="w-full max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
+      <LexicalComposer initialConfig={initialConfig}>
+        <div className="mb-4">
+          <ToolbarPlugin />
+        </div>
+        <div className="border border-gray-300 rounded-md p-4 min-h-[300px]">
+          <RichTextPlugin
+            contentEditable={
+              <ContentEditable
+                className="outline-none min-h-[250px]"
+                aria-placeholder={'メモを入力してください...'}
+                placeholder={<div className="text-gray-400">メモを入力してください...</div>}
+              />
+            }
+            ErrorBoundary={LexicalErrorBoundary}
           />
-        }
-        ErrorBoundary={LexicalErrorBoundary}
-      />
-      <HistoryPlugin />
-      <AutoFocusPlugin />
-      <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-      <CodeHighlightPlugin />
-    </LexicalComposer>
+        </div>
+        <HistoryPlugin />
+        <AutoFocusPlugin />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+        <CodeHighlightPlugin />
+      </LexicalComposer>
+    </div>
   );
 }
