@@ -15,6 +15,7 @@ import { ListNode, ListItemNode } from "@lexical/list";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { Klass, LexicalNode } from "lexical";
 import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import CodeHighlightPlugin from './CodeHighlightPlugin';
 const theme = {
   // Theme styling goes here
   //...
@@ -60,6 +61,7 @@ export default function Editor() {
       <HistoryPlugin />
       <AutoFocusPlugin />
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+      <CodeHighlightPlugin />
     </LexicalComposer>
   );
 }
