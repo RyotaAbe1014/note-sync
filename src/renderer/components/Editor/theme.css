@@ -446,6 +446,8 @@
   padding: 0;
   margin: 0;
   list-style-position: outside;
+  list-style-type: disc;
+
 }
 .EditorTheme__listItem {
   margin: 0 32px;
