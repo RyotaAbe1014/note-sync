@@ -7,7 +7,6 @@ import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin';
 import {ContentEditable} from '@lexical/react/LexicalContentEditable';
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
-import {TablePlugin} from '@lexical/react/LexicalTablePlugin';
 const theme = {
   // Theme styling goes here
   //...
@@ -39,7 +38,6 @@ export default function Editor() {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <HistoryPlugin />
-      <TablePlugin />
       <AutoFocusPlugin />
     </LexicalComposer>
   );
