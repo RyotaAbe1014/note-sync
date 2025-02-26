@@ -15,5 +15,10 @@ export const theme: EditorThemeClasses = {
   },
   text: {
     code: "relative rounded bg-sage-3 text-green-9 px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;",
+    underline: "underline",
+    bold: "font-bold",
+    italic: "italic",
+    strikethrough: "line-through",
+    highlight: "bg-yellow-200",
   },
 };
