@@ -17,11 +17,10 @@ import { Klass, LexicalNode } from "lexical";
 import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
-
-const theme = {
-  // Theme styling goes here
-  //...
-}
+import { nodes } from './nodes';
+import { theme } from './theme';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed. If you don't throw them, Lexical will
@@ -30,23 +29,12 @@ function onError(error: Error) {
   console.error(error);
 }
 
-export const nodes: Array<Klass<LexicalNode>> = [
-  HeadingNode,
-  ListNode,
-  ListItemNode,
-  QuoteNode,
-  CodeNode,
-  CodeHighlightNode,
-  AutoLinkNode,
-  LinkNode,
-];
-
 export default function Editor() {
   const initialConfig = {
-    namespace: 'MyEditor',
+    namespace: 'CommitNotes',
     theme,
     onError,
-    nodes
+    nodes,
   };
 
   return (
@@ -71,6 +59,8 @@ export default function Editor() {
         <AutoFocusPlugin />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <CodeHighlightPlugin />
+        <ListPlugin />
+        <CheckListPlugin />
       </LexicalComposer>
     </div>
   );
