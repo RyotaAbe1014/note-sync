@@ -1,5 +1,11 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
+import Editor from './editor';
 
 const root = createRoot(document.body);
-root.render(<h2>Hello from React!</h2>);
+root.render(<App />);
+
+
+export default function App() {
+  return <Editor />;
+}
