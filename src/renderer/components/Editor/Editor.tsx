@@ -5,6 +5,7 @@ import {ContentEditable} from '@lexical/react/LexicalContentEditable';
 import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
 import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
 import {
+  $convertFromMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
 import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
@@ -14,20 +15,38 @@ import { nodes } from './nodes';
 import { theme } from './theme';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
+import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import { useEffect } from 'react';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $getRoot, $createParagraphNode, EditorState } from 'lexical';
 
-// Catch any errors that occur during Lexical updates and log them
-// or throw them as needed. If you don't throw them, Lexical will
-// try to recover gracefully without losing user data.
 function onError(error: Error) {
   console.error(error);
 }
 
-export const Editor = () => {
+interface EditorProps {
+  initialContent: string;
+  onChange?: (content: string) => void;
+}
+
+export const Editor: React.FC<EditorProps> = ({ initialContent, onChange }) => {
   const initialConfig = {
     namespace: 'CommitNotes',
     theme,
     onError,
     nodes,
+    editorState: () => $convertFromMarkdownString(initialContent, TRANSFORMERS)
+  };
+
+  // エディタの内容が変更されたときの処理
+  const handleEditorChange = (editorState: EditorState) => {
+    if (onChange) {
+      editorState.read(() => {
+        const root = $getRoot();
+        const markdown = root.getTextContent();
+        onChange(markdown);
+      });
+    }
   };
 
   return (
@@ -54,6 +73,7 @@ export const Editor = () => {
         <CodeHighlightPlugin />
         <ListPlugin />
         <CheckListPlugin />
+        {onChange && <OnChangePlugin onChange={handleEditorChange} />}
       </LexicalComposer>
     </div>
   );
