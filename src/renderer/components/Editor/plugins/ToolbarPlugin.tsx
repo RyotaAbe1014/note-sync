@@ -18,10 +18,7 @@ import {
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
   $createParagraphNode,
-  $getNodeByKey,
-  $getRoot,
   $isParagraphNode,
-  ElementNode,
   $createTextNode,
 } from 'lexical';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -32,8 +29,7 @@ import {
   $isQuoteNode,
   HeadingTagType
 } from '@lexical/rich-text';
-import { $isCodeNode, $createCodeNode, $createCodeHighlightNode } from '@lexical/code';
-import { $isListNode, ListNode } from '@lexical/list';
+import { $isCodeNode, $createCodeNode } from '@lexical/code';
 
 const LowPriority = 1;
 
@@ -106,6 +102,7 @@ export const ToolbarPlugin = () => {
         const topLevelElement = anchorNode.getTopLevelElementOrThrow();
         const paragraphNode = $createParagraphNode();
         topLevelElement.replace(paragraphNode);
+        paragraphNode.select();
       }
     });
   };
@@ -118,6 +115,7 @@ export const ToolbarPlugin = () => {
         const topLevelElement = anchorNode.getTopLevelElementOrThrow();
         const headingNode = $createHeadingNode(headingTag);
         topLevelElement.replace(headingNode);
+        headingNode.select();
       }
     });
   };
@@ -130,6 +128,7 @@ export const ToolbarPlugin = () => {
         const topLevelElement = anchorNode.getTopLevelElementOrThrow();
         const codeNode = $createCodeNode();
         topLevelElement.replace(codeNode);
+        codeNode.select();
       }
     });
   };
@@ -142,6 +141,7 @@ export const ToolbarPlugin = () => {
         const topLevelElement = anchorNode.getTopLevelElementOrThrow();
         const quoteNode = $createQuoteNode();
         topLevelElement.replace(quoteNode);
+        quoteNode.select();
       }
     });
   };
@@ -150,10 +150,12 @@ export const ToolbarPlugin = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
+        console.log(selection.getTextContent());
         const anchorNode = selection.anchor.getNode();
         const topLevelElement = anchorNode.getTopLevelElementOrThrow();
-        const highlightNode = $createTextNode(selection.getTextContent()).setFormat('highlight');
+        const highlightNode = $createTextNode().setFormat('highlight');
         topLevelElement.replace(highlightNode);
+        highlightNode.select();
       }
     });
   };
@@ -170,7 +172,6 @@ export const ToolbarPlugin = () => {
       case 'h3':
       case 'h4':
       case 'h5':
-      case 'h6':
         formatHeading(value);
         break;
       case 'code':
