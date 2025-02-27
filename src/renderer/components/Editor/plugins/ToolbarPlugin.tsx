@@ -263,33 +263,6 @@ export const ToolbarPlugin = () => {
           aria-label="取り消し線">
           <span className="line-through font-bold">S</span>
         </button>
-        <Divider />
-        <div className="flex items-center mt-2 sm:mt-0">
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
-            }}
-            className="p-2 rounded hover:bg-blue-200 mx-1 bg-white cursor-pointer transition-colors"
-            aria-label="左揃え">
-            <span className="font-bold">⟵</span>
-          </button>
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
-            }}
-            className="p-2 rounded hover:bg-blue-200 mx-1 bg-white cursor-pointer transition-colors"
-            aria-label="中央揃え">
-            <span className="font-bold">⟷</span>
-          </button>
-          <button
-            onClick={() => {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-            }}
-            className="p-2 rounded hover:bg-blue-200 mx-1 bg-white cursor-pointer transition-colors"
-            aria-label="右揃え">
-            <span className="font-bold">⟶</span>
-          </button>
-        </div>
       </div>
     </div>
   );
