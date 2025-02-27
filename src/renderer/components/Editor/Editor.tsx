@@ -19,6 +19,7 @@ import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { useEffect } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $getRoot, $createParagraphNode, EditorState } from 'lexical';
+import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
 
 function onError(error: Error) {
   console.error(error);
@@ -73,6 +74,7 @@ export const Editor: React.FC<EditorProps> = ({ initialContent, onChange }) => {
         <CodeHighlightPlugin />
         <ListPlugin />
         <CheckListPlugin />
+        <FileChangeUpdateStatePlugin initialContent={initialContent} />
         {onChange && <OnChangePlugin onChange={handleEditorChange} />}
       </LexicalComposer>
     </div>
