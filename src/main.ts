@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
+import fs from 'node:fs/promises';
 // @ts-ignore
 import started from 'electron-squirrel-startup';
 
@@ -8,13 +9,109 @@ if (started) {
   app.quit();
 }
 
+// ファイルシステム操作のハンドラー
+function setupFileSystemHandlers() {
+  // ディレクトリ内のファイル一覧を取得
+  ipcMain.handle('fs:list-files', async (event, dirPath) => {
+    try {
+      const basePath = dirPath || app.getPath('userData');
+      await fs.mkdir(basePath, { recursive: true });
+
+      const files = await fs.readdir(basePath, { withFileTypes: true });
+      return files.map(file => ({
+        name: file.name,
+        isDirectory: file.isDirectory(),
+        path: path.join(basePath, file.name)
+      }));
+    } catch (error) {
+      console.error('Error listing files:', error);
+      throw error;
+    }
+  });
+
+  // ファイルの読み込み
+  ipcMain.handle('fs:read-file', async (event, filePath) => {
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      return content;
+    } catch (error) {
+      console.error('Error reading file:', error);
+      throw error;
+    }
+  });
+
+  // ファイルの書き込み
+  ipcMain.handle('fs:write-file', async (event, filePath, content) => {
+    try {
+      const dirPath = path.dirname(filePath);
+      await fs.mkdir(dirPath, { recursive: true });
+      await fs.writeFile(filePath, content, 'utf-8');
+      return true;
+    } catch (error) {
+      console.error('Error writing file:', error);
+      throw error;
+    }
+  });
+}
+
+// Git操作のハンドラー
+// 注意: 実際の実装では isomorphic-git をインストールする必要があります
+function setupGitHandlers() {
+  // リポジトリの状態を取得
+  ipcMain.handle('git:status', async (event, repoPath) => {
+    // モック実装 - 実際には isomorphic-git を使用
+    return {
+      staged: ['file1.md'],
+      unstaged: ['file2.md'],
+      untracked: ['file3.md']
+    };
+  });
+
+  // リポジトリの初期化
+  ipcMain.handle('git:init', async (event, repoPath) => {
+    // モック実装 - 実際には isomorphic-git を使用
+    console.log(`Git init in ${repoPath}`);
+    return true;
+  });
+
+  // 変更のステージング
+  ipcMain.handle('git:add', async (event, repoPath, filepath) => {
+    // モック実装 - 実際には isomorphic-git を使用
+    console.log(`Git add ${filepath} in ${repoPath}`);
+    return true;
+  });
+
+  // コミット
+  ipcMain.handle('git:commit', async (event, repoPath, message, author) => {
+    // モック実装 - 実際には isomorphic-git を使用
+    console.log(`Git commit in ${repoPath} with message: ${message}`);
+    return 'mock-commit-sha';
+  });
+
+  // プッシュ
+  ipcMain.handle('git:push', async (event, repoPath, remoteUrl, token) => {
+    // モック実装 - 実際には isomorphic-git を使用
+    console.log(`Git push from ${repoPath} to ${remoteUrl}`);
+    return true;
+  });
+
+  // プル
+  ipcMain.handle('git:pull', async (event, repoPath, remoteUrl, token) => {
+    // モック実装 - 実際には isomorphic-git を使用
+    console.log(`Git pull to ${repoPath} from ${remoteUrl}`);
+    return true;
+  });
+}
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
+      contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
@@ -32,7 +129,11 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+  setupFileSystemHandlers();
+  setupGitHandlers();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
