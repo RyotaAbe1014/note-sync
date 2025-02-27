@@ -4,7 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
- */
+*/
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import {
@@ -21,7 +22,7 @@ import {
   $isParagraphNode,
   $createTextNode,
 } from 'lexical';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { $setBlocksType } from '@lexical/selection';
 import {
   $createHeadingNode,
   $createQuoteNode,
@@ -46,7 +47,6 @@ const SupportedBlockType = {
   h5: "h5",
   code: "code",
   quote: "quote",
-  highlight: "highlight",
 } as const;
 type BlockType = keyof typeof SupportedBlockType;
 
@@ -97,13 +97,7 @@ export const ToolbarPlugin = () => {
   const formatParagraph = () => {
     editor.update(() => {
       const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const anchorNode = selection.anchor.getNode();
-        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
-        const paragraphNode = $createParagraphNode();
-        topLevelElement.replace(paragraphNode);
-        paragraphNode.select();
-      }
+      $setBlocksType(selection, () => $createParagraphNode());
     });
   };
 
@@ -111,11 +105,7 @@ export const ToolbarPlugin = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        const anchorNode = selection.anchor.getNode();
-        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
-        const headingNode = $createHeadingNode(headingTag);
-        topLevelElement.replace(headingNode);
-        headingNode.select();
+        $setBlocksType(selection, () => $createHeadingNode(headingTag));
       }
     });
   };
@@ -124,11 +114,17 @@ export const ToolbarPlugin = () => {
     editor.update(() => {
       const selection = $getSelection();
       if ($isRangeSelection(selection)) {
-        const anchorNode = selection.anchor.getNode();
-        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
-        const codeNode = $createCodeNode();
-        topLevelElement.replace(codeNode);
-        codeNode.select();
+        if (!$isRangeSelection(selection) || selection.isCollapsed()) {
+          $setBlocksType(selection, () => $createCodeNode());
+        } else {
+          const textContent = selection.getTextContent();
+          const codeNode = $createCodeNode();
+          selection.insertNodes([codeNode]);
+          const newSelection = $getSelection();
+          if ($isRangeSelection(newSelection)) {
+            newSelection.insertRawText(textContent);
+          }
+        }
       }
     });
   };
@@ -136,27 +132,7 @@ export const ToolbarPlugin = () => {
   const formatQuote = () => {
     editor.update(() => {
       const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const anchorNode = selection.anchor.getNode();
-        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
-        const quoteNode = $createQuoteNode();
-        topLevelElement.replace(quoteNode);
-        quoteNode.select();
-      }
-    });
-  };
-
-  const formatHighlight = () => {
-    editor.update(() => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        console.log(selection.getTextContent());
-        const anchorNode = selection.anchor.getNode();
-        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
-        const highlightNode = $createTextNode().setFormat('highlight');
-        topLevelElement.replace(highlightNode);
-        highlightNode.select();
-      }
+      $setBlocksType(selection, () => $createQuoteNode());
     });
   };
 
@@ -179,9 +155,6 @@ export const ToolbarPlugin = () => {
         break;
       case 'quote':
         formatQuote();
-        break;
-      case 'highlight':
-        formatHighlight();
         break;
     }
   };
