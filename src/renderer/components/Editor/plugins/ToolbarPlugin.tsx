@@ -13,14 +13,12 @@ import {
   $isRangeSelection,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
   $createParagraphNode,
   $isParagraphNode,
-  $createTextNode,
 } from 'lexical';
 import { $setBlocksType } from '@lexical/selection';
 import {
