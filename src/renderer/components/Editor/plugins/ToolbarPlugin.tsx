@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
-import {mergeRegister} from '@lexical/utils';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { mergeRegister } from '@lexical/utils';
 import {
   $getSelection,
   $isRangeSelection,
@@ -17,8 +17,23 @@ import {
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
+  $createParagraphNode,
+  $getNodeByKey,
+  $getRoot,
+  $isParagraphNode,
+  ElementNode,
+  $createTextNode,
 } from 'lexical';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+  $isQuoteNode,
+  HeadingTagType
+} from '@lexical/rich-text';
+import { $isCodeNode, $createCodeNode, $createCodeHighlightNode } from '@lexical/code';
+import { $isListNode, ListNode } from '@lexical/list';
 
 const LowPriority = 1;
 
@@ -26,9 +41,23 @@ function Divider() {
   return <div className="h-6 w-px mx-1 bg-gray-300" />;
 }
 
+const SupportedBlockType = {
+  paragraph: "paragraph",
+  h1: "h1",
+  h2: "h2",
+  h3: "h3",
+  h4: "h4",
+  h5: "h5",
+  code: "code",
+  quote: "quote",
+  highlight: "highlight",
+} as const;
+type BlockType = keyof typeof SupportedBlockType;
+
 export const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
+  const [blockType, setBlockType] = useState<BlockType>("paragraph");
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -44,12 +73,121 @@ export const ToolbarPlugin = () => {
       setIsItalic(selection.hasFormat('italic'));
       setIsUnderline(selection.hasFormat('underline'));
       setIsStrikethrough(selection.hasFormat('strikethrough'));
+
+      // Update block type
+      const anchorNode = selection.anchor.getNode();
+      const element = anchorNode.getKey() === 'root'
+        ? anchorNode
+        : anchorNode.getTopLevelElementOrThrow();
+
+      const elementKey = element.getKey();
+      const elementDOM = editor.getElementByKey(elementKey);
+
+      if (elementDOM !== null) {
+        if ($isParagraphNode(element)) {
+          setBlockType('paragraph');
+        } else if ($isHeadingNode(element)) {
+          const tag = element.getTag();
+          setBlockType(tag as BlockType);
+        } else if ($isCodeNode(element)) {
+          setBlockType('code');
+        } else if ($isQuoteNode(element)) {
+          setBlockType('quote');
+        }
+      }
     }
-  }, []);
+  }, [editor]);
+
+  const formatParagraph = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+        const paragraphNode = $createParagraphNode();
+        topLevelElement.replace(paragraphNode);
+      }
+    });
+  };
+
+  const formatHeading = (headingTag: HeadingTagType) => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+        const headingNode = $createHeadingNode(headingTag);
+        topLevelElement.replace(headingNode);
+      }
+    });
+  };
+
+  const formatCode = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+        const codeNode = $createCodeNode();
+        topLevelElement.replace(codeNode);
+      }
+    });
+  };
+
+  const formatQuote = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+        const quoteNode = $createQuoteNode();
+        topLevelElement.replace(quoteNode);
+      }
+    });
+  };
+
+  const formatHighlight = () => {
+    editor.update(() => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const anchorNode = selection.anchor.getNode();
+        const topLevelElement = anchorNode.getTopLevelElementOrThrow();
+        const highlightNode = $createTextNode(selection.getTextContent()).setFormat('highlight');
+        topLevelElement.replace(highlightNode);
+      }
+    });
+  };
+
+  const onBlockTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = event.target.value as BlockType;
+
+    switch (value) {
+      case 'paragraph':
+        formatParagraph();
+        break;
+      case 'h1':
+      case 'h2':
+      case 'h3':
+      case 'h4':
+      case 'h5':
+      case 'h6':
+        formatHeading(value);
+        break;
+      case 'code':
+        formatCode();
+        break;
+      case 'quote':
+        formatQuote();
+        break;
+      case 'highlight':
+        formatHighlight();
+        break;
+    }
+  };
 
   useEffect(() => {
     return mergeRegister(
-      editor.registerUpdateListener(({editorState}) => {
+      editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           $updateToolbar();
         });
@@ -83,12 +221,25 @@ export const ToolbarPlugin = () => {
 
   return (
     <div className="flex items-center p-2 bg-gray-50 rounded-md border border-gray-300" ref={toolbarRef}>
+      <select
+        className="p-2 rounded bg-white border border-gray-300 mr-2"
+        value={blockType}
+        onChange={onBlockTypeChange}
+        aria-label="ブロックタイプ"
+      >
+        {Object.entries(SupportedBlockType).map(([type, name]) => (
+          <option key={type} value={type}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <Divider />
       <button
         disabled={!canUndo}
         onClick={() => {
           editor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
-        className={`p-2 rounded hover:bg-gray-200 mr-1 ${!canUndo ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`p-2 rounded hover:bg-blue-200 mr-1 ${!canUndo ? 'opacity-50 cursor-not-allowed' : 'bg-white '}`}
         aria-label="元に戻す">
         <span className="font-bold">↩</span>
       </button>
@@ -97,7 +248,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(REDO_COMMAND, undefined);
         }}
-        className={`p-2 rounded hover:bg-gray-200 ${!canRedo ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`p-2 rounded hover:bg-blue-200 ${!canRedo ? 'opacity-50 cursor-not-allowed' : 'bg-white '}`}
         aria-label="やり直し">
         <span className="font-bold">↪</span>
       </button>
@@ -106,7 +257,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
         }}
-        className={`p-2 rounded hover:bg-gray-200 mx-1 ${isBold ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer ${isBold ? 'bg-blue-200' : 'bg-white '}`}
         aria-label="太字">
         <span className="font-bold">B</span>
       </button>
@@ -114,7 +265,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
         }}
-        className={`p-2 rounded hover:bg-gray-200 mx-1 ${isItalic ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer ${isItalic ? 'bg-blue-200' : 'bg-white '}`}
         aria-label="斜体">
         <span className="italic font-bold">I</span>
       </button>
@@ -122,7 +273,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
         }}
-        className={`p-2 rounded hover:bg-gray-200 mx-1 ${isUnderline ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer ${isUnderline ? 'bg-blue-200' : 'bg-white '}`}
         aria-label="下線">
         <span className="underline font-bold">U</span>
       </button>
@@ -130,7 +281,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
         }}
-        className={`p-2 rounded hover:bg-gray-200 mx-1 ${isStrikethrough ? 'bg-gray-200' : ''}`}
+        className={`p-2 rounded hover:bg-blue-200 mx-1  cursor-pointer ${isStrikethrough ? 'bg-blue-200' : 'bg-white'}`}
         aria-label="取り消し線">
         <span className="line-through font-bold">S</span>
       </button>
@@ -139,7 +290,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
         }}
-        className="p-2 rounded hover:bg-gray-200 mx-1"
+        className="p-2 rounded hover:bg-blue-200 mx-1 bg-white cursor-pointer"
         aria-label="左揃え">
         <span className="font-bold">⟵</span>
       </button>
@@ -147,7 +298,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
         }}
-        className="p-2 rounded hover:bg-gray-200 mx-1"
+        className="p-2 rounded hover:bg-blue-200 mx-1 bg-white cursor-pointer"
         aria-label="中央揃え">
         <span className="font-bold">⟷</span>
       </button>
@@ -155,7 +306,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
         }}
-        className="p-2 rounded hover:bg-gray-200 mx-1"
+        className="p-2 rounded hover:bg-blue-200 mx-1 bg-white cursor-pointer"
         aria-label="右揃え">
         <span className="font-bold">⟶</span>
       </button>
@@ -163,7 +314,7 @@ export const ToolbarPlugin = () => {
         onClick={() => {
           editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
         }}
-        className="p-2 rounded hover:bg-gray-200"
+        className="p-2 rounded hover:bg-blue-200 bg-white cursor-pointer"
         aria-label="両端揃え">
         <span className="font-bold">≡</span>
       </button>

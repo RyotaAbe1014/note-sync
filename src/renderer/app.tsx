@@ -9,11 +9,11 @@ root.render(<App />);
 export default function App() {
   return (
     <div className="min-h-screen bg-gray-100 py-8">
-      <header className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-800">CommitNotes</h1>
-        <p className="text-gray-600">Gitと連携するマークダウンエディタ</p>
+      <header className="mb-8 ">
+        {/* TODO: Git  */}
       </header>
       <main>
+        {/* TODO: add file tree */}
         <Editor />
       </main>
     </div>
