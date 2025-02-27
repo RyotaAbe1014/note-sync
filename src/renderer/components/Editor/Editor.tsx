@@ -1,14 +1,13 @@
-import {AutoFocusPlugin} from '@lexical/react/LexicalAutoFocusPlugin';
-import {LexicalComposer} from '@lexical/react/LexicalComposer';
-import {RichTextPlugin} from '@lexical/react/LexicalRichTextPlugin';
-import {ContentEditable} from '@lexical/react/LexicalContentEditable';
-import {HistoryPlugin} from '@lexical/react/LexicalHistoryPlugin';
-import {LexicalErrorBoundary} from '@lexical/react/LexicalErrorBoundary';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import {
-  $convertFromMarkdownString,
   TRANSFORMERS,
 } from '@lexical/markdown';
-import {MarkdownShortcutPlugin} from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
 import { nodes } from './nodes';
@@ -16,10 +15,9 @@ import { theme } from './theme';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
-import { useEffect } from 'react';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $getRoot, $createParagraphNode, EditorState } from 'lexical';
 import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
+import { useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { SavePlugin } from './plugins/SavePlugin';
 
 function onError(error: Error) {
   console.error(error);
@@ -27,26 +25,37 @@ function onError(error: Error) {
 
 interface EditorProps {
   initialContent: string;
-  onChange?: (content: string) => void;
+  onSave?: (markdown: string) => void;
 }
 
-export const Editor: React.FC<EditorProps> = ({ initialContent, onChange }) => {
+export interface EditorRefType {
+  getMarkdown: () => string;
+}
+
+export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent, onSave }, ref) => {
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
+  const savePluginRef = useRef<{ getMarkdown: () => string }>(null);
+
+  // 外部のrefに内部のsavePluginRefの機能を公開
+  useImperativeHandle(ref, () => ({
+    getMarkdown: () => {
+      if (savePluginRef.current) {
+        return savePluginRef.current.getMarkdown();
+      }
+      return '';
+    }
+  }), [savePluginRef]);
+
   const initialConfig = {
     namespace: 'CommitNotes',
     theme,
     onError,
     nodes,
-    editorState: () => $convertFromMarkdownString(initialContent, TRANSFORMERS)
   };
 
-  // エディタの内容が変更されたときの処理
-  const handleEditorChange = (editorState: EditorState) => {
-    if (onChange) {
-      editorState.read(() => {
-        const root = $getRoot();
-        const markdown = root.getTextContent();
-        onChange(markdown);
-      });
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
     }
   };
 
@@ -59,11 +68,13 @@ export const Editor: React.FC<EditorProps> = ({ initialContent, onChange }) => {
         <div className="border border-gray-300 rounded-md p-4 min-h-[300px]">
           <RichTextPlugin
             contentEditable={
-              <ContentEditable
-                className="outline-none"
-                aria-placeholder={'メモを入力してください...'}
-                placeholder={<div className="text-gray-400">メモを入力してください...</div>}
-              />
+              <div className="editor" ref={onRef}>
+                <ContentEditable
+                  className="outline-none"
+                  aria-placeholder={'メモを入力してください...'}
+                  placeholder={<div className="text-gray-400">メモを入力してください...</div>}
+                />
+              </div>
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
@@ -75,8 +86,10 @@ export const Editor: React.FC<EditorProps> = ({ initialContent, onChange }) => {
         <ListPlugin />
         <CheckListPlugin />
         <FileChangeUpdateStatePlugin initialContent={initialContent} />
-        {onChange && <OnChangePlugin onChange={handleEditorChange} />}
+        <SavePlugin ref={savePluginRef} />
+        {/* TODO: 未保存のフラグを表示する */}
+        {/* <OnChangePlugin onChange={handleEditorChange} /> */}
       </LexicalComposer>
     </div>
   );
-}
+});

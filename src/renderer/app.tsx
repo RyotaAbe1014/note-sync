@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { Editor } from './components/Editor/Editor';
+import { Editor, EditorRefType } from './components/Editor/Editor';
 import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const root = createRoot(document.body);
 root.render(<App />);
@@ -12,6 +12,7 @@ root.render(<App />);
 export default function App() {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [fileContent, setFileContent] = useState<string>('');
+  const editorRef = useRef<EditorRefType>(null);
 
   // ファイルが選択されたときの処理
   const handleFileSelect = async (filePath: string) => {
@@ -25,17 +26,19 @@ export default function App() {
     }
   };
 
-  // ファイル内容が変更されたときの処理
-  const handleContentChange = (content: string) => {
-    setFileContent(content);
-  };
-
   // ファイルを保存する処理
   const handleSave = async () => {
     if (selectedFile) {
       try {
+        // エディターからマークダウンテキストを取得
+        let contentToSave = fileContent;
+        if (editorRef.current) {
+          contentToSave = editorRef.current.getMarkdown();
+        }
+        console.log('contentToSave', contentToSave);
+
         // @ts-ignore - APIはプリロードスクリプトで定義されている
-        await window.api.fs.writeFile(selectedFile, fileContent);
+        await window.api.fs.writeFile(selectedFile, contentToSave);
         console.log('File saved successfully');
       } catch (error) {
         console.error('Error saving file:', error);
@@ -71,7 +74,13 @@ export default function App() {
             {fileContent && (
               <Editor
                 initialContent={fileContent}
-                onChange={handleContentChange}
+                onSave={(markdown) => {
+                  if (selectedFile) {
+                    // @ts-ignore - APIはプリロードスクリプトで定義されている
+                    window.api.fs.writeFile(selectedFile, markdown);
+                  }
+                }}
+                ref={editorRef}
               />
             )}
           </div>
