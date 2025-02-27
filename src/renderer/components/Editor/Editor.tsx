@@ -22,7 +22,7 @@ function onError(error: Error) {
   console.error(error);
 }
 
-export default function Editor() {
+export const Editor = () => {
   const initialConfig = {
     namespace: 'CommitNotes',
     theme,
