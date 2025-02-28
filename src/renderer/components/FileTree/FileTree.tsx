@@ -56,7 +56,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 h-full">
+    <div className="bg-white rounded-lg shadow p-4 h-fit mt-4">
       <div className="flex items-center justify-between mb-4">
         <button
           onClick={handleBackClick}
@@ -75,7 +75,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
           <p>読み込み中...</p>
         </div>
       ) : (
-        <ul className="space-y-1 max-h-[calc(100vh-400px)] overflow-y-auto">
+        <ul className="space-y-1 h-[calc(100vh-300px)] overflow-y-auto">
           {files.length === 0 ? (
             <li className="text-gray-500 text-center py-4">ファイルがありません</li>
           ) : (
