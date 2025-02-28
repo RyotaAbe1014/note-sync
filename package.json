@@ -1,8 +1,8 @@
 {
-  "name": "react-electron-example",
-  "productName": "react-electron-example",
+  "name": "commit-notes",
+  "productName": "Commit Notes",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Commit Notes",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
