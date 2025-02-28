@@ -52,6 +52,73 @@ function setupFileSystemHandlers() {
       throw error;
     }
   });
+
+  // ファイルの追加
+  ipcMain.handle('fs:add-file', async (event, filePath, content) => {
+    try {
+      const dirPath = path.dirname(filePath);
+      await fs.mkdir(dirPath, { recursive: true });
+      await fs.writeFile(filePath, content, 'utf-8');
+      return true;
+    } catch (error) {
+      console.error('Error adding file:', error);
+      throw error;
+    }
+  });
+
+  // ファイルのリネーム
+  ipcMain.handle('fs:rename-file', async (event, filePath, newName) => {
+    try {
+      await fs.rename(filePath, newName);
+      return true;
+    } catch (error) {
+      console.error('Error renaming file:', error);
+      throw error;
+    }
+  });
+
+  // ファイルの削除
+  ipcMain.handle('fs:remove-file', async (event, filePath) => {
+    try {
+      await fs.unlink(filePath);
+      return true;
+    } catch (error) {
+      console.error('Error removing file:', error);
+      throw error;
+    }
+  });
+
+  // ディレクトリの作成
+  ipcMain.handle('fs:create-directory', async (event, dirPath) => {
+    try {
+      await fs.mkdir(dirPath, { recursive: true });
+      return true;
+    } catch (error) {
+      console.error('Error creating directory:', error);
+      throw error;
+    }
+  });
+  // ディレクトリのリネーム
+  ipcMain.handle('fs:rename-directory', async (event, dirPath, newName) => {
+    try {
+      await fs.rename(dirPath, newName);
+      return true;
+    } catch (error) {
+      console.error('Error renaming directory:', error);
+      throw error;
+    }
+  });
+
+  // ディレクトリの削除
+  ipcMain.handle('fs:delete-directory', async (event, dirPath) => {
+    try {
+      await fs.rmdir(dirPath, { recursive: true });
+      return true;
+    } catch (error) {
+      console.error('Error deleting directory:', error);
+      throw error;
+    }
+  });
 }
 
 // Git操作のハンドラー
