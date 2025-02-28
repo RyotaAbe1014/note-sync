@@ -11,7 +11,7 @@ import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPl
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
 import { nodes } from './nodes';
-import { theme } from './theme';
+import { theme } from './theme/theme';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';

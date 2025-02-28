@@ -29,31 +29,31 @@
 }
 
 .EditorTheme__h1 {
-  font-size: 36px;
+  font-size: 30px; /* サイズを調整 */
   color: rgb(5, 5, 5);
   font-weight: 400;
   margin: 0;
 }
 .EditorTheme__h2 {
-  font-size: 30px;
+  font-size: 26px; /* サイズを調整 */
   color: rgb(5, 5, 5);
   font-weight: 200;
   margin: 0;
 }
 .EditorTheme__h3 {
-  font-size: 24px;
+  font-size: 22px; /* サイズを調整 */
   color: rgb(5, 5, 5);
   margin: 0;
 }
 
 .EditorTheme__h4 {
-  font-size: 18px;
+  font-size: 16px; /* サイズを調整 */
   color: rgb(5, 5, 5);
   margin: 0;
 }
 
 .EditorTheme__h5 {
-  font-size: 12px;
+  font-size: 10px; /* サイズを調整 */
   color: rgb(5, 5, 5);
   margin: 0;
 }
