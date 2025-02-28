@@ -14,7 +14,6 @@ import { nodes } from './nodes';
 import { theme } from './theme/theme';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
 import { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { SavePlugin } from './plugins/SavePlugin';
@@ -25,14 +24,13 @@ function onError(error: Error) {
 
 interface EditorProps {
   initialContent: string;
-  onSave?: (markdown: string) => void;
 }
 
 export interface EditorRefType {
   getMarkdown: () => string;
 }
 
-export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent, onSave }, ref) => {
+export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent }, ref) => {
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const savePluginRef = useRef<{ getMarkdown: () => string }>(null);
 
@@ -87,8 +85,6 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent, 
         <CheckListPlugin />
         <FileChangeUpdateStatePlugin initialContent={initialContent} />
         <SavePlugin ref={savePluginRef} />
-        {/* TODO: 未保存のフラグを表示する */}
-        {/* <OnChangePlugin onChange={handleEditorChange} /> */}
       </LexicalComposer>
     </div>
   );

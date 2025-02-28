@@ -74,12 +74,6 @@ export default function App() {
             {fileContent && (
               <Editor
                 initialContent={fileContent}
-                onSave={(markdown) => {
-                  if (selectedFile) {
-                    // @ts-ignore - APIはプリロードスクリプトで定義されている
-                    window.api.fs.writeFile(selectedFile, markdown);
-                  }
-                }}
                 ref={editorRef}
               />
             )}
