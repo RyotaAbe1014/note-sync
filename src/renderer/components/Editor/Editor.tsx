@@ -65,10 +65,10 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent, 
         <div className="mb-4">
           <ToolbarPlugin />
         </div>
-        <div className="border border-gray-300 rounded-md p-4 min-h-[300px]">
+        <div className="border border-gray-300 rounded-md p-4">
           <RichTextPlugin
             contentEditable={
-              <div className="editor" ref={onRef}>
+              <div className="editor h-[calc(100vh-400px)] overflow-y-auto" ref={onRef}>
                 <ContentEditable
                   className="outline-none"
                   aria-placeholder={'メモを入力してください...'}
