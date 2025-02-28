@@ -53,8 +53,8 @@ export default function App() {
       </header>
       <main className="px-8 flex gap-6">
         <div className="w-1/4">
-          <FileTree onFileSelect={handleFileSelect} />
           <GitControls selectedFile={selectedFile} />
+          <FileTree onFileSelect={handleFileSelect} />
         </div>
         <div className="w-3/4">
           <div className="bg-white rounded-lg shadow p-4 mb-4">
