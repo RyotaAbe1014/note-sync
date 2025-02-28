@@ -128,7 +128,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="bg-white rounded-lg shadow p-4 mt-4">
       <div
         className="flex justify-between items-center cursor-pointer mb-4"
         onClick={() => setIsExpanded(!isExpanded)}

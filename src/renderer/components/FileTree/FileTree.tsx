@@ -32,7 +32,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
 
   // 初期ロード
   useEffect(() => {
-    loadDirectory("");
+    loadDirectory(undefined);
   }, []);
 
   // ディレクトリをクリックしたときの処理
@@ -75,7 +75,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
           <p>読み込み中...</p>
         </div>
       ) : (
-        <ul className="space-y-1 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <ul className="space-y-1 max-h-[calc(100vh-400px)] overflow-y-auto">
           {files.length === 0 ? (
             <li className="text-gray-500 text-center py-4">ファイルがありません</li>
           ) : (
