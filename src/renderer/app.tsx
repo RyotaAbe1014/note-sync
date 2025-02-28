@@ -47,7 +47,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8">
+    <div className="min-h-screen bg-gray-100 pt-8 pb-2">
       <header className="mb-8 px-8">
         <h1 className="text-2xl font-bold text-gray-800">CommitNotes</h1>
       </header>
