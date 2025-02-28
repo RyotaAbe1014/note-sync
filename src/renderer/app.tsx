@@ -65,7 +65,7 @@ export default function App() {
               <button
                 onClick={handleSave}
                 disabled={!selectedFile}
-                className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 保存
               </button>
