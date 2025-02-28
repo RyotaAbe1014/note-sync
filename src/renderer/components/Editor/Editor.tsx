@@ -58,7 +58,7 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent }
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md">
       <LexicalComposer initialConfig={initialConfig}>
         <div className="mb-4">
           <ToolbarPlugin />
