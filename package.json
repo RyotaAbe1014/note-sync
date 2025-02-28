@@ -43,9 +43,12 @@
   },
   "dependencies": {
     "@lexical/react": "^0.25.0",
+    "@octokit/rest": "^21.1.1",
     "@tailwindcss/postcss": "^4.0.9",
     "@tailwindcss/vite": "^4.0.9",
     "electron-squirrel-startup": "^1.0.1",
+    "electron-store": "^10.0.1",
+    "isomorphic-git": "^1.29.0",
     "lexical": "^0.25.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
