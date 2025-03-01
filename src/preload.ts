@@ -2,9 +2,16 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from 'electron';
+import { AppSettings } from './types/appSettings';
 
 // レンダラープロセスに公開するAPI
 contextBridge.exposeInMainWorld('api', {
+  // アプリケーション設定
+  app: {
+    getSettings: () => ipcRenderer.invoke('app:get-settings'),
+    setSettings: (settings: AppSettings) => ipcRenderer.invoke('app:set-settings', settings),
+  },
+
   // ファイルシステム操作
   fs: {
     listFiles: (dirPath: string | null) => ipcRenderer.invoke('fs:list-files', dirPath),

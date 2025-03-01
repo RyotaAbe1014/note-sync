@@ -3,10 +3,31 @@ import path from 'node:path';
 import fs from 'node:fs/promises';
 // @ts-ignore
 import started from 'electron-squirrel-startup';
+// @ts-ignore
+// https://github.com/sindresorhus/electron-store/issues/276 に従い
+// compilerOptionsを変更したが、そうするとこのインポートがCommonJSとして認識され、エラーになるので
+// ここでは型を無視している
+import Store from 'electron-store';
+import { AppSettings } from './types/appSettings.js';
+
+const appSettingsStore = new Store<AppSettings>({
+  name: 'app-settings',
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
+}
+
+// アプリケーション設定のハンドラー
+function setupAppSettingsHandlers() {
+  ipcMain.handle('app:get-settings', async (event) => {
+    return appSettingsStore.get('settings');
+  });
+
+  ipcMain.handle('app:set-settings', async (event, settings) => {
+    appSettingsStore.set('settings', settings);
+  });
 }
 
 // ファイルシステム操作のハンドラー
@@ -199,6 +220,7 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
+  setupAppSettingsHandlers();
   setupFileSystemHandlers();
   setupGitHandlers();
 });
