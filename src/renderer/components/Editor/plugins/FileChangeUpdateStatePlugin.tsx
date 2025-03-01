@@ -8,6 +8,13 @@ export const FileChangeUpdateStatePlugin = ({ initialContent }: { initialContent
   useEffect(() => {
     editor.update(() => {
       $convertFromMarkdownString(initialContent, TRANSFORMERS)
+
+      requestAnimationFrame(() => {
+        const editorElement = document.getElementById("editor");
+        if (editorElement) {
+          editorElement.scrollTop = 0;
+        }
+      });
     });
   }, [initialContent]);
 
