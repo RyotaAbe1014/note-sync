@@ -69,8 +69,7 @@ function setupFileSystemHandlers() {
   // ファイルのリネーム
   ipcMain.handle('fs:rename-file', async (event, filePath, newName) => {
     try {
-      // フルパスの作成
-      console.log('rename-file', filePath, newName);
+      // 第二引数には新しいファイルのパスを指定する
       await fs.rename(filePath, path.join(path.dirname(filePath), newName));
       return true;
     } catch (error) {
