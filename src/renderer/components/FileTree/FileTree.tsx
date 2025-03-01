@@ -35,7 +35,18 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
 
   // 初期ロード
   useEffect(() => {
-    loadDirectory("");
+    const loadSettings = async () => {
+      try {
+        // @ts-ignore - APIはプリロードスクリプトで定義されている
+        const savedSettings = await window.api.app.getSettings();
+        if (savedSettings) {
+          loadDirectory(savedSettings.rootDirectory.path);
+        }
+      } catch (error) {
+        console.error('設定の読み込みに失敗しました:', error);
+      }
+    };
+    loadSettings();
   }, []);
 
   // ディレクトリをクリックしたときの処理
@@ -134,9 +145,8 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
             files.map((file) => (
               <li
                 key={file.path}
-                className={`px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-50 flex items-center transition-colors duration-150 ${
-                  file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
+                className={`px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-50 flex items-center transition-colors duration-150 ${file.isDirectory ? 'text-blue-600' : 'text-gray-700'
+                  } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
                 onClick={() => file.isDirectory
                   ? handleDirectoryClick(file.path)
                   : handleFileClick(file.path)
