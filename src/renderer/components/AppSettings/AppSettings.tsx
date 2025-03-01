@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AppSettings as AppSettingsType } from '../../../types/appSettings';
+import { CheckIcon } from 'lucide-react';
 
 export const AppSettings = () => {
   const [settings, setSettings] = useState<AppSettingsType>({
@@ -48,21 +49,21 @@ export const AppSettings = () => {
     }
   };
 
-    // ディレクトリ選択ダイアログを開く
-    const handleSelectDirectory = async () => {
-      try {
-        // @ts-ignore - APIはプリロードスクリプトで定義されている
-        const dirPath = await window.api.dialog.selectDirectory();
-        if (dirPath) {
-          setSettings((prev: AppSettingsType) => ({
-            ...prev,
-            rootDirectory: { ...prev.rootDirectory, path: dirPath }
-          }));
-        }
-      } catch (error) {
-        console.error('ディレクトリ選択に失敗しました:', error);
+  // ディレクトリ選択ダイアログを開く
+  const handleSelectDirectory = async () => {
+    try {
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const dirPath = await window.api.dialog.selectDirectory();
+      if (dirPath) {
+        setSettings((prev: AppSettingsType) => ({
+          ...prev,
+          rootDirectory: { ...prev.rootDirectory, path: dirPath }
+        }));
       }
-    };
+    } catch (error) {
+      console.error('ディレクトリ選択に失敗しました:', error);
+    }
+  };
 
   return (
     <div className="w-full bg-white rounded-lg shadow p-6">
@@ -73,13 +74,16 @@ export const AppSettings = () => {
         <div>
           <h3 className="text-lg font-medium mb-3">ルートディレクトリ設定</h3>
           <div className="flex gap-2">
-            <input
-              type="text"
-              disabled
-              value={settings.rootDirectory.path}
-              placeholder="ルートディレクトリのパス"
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            />
+            <div className="flex-1 items-center relative">
+              <input
+                type="text"
+                disabled
+                value={settings.rootDirectory.path}
+                placeholder="ルートディレクトリのパス"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              />
+              {settings.rootDirectory.path && <CheckIcon className="w-4 h-4 absolute right-2 top-1/2 -translate-y-1/2 text-green-500" />}
+            </div>
             <button
               onClick={handleSelectDirectory}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500"
@@ -143,7 +147,7 @@ export const AppSettings = () => {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-blue-500 text-white cursor-pointer rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? '保存中...' : '設定を保存'}
           </button>
