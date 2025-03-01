@@ -5,6 +5,7 @@ import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
 import { useState, useRef } from 'react';
 import { Save, Settings } from 'lucide-react';
+import { AppSettings } from './components/AppSettings/AppSettings';
 
 const root = createRoot(document.body);
 root.render(<App />);
@@ -63,7 +64,7 @@ export default function App() {
       </header>
       <main className="px-8 flex gap-6">
         {isSettingsOpen ? (
-          <div>settings</div>
+          <AppSettings />
         ) : (
           <>
             <div className="w-1/4">
