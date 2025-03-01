@@ -13,6 +13,7 @@ interface FileTreeProps {
 
 export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
+  const [rootDir, setRootDir] = useState<string | null>(null);
   const [currentDir, setCurrentDir] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
@@ -40,6 +41,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
         // @ts-ignore - APIはプリロードスクリプトで定義されている
         const savedSettings = await window.api.app.getSettings();
         if (savedSettings) {
+          setRootDir(savedSettings.rootDirectory.path);
           loadDirectory(savedSettings.rootDirectory.path);
         }
       } catch (error) {
@@ -118,14 +120,14 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
         <button
           onClick={handleBackClick}
-          disabled={!currentDir}
+          disabled={currentDir === rootDir}
           className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
         >
           <ChevronLeft className="w-4 h-4" />
           戻る
         </button>
         <span className="text-sm font-medium truncate ml-2 text-gray-600 max-w-[70%]">
-          {currentDir || 'ルート'}
+          {currentDir === rootDir ? 'ルート' : currentDir}
         </span>
       </div>
 
