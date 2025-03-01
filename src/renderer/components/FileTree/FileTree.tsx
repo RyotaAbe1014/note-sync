@@ -15,6 +15,8 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
   const [currentDir, setCurrentDir] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
+  const [isRenaming, setIsRenaming] = useState<boolean>(false);
+
   // ディレクトリの内容を読み込む
   const loadDirectory = async (dirPath: string | null) => {
     try {
@@ -54,6 +56,21 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
       loadDirectory(parentDir.length > 0 ? parentDir : null);
     }
   };
+
+  const handleRenameClick = (file: FileItem) => {
+    setIsRenaming(true);
+  }
+
+  const handleDeleteClick = async (file: FileItem) => {
+    if (file.isDirectory) {
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      await window.api.fs.removeDirectory(file.path);
+    } else {
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      await window.api.fs.removeFile(file.path);
+    }
+    loadDirectory(currentDir);
+  }
 
   // 右クリックをしたときの処理
   const handleRightClick = (file: FileItem) => {
@@ -108,10 +125,11 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
                   </svg>
                 )}
                 <span className="truncate">{file.name}</span>
-                {selectedFile?.path === file.path && <FileMenu file={file} />}
+                {selectedFile && <FileMenu file={selectedFile} handleRenameClick={handleRenameClick} handleDeleteClick={handleDeleteClick} />}
               </li>
             ))
           )}
+
         </ul>
       )}
     </div>
@@ -120,22 +138,38 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
 
 interface FileMenuProps {
   file: FileItem
+  handleRenameClick: (file: FileItem) => void;
+  handleDeleteClick: (file: FileItem) => void;
 }
 
-const FileMenu = ({ file }: FileMenuProps) => {
-
-  const handleRename = (filePath: string) => {
-    console.log(filePath);
+const FileMenu = ({ file, handleRenameClick, handleDeleteClick }: FileMenuProps) => {
+  const handleRename = () => {
+    handleRenameClick(file);
   }
 
-  const handleDelete = (filePath: string) => {
-    console.log(filePath);
+  const handleDelete = async () => {
+    handleDeleteClick(file);
   }
 
   return (
-    <div className="absolute mt-28 bg-white shadow p-4 rounded gap-2 flex flex-col ">
-      <button className="text-left" onClick={() => handleRename(file.path)}>名前の変更</button>
-      <button className="text-red-500 text-left" onClick={() => handleDelete(file.path)}>削除</button>
+    <div className="absolute mt-28 bg-white shadow rounded flex flex-col ">
+      <button className="p-2 text-left cursor-pointer hover:bg-gray-100" onClick={() => handleRename()}>名前の変更</button>
+      <button className="p-2 text-red-500 text-left cursor-pointer hover:bg-gray-100" onClick={() => handleDelete()}>削除</button>
     </div>
   );
 };
+
+// const FileRename = ({ file }: FileRenameProps) => {
+//   const [newName, setNewName] = useState(file.name);
+
+//   const handleRename = (filePath: string) => {
+//     console.log(filePath);
+//   }
+
+//   return (
+//     <div className="absolute mt-28 bg-white shadow rounded flex flex-col ">
+//       <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} />
+//       <button className="p-2 text-left cursor-pointer hover:bg-gray-100" onClick={() => handleRename(file.path)}>名前の変更</button>
+//     </div>
+//   );
+// }
