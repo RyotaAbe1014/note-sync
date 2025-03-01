@@ -50,6 +50,7 @@
     "electron-store": "^10.0.1",
     "isomorphic-git": "^1.29.0",
     "lexical": "^0.25.0",
+    "lucide-react": "^0.477.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   }
