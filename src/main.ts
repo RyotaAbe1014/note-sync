@@ -110,7 +110,7 @@ function setupFileSystemHandlers() {
   });
 
   // ディレクトリの削除
-  ipcMain.handle('fs:delete-directory', async (event, dirPath) => {
+  ipcMain.handle('fs:remove-directory', async (event, dirPath) => {
     try {
       await fs.rmdir(dirPath, { recursive: true });
       return true;

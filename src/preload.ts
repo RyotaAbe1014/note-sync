@@ -14,8 +14,8 @@ contextBridge.exposeInMainWorld('api', {
     renameFile: (filePath: string, newName: string) => ipcRenderer.invoke('fs:rename-file', filePath, newName),
     removeFile: (filePath: string) => ipcRenderer.invoke('fs:remove-file', filePath),
     createDirectory: (dirPath: string) => ipcRenderer.invoke('fs:create-directory', dirPath),
-    deleteDirectory: (dirPath: string) => ipcRenderer.invoke('fs:delete-directory', dirPath),
-    renameDirectory: (dirPath: string, newName: string) => ipcRenderer.invoke('fs:rename-directory', dirPath, newName)
+    renameDirectory: (dirPath: string, newName: string) => ipcRenderer.invoke('fs:rename-directory', dirPath, newName),
+    removeDirectory: (dirPath: string) => ipcRenderer.invoke('fs:remove-directory', dirPath),
   },
 
   // Git操作
