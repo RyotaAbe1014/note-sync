@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Settings } from 'lucide-react';
 
 interface GitControlsProps {
   selectedFile: string | null;
@@ -135,7 +136,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       >
         <h3 className="text-lg font-medium">Git操作</h3>
         <span className="text-gray-500">
-          {isExpanded ? '▼' : '►'}
+          {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </span>
       </div>
 
@@ -203,8 +204,9 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
             <button
               onClick={handleCommit}
               disabled={isLoading || !selectedFile || !commitMessage}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
+              <GitCommit className="w-4 h-4" />
               {isLoading ? '処理中...' : 'コミット'}
             </button>
           </div>
@@ -214,15 +216,17 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
             <button
               onClick={handlePush}
               disabled={isLoading || !selectedFile}
-              className="flex-1 bg-green-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="flex-1 bg-green-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
+              <Upload className="w-4 h-4" />
               プッシュ
             </button>
             <button
               onClick={handlePull}
               disabled={isLoading || !selectedFile}
-              className="flex-1 bg-yellow-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="flex-1 bg-yellow-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
+              <Download className="w-4 h-4" />
               プル
             </button>
           </div>
@@ -230,8 +234,9 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
           {/* 設定ボタン */}
           <button
             onClick={toggleSettings}
-            className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded mb-4 text-sm"
+            className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded mb-4 text-sm flex items-center justify-center gap-2"
           >
+            <Settings className="w-4 h-4" />
             {showSettings ? '設定を閉じる' : 'リモート設定を表示'}
           </button>
 

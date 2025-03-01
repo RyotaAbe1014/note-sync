@@ -4,6 +4,7 @@ import { Editor, EditorRefType } from './components/Editor/Editor';
 import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
 import { useState, useRef } from 'react';
+import { Save } from 'lucide-react';
 
 const root = createRoot(document.body);
 root.render(<App />);
@@ -65,8 +66,9 @@ export default function App() {
               <button
                 onClick={handleSave}
                 disabled={!selectedFile}
-                className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
+                <Save className="w-4 h-4" />
                 保存
               </button>
             </div>

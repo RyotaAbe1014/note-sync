@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ChevronLeft, X, Edit, Trash2, FolderIcon, FileIcon, Sparkles } from 'lucide-react';
 
 interface FileItem {
   name: string;
@@ -109,9 +110,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
           disabled={!currentDir}
           className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <ChevronLeft className="w-4 h-4" />
           戻る
         </button>
         <span className="text-sm font-medium truncate ml-2 text-gray-600 max-w-[70%]">
@@ -128,9 +127,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
         <ul className="space-y-1 h-[calc(100vh-300px)] overflow-y-auto pr-1">
           {files.length === 0 ? (
             <li className="text-gray-500 text-center py-8 bg-gray-50 rounded-md">
-              <svg className="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
+              <Sparkles className="w-10 h-10 mx-auto text-gray-400 mb-2" />
               <p>ファイルがありません</p>
             </li>
           ) : (
@@ -147,13 +144,9 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
                 onContextMenu={(e) => handleRightClick(e, file)}
               >
                 {file.isDirectory ? (
-                  <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd" />
-                  </svg>
+                  <FolderIcon className="w-5 h-5 mr-2 flex-shrink-0" />
                 ) : (
-                  <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
-                  </svg>
+                  <FileIcon className="w-5 h-5 mr-2 flex-shrink-0" />
                 )}
                 <span className="truncate">{file.name}</span>
               </li>
@@ -236,9 +229,7 @@ const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick
           className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors duration-150"
           onClick={handleClose}
         >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-          </svg>
+          <X className="w-4 h-4" />
         </button>
       </div>
       {isRenaming ? (
@@ -271,18 +262,14 @@ const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick
             className="p-2.5 text-left text-sm cursor-pointer hover:bg-gray-50 transition-colors duration-150 flex items-center"
             onClick={() => handleRenameClick()}
           >
-            <svg className="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-            </svg>
+            <Edit className="w-4 h-4 mr-2 text-gray-500" />
             名前の変更
           </button>
           <button
             className="p-2.5 text-left text-sm cursor-pointer hover:bg-red-50 text-red-500 transition-colors duration-150 flex items-center"
             onClick={() => handleDelete()}
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            <Trash2 className="w-4 h-4 mr-2" />
             削除
           </button>
         </>
