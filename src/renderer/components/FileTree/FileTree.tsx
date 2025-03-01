@@ -14,7 +14,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [currentDir, setCurrentDir] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   // ディレクトリの内容を読み込む
   const loadDirectory = async (dirPath: string | null) => {
     try {
@@ -32,7 +32,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
 
   // 初期ロード
   useEffect(() => {
-    loadDirectory(undefined);
+    loadDirectory("");
   }, []);
 
   // ディレクトリをクリックしたときの処理
@@ -53,6 +53,11 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
       const parentDir = currentDir.split('/').slice(0, -1).join('/');
       loadDirectory(parentDir.length > 0 ? parentDir : null);
     }
+  };
+
+  // 右クリックをしたときの処理
+  const handleRightClick = (file: FileItem) => {
+    setSelectedFile(file);
   };
 
   return (
@@ -82,13 +87,16 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
             files.map((file) => (
               <li
                 key={file.path}
-                className={`px-3 py-2 rounded cursor-pointer hover:bg-gray-100 flex items-center ${
-                  file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                }`}
+                className={`px-3 py-2 rounded cursor-pointer hover:bg-gray-100 flex items-center ${file.isDirectory ? 'text-blue-600' : 'text-gray-700'
+                  }`}
                 onClick={() => file.isDirectory
                   ? handleDirectoryClick(file.path)
                   : handleFileClick(file.path)
                 }
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  handleRightClick(file);
+                }}
               >
                 {file.isDirectory ? (
                   <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -100,11 +108,34 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
                   </svg>
                 )}
                 <span className="truncate">{file.name}</span>
+                {selectedFile?.path === file.path && <FileMenu file={file} />}
               </li>
             ))
           )}
         </ul>
       )}
+    </div>
+  );
+};
+
+interface FileMenuProps {
+  file: FileItem
+}
+
+const FileMenu = ({ file }: FileMenuProps) => {
+
+  const handleRename = (filePath: string) => {
+    console.log(filePath);
+  }
+
+  const handleDelete = (filePath: string) => {
+    console.log(filePath);
+  }
+
+  return (
+    <div className="absolute mt-28 bg-white shadow p-4 rounded gap-2 flex flex-col ">
+      <button className="text-left" onClick={() => handleRename(file.path)}>名前の変更</button>
+      <button className="text-red-500 text-left" onClick={() => handleDelete(file.path)}>削除</button>
     </div>
   );
 };
