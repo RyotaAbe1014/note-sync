@@ -4,7 +4,7 @@ import { Editor, EditorRefType } from './components/Editor/Editor';
 import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
 import { useState, useRef } from 'react';
-import { Save, Settings } from 'lucide-react';
+import { Save, Settings, Undo2 } from 'lucide-react';
 import { AppSettings } from './components/AppSettings/AppSettings';
 
 const root = createRoot(document.body);
@@ -59,7 +59,7 @@ export default function App() {
             setIsSettingsOpen(!isSettingsOpen);
           }}
         >
-          <Settings className="w-6 h-6" />
+          {isSettingsOpen ? <Undo2 className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
         </button>
       </header>
       <main className="px-8 flex gap-6">

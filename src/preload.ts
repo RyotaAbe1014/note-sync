@@ -12,6 +12,11 @@ contextBridge.exposeInMainWorld('api', {
     setSettings: (settings: AppSettings) => ipcRenderer.invoke('app:set-settings', settings),
   },
 
+  // ダイアログ操作
+  dialog: {
+    selectDirectory: () => ipcRenderer.invoke('dialog:select-directory'),
+  },
+
   // ファイルシステム操作
   fs: {
     listFiles: (dirPath: string | null) => ipcRenderer.invoke('fs:list-files', dirPath),

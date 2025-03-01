@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 // @ts-ignore
@@ -27,6 +27,22 @@ function setupAppSettingsHandlers() {
 
   ipcMain.handle('app:set-settings', async (event, settings) => {
     appSettingsStore.set('settings', settings);
+  });
+}
+
+// ダイアログ操作のハンドラー
+function setupDialogHandlers() {
+  ipcMain.handle('dialog:select-directory', async (event) => {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory'],
+      title: 'ディレクトリを選択',
+    });
+
+    if (result.canceled) {
+      return null;
+    }
+
+    return result.filePaths[0];
   });
 }
 
@@ -221,6 +237,7 @@ const createWindow = () => {
 app.on('ready', () => {
   createWindow();
   setupAppSettingsHandlers();
+  setupDialogHandlers();
   setupFileSystemHandlers();
   setupGitHandlers();
 });
