@@ -22,7 +22,6 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 ### データ管理
 - Markdownファイル（ローカル保存 & GitHub同期）
 - Electron Store（アプリの設定をローカル保存）
-- IndexedDB（オフライン編集 & キャッシュ）
 
 ### GitHub連携
 - GitHub API
