@@ -50,8 +50,8 @@ export function setupGitHandlers() {
   });
 
   // 変更のステージング解除
-  ipcMain.handle('git:remove', async (event, repoPath, filepath: string) => {
-    await git.remove({
+  ipcMain.handle('git:unstage', async (event, repoPath, filepath: string) => {
+    await git.resetIndex({
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),

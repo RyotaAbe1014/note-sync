@@ -208,7 +208,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       const repoPath = settings.rootDirectory.path;
 
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.remove(repoPath, filename);
+      await window.api.git.unstage(repoPath, filename);
 
       setStatusMessage(`${getFileName(filename)} のステージングを取り消しました`);
       fetchGitStatus(); // ステータスを更新
@@ -233,7 +233,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       // すべてのステージング済みファイルのステージングを取り消す
       for (const file of gitStatus.staged) {
         // @ts-ignore - APIはプリロードスクリプトで定義されている
-        await window.api.git.remove(repoPath, file.filename);
+        await window.api.git.unstage(repoPath, file.filename);
       }
 
       setStatusMessage(`すべてのステージングを取り消しました`);
