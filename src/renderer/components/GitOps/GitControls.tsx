@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Settings } from 'lucide-react';
+import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '../../../types/gitStatus';
 
 interface GitControlsProps {
   selectedFile: string | null;
 }
 
-interface GitStatus {
-  staged: string[];
-  unstaged: string[];
-  untracked: string[];
-}
 
 export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const [commitMessage, setCommitMessage] = useState<string>('');
@@ -29,26 +25,128 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
 
   // Gitステータスを取得
   const fetchGitStatus = async () => {
-    const repoPath = getRepoPath();
-    if (!repoPath) return;
-
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const status = await window.api.git.status(repoPath);
-      setGitStatus(status);
+      const settings = await window.api.app.getSettings();
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const statusMatrix: StatusMatrix = await window.api.git.status(settings.rootDirectory.path);
+
+      // gitStatusに格納できる形に変換する
+      const gitStatus: GitStatus = {
+        staged: [],
+        unstaged: [],
+      };
+
+      statusMatrix.map((status) => {
+        console.log(status);
+        // [0,2,0]: "Untracked" - 新規ファイル（未追跡）
+        // [0,2,2]: "Added" - git add 済み
+        // [0,2,3]: "Added & Modified" - git add 済み & さらに変更あり
+        // [1,1,1]: "Unmodified" - 変更なし
+        // [1,2,1]: "Modified" - 変更あり（未ステージング）
+        // [1,2,2]: "Staged" - git add 済み
+        // [1,2,3]: "Staged & Modified" - git add 済み & さらに変更あり
+        // [1,0,1]: "Deleted" - 削除（未ステージング）
+        // [1,0,0]: "Deleted (Staged)" - 削除（ステージング済み）
+        // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
+        // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更された
+
+        if (status[3] === StageStatus.ABSENT) {
+          // [0,2,0]: "Untracked" - 新規ファイル（未追跡）
+          // [1,0,0]: "Deleted (Staged)" - 削除（ステージング済み）
+          // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
+          // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更された
+          if (status[2] === WorkdirStatus.MODIFIED) {
+            // [0,2,0]: "Untracked" - 新規ファイル（未追跡）
+            // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
+            if (status[1] === HeadStatus.ABSENT) {
+              // [0,2,0]: "Untracked" - 新規ファイル（未追跡）が入るのでunstagedにpush
+              gitStatus.unstaged.push({
+                filename: status[0],
+                isDeleted: false,
+              });
+            }
+            if (status[1] === HeadStatus.PRESENT) {
+              // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
+              gitStatus.staged.push({
+                filename: status[0],
+                isDeleted: false,
+              });
+            }
+          }
+          if (status[2] === WorkdirStatus.IDENTICAL) {
+            // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更された
+            if (status[1] === HeadStatus.PRESENT) {
+              // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更されたが入るのでunstagedにpush
+              gitStatus.unstaged.push({
+                filename: status[0],
+                isDeleted: false,
+              });
+            }
+          }
+          if (status[2] === WorkdirStatus.MODIFIED) {
+            // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
+            if (status[1] === HeadStatus.PRESENT) {
+              // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られたが入るのでunstagedにpush
+              gitStatus.unstaged.push({
+                filename: status[0],
+                isDeleted: false,
+              });
+            }
+          }
+        } else if (status[3] === StageStatus.IDENTICAL) {
+          if (status[2] === WorkdirStatus.ABSENT) {
+            // [1,0,1]: "Deleted" - 削除（未ステージング）が入るのでunstagedにpush
+            gitStatus.unstaged.push({
+              filename: status[0],
+              isDeleted: true,
+            });
+          }
+          if (status[2] === WorkdirStatus.MODIFIED) {
+            // [1,2,1]: "Modified" - 変更あり（未ステージング）が入るのでunstagedにpush
+            gitStatus.unstaged.push({
+              filename: status[0],
+              isDeleted: false,
+            });
+          }
+        } else if (status[3] === StageStatus.MODIFIED) {
+          // [1,2,2]: "Staged" - git add 済み
+          // [0,2,2]: "Added" - git add 済み
+          if (status[2] === WorkdirStatus.MODIFIED) {
+            // [1,2,2]: "Staged" - git add 済みが入るのでstagedにpush
+            gitStatus.staged.push({
+              filename: status[0],
+              isDeleted: false,
+            });
+          }
+        } else if (status[3] === StageStatus.MODIFIED_AGAIN) {
+          // [0,2,3]: "Added & Modified" - git add 済み & さらに変更あり
+          // [1,2,3]: "Staged & Modified" - git add 済み & さらに変更あり
+          if (status[2] === WorkdirStatus.MODIFIED) {
+            // [0,2,3]: "Added & Modified" - git add 済み & さらに変更ありが入るのでunstagedとstagedにpush
+            gitStatus.unstaged.push({
+              filename: status[0],
+              isDeleted: false,
+            });
+            gitStatus.staged.push({
+              filename: status[0],
+              isDeleted: false,
+            });
+          }
+        }
+      });
+
+      setGitStatus(gitStatus);
     } catch (error) {
       console.error('Error fetching git status:', error);
       setStatusMessage('Gitステータスの取得に失敗しました');
     }
   };
 
-  // ファイルが選択されたときにGitステータスを更新
+  // ファイルが選択されたときにGitステータスを更新()
+  // パフォーマンスに影響がある場合キャッシュの使用や、ファイルを保存したときなどタイミングを考える
   useEffect(() => {
-    if (selectedFile) {
-      fetchGitStatus();
-    } else {
-      setGitStatus(null);
-    }
+    fetchGitStatus();
   }, [selectedFile]);
 
   // 変更をコミットする処理
@@ -160,30 +258,20 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
               <h4 className="font-medium mb-2">Gitステータス</h4>
               {gitStatus.staged.length > 0 && (
                 <div className="mb-2">
-                  <p className="text-green-600 font-medium">ステージング済み:</p>
+                  <p className="text-green-600 font-medium">ステージされている変更:</p>
                   <ul className="ml-4">
                     {gitStatus.staged.map(file => (
-                      <li key={file} className="text-green-600">{file}</li>
+                      <li key={file.filename} className="text-green-600">{file.filename}</li>
                     ))}
                   </ul>
                 </div>
               )}
               {gitStatus.unstaged.length > 0 && (
                 <div className="mb-2">
-                  <p className="text-yellow-600 font-medium">未ステージング:</p>
+                  <p className="text-yellow-600 font-medium">変更:</p>
                   <ul className="ml-4">
                     {gitStatus.unstaged.map(file => (
-                      <li key={file} className="text-yellow-600">{file}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {gitStatus.untracked.length > 0 && (
-                <div>
-                  <p className="text-gray-600 font-medium">未追跡:</p>
-                  <ul className="ml-4">
-                    {gitStatus.untracked.map(file => (
-                      <li key={file} className="text-gray-600">{file}</li>
+                      <li key={file.filename} className={file.isDeleted ? 'text-red-600' : 'text-yellow-600'}>{file.filename}</li>
                     ))}
                   </ul>
                 </div>
