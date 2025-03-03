@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Settings, Plus, RefreshCw, GitBranch } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Plus, RefreshCw, GitBranch, Minus } from 'lucide-react';
 import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '../../../types/gitStatus';
 
 interface GitControlsProps {
@@ -199,6 +199,53 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
     }
   };
 
+  // ステージングを取り消す処理
+  const handleUnstageFile = async (filename: string) => {
+    try {
+      setIsLoading(true);
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const settings = await window.api.app.getSettings();
+      const repoPath = settings.rootDirectory.path;
+
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      await window.api.git.remove(repoPath, filename);
+
+      setStatusMessage(`${getFileName(filename)} のステージングを取り消しました`);
+      fetchGitStatus(); // ステータスを更新
+    } catch (error) {
+      console.error('Error unstaging file:', error);
+      setStatusMessage(`${getFileName(filename)} のステージング取り消しに失敗しました`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // すべてのステージングを取り消す処理
+  const handleUnstageAll = async () => {
+    if (!gitStatus || gitStatus.staged.length === 0) return;
+
+    try {
+      setIsLoading(true);
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const settings = await window.api.app.getSettings();
+      const repoPath = settings.rootDirectory.path;
+
+      // すべてのステージング済みファイルのステージングを取り消す
+      for (const file of gitStatus.staged) {
+        // @ts-ignore - APIはプリロードスクリプトで定義されている
+        await window.api.git.remove(repoPath, file.filename);
+      }
+
+      setStatusMessage(`すべてのステージングを取り消しました`);
+      fetchGitStatus(); // ステータスを更新
+    } catch (error) {
+      console.error('Error unstaging all files:', error);
+      setStatusMessage(`ステージング取り消しに失敗しました`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-4">
       <div
@@ -247,6 +294,17 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                   すべてステージング
                 </button>
               )}
+              {gitStatus && gitStatus.staged.length > 0 && (
+                <button
+                  onClick={handleUnstageAll}
+                  disabled={isLoading}
+                  className="p-1.5 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors duration-150 flex items-center text-xs"
+                  title="すべてのステージングを取り消し"
+                >
+                  <Minus className="w-3 h-3 mr-1" />
+                  すべて取り消し
+                </button>
+              )}
             </div>
           </div>
 
@@ -258,8 +316,25 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                   <p className="text-green-600 font-medium mb-1">ステージされている変更:</p>
                   <ul className="ml-2 space-y-1">
                     {gitStatus.staged.map(file => (
-                      <li key={file.filename} className="text-green-600 truncate" title={file.filename}>
-                        {getFileName(file.filename)}
+                      <li
+                        key={file.filename}
+                        className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
+                      >
+                        <span
+                          className="text-green-600 truncate max-w-[80%]"
+                          title={file.filename}
+                        >
+                          {getFileName(file.filename)}
+                        </span>
+                        <button
+                          onClick={() => handleUnstageFile(file.filename)}
+                          disabled={isLoading}
+                          className="ml-2 p-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors duration-150 flex items-center text-xs opacity-0 group-hover:opacity-100"
+                          title="ステージングを取り消す"
+                        >
+                          <Minus className="w-3 h-3 mr-1" />
+                          取り消し
+                        </button>
                       </li>
                     ))}
                   </ul>
