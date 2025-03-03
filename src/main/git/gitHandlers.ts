@@ -1,21 +1,22 @@
+import fs from 'fs';
 import { ipcMain } from 'electron';
+// @ts-ignore
+import git from 'isomorphic-git';
+import path from 'path';
 
 export function setupGitHandlers() {
   // リポジトリの状態を取得
   ipcMain.handle('git:status', async (event, repoPath) => {
-    // モック実装 - 実際には isomorphic-git を使用
-    return {
-      staged: ['file1.md'],
-      unstaged: ['file2.md'],
-      untracked: ['file3.md']
-    };
-  });
-
-  // リポジトリの初期化
-  ipcMain.handle('git:init', async (event, repoPath) => {
-    // モック実装 - 実際には isomorphic-git を使用
-    console.log(`Git init in ${repoPath}`);
-    return true;
+    const status = await git.statusMatrix({
+      fs: fs,
+      dir: repoPath,
+      gitdir: path.join(repoPath, '.git'),
+      ignored: true,
+      filter: (filepath) => {
+        return !filepath.startsWith('.git') && !filepath.startsWith('node_modules');
+      }
+    });
+    return status;
   });
 
   // 変更のステージング
