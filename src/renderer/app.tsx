@@ -69,7 +69,10 @@ export default function App() {
           <>
             <div className="w-1/4">
               <GitControls selectedFile={selectedFile} />
-              <FileTree onFileSelect={handleFileSelect} />
+              <FileTree
+                onFileSelect={handleFileSelect}
+                onSettingsClick={() => setIsSettingsOpen(true)}
+              />
             </div>
             <div className="w-3/4">
               <div className="bg-white rounded-lg shadow p-4 mb-4">

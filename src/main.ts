@@ -22,6 +22,7 @@ if (started) {
 // アプリケーション設定のハンドラー
 function setupAppSettingsHandlers() {
   ipcMain.handle('app:get-settings', async (event) => {
+    // appSettingsStore.delete('settings');
     return appSettingsStore.get('settings');
   });
 

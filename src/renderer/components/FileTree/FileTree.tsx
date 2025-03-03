@@ -9,9 +9,10 @@ interface FileItem {
 
 interface FileTreeProps {
   onFileSelect?: (filePath: string) => void;
+  onSettingsClick: () => void;
 }
 
-export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
+export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClick }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [rootDir, setRootDir] = useState<string | null>(null);
   const [currentDir, setCurrentDir] = useState<string | null>(null);
@@ -117,64 +118,78 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-5 h-fit mt-4 border border-gray-100">
-      <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
-        <button
-          onClick={handleBackClick}
-          disabled={currentDir === rootDir}
-          className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          戻る
-        </button>
-        <span className="text-sm font-medium truncate ml-2 text-gray-600 max-w-[70%]">
-          {currentDir === rootDir ? 'ルート' : currentDir}
-        </span>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center items-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-          <p className="ml-3 text-gray-600">読み込み中...</p>
+      {!rootDir ? (
+        <div className="text-center py-8">
+          <p className="text-gray-600 mb-4">ルートディレクトリが設定されていません</p>
+          <button
+            onClick={onSettingsClick}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
+          >
+            設定画面で設定する
+          </button>
         </div>
       ) : (
-        <ul className="space-y-1 h-[calc(100vh-300px)] overflow-y-auto pr-1">
-          {files.length === 0 ? (
-            <li className="text-gray-500 text-center py-8 bg-gray-50 rounded-md">
-              <Sparkles className="w-10 h-10 mx-auto text-gray-400 mb-2" />
-              <p>ファイルがありません</p>
-            </li>
-          ) : (
-            files.map((file) => (
-              <li
-                key={file.path}
-                className={`px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-50 flex items-center transition-colors duration-150 ${file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                  } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
-                onClick={() => file.isDirectory
-                  ? handleDirectoryClick(file.path)
-                  : handleFileClick(file.path)
-                }
-                onContextMenu={(e) => handleRightClick(e, file)}
-              >
-                {file.isDirectory ? (
-                  <FolderIcon className="w-5 h-5 mr-2 flex-shrink-0" />
-                ) : (
-                  <FileIcon className="w-5 h-5 mr-2 flex-shrink-0" />
-                )}
-                <span className="truncate">{file.name}</span>
-              </li>
-            ))
-          )}
-        </ul>
-      )}
+        <>
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+            <button
+              onClick={handleBackClick}
+              disabled={currentDir === rootDir}
+              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              戻る
+            </button>
+            <span className="text-sm font-medium truncate ml-2 text-gray-600 max-w-[70%]">
+              {currentDir === rootDir ? 'ルート' : currentDir}
+            </span>
+          </div>
 
-      {selectedFile && menuPosition && (
-        <FileMenu
-          file={selectedFile}
-          position={menuPosition}
-          handleClose={handleCloseMenu}
-          handleRename={handleRename}
-          handleDeleteClick={handleDeleteClick}
-        />
+          {loading ? (
+            <div className="flex justify-center items-center h-40">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+              <p className="ml-3 text-gray-600">読み込み中...</p>
+            </div>
+          ) : (
+            <ul className="space-y-1 h-[calc(100vh-300px)] overflow-y-auto pr-1">
+              {files.length === 0 ? (
+                <li className="text-gray-500 text-center py-8 bg-gray-50 rounded-md">
+                  <Sparkles className="w-10 h-10 mx-auto text-gray-400 mb-2" />
+                  <p>ファイルがありません</p>
+                </li>
+              ) : (
+                files.map((file) => (
+                  <li
+                    key={file.path}
+                    className={`px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-50 flex items-center transition-colors duration-150 ${file.isDirectory ? 'text-blue-600' : 'text-gray-700'
+                      } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
+                    onClick={() => file.isDirectory
+                      ? handleDirectoryClick(file.path)
+                      : handleFileClick(file.path)
+                    }
+                    onContextMenu={(e) => handleRightClick(e, file)}
+                  >
+                    {file.isDirectory ? (
+                      <FolderIcon className="w-5 h-5 mr-2 flex-shrink-0" />
+                    ) : (
+                      <FileIcon className="w-5 h-5 mr-2 flex-shrink-0" />
+                    )}
+                    <span className="truncate">{file.name}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          )}
+
+          {selectedFile && menuPosition && (
+            <FileMenu
+              file={selectedFile}
+              position={menuPosition}
+              handleClose={handleCloseMenu}
+              handleRename={handleRename}
+              handleDeleteClick={handleDeleteClick}
+            />
+          )}
+        </>
       )}
     </div>
   );
