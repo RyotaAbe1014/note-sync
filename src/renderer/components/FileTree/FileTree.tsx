@@ -118,7 +118,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
 
   return (
     <div className="bg-white rounded-lg shadow-md p-5 h-fit mt-4 border border-gray-100">
-      {!rootDir ? (
+      {loading && !rootDir ? (
         <div className="text-center py-8">
           <p className="text-gray-600 mb-4">ルートディレクトリが設定されていません</p>
           <button
