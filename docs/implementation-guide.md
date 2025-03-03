@@ -38,8 +38,10 @@ npm install isomorphic-git @lexical/react electron-store @octokit/rest
 src/
 ├── main/              # Electronのメインプロセス
 │   ├── main.ts        # エントリーポイント
+│   ├── preload.ts     # IPC通信の橋渡し
 │   ├── git/           # Git操作関連
-│   └── fileSystem/    # ファイルシステム操作
+│   ├── fileSystem/    # ファイルシステム操作
+│   └── settings/      # 設定管理
 ├── renderer/          # レンダラープロセス（React）
 │   ├── app.tsx        # Reactアプリケーション
 │   ├── components/    # UIコンポーネント
@@ -48,8 +50,7 @@ src/
 │   │   └── GitOps/    # Git操作UI
 │   ├── hooks/         # カスタムフック
 │   └── store/         # 状態管理
-└── preload/           # プリロードスクリプト
-    └── preload.ts     # IPC通信の橋渡し
+
 ```
 
 ## 主要コンポーネントの実装
