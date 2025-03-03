@@ -7,13 +7,33 @@ import path from 'path';
 export function setupGitHandlers() {
   // リポジトリの状態を取得
   ipcMain.handle('git:status', async (event, repoPath) => {
+    // gitignoreの内容を取得
+    const gitignorePath = path.join(repoPath, '.gitignore');
+    let gitignoreContent = '';
+    try {
+      gitignoreContent = await fs.promises.readFile(gitignorePath, 'utf-8');
+    } catch (error) {
+      // gitignoreファイルが存在しない場合は空文字列のまま
+    }
+
+    // gitignoreのパターンを配列に変換
+    const ignorePatterns = gitignoreContent
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line && !line.startsWith('#'));
+
     const status = await git.statusMatrix({
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),
       ignored: true,
       filter: (filepath) => {
-        return !filepath.startsWith('.git') && !filepath.startsWith('node_modules');
+        // gitignoreのパターンに一致するファイルを除外
+        return !ignorePatterns.some(pattern => {
+          // シンプルなワイルドカードマッチング
+          const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+          return regex.test(filepath);
+        }) && !filepath.startsWith('.git');
       }
     });
     return status;
