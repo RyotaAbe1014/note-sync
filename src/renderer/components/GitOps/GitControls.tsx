@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Settings, Plus, RefreshCw, GitBranch } from 'lucide-react';
 import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '../../../types/gitStatus';
 
@@ -16,8 +16,12 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [gitStatus, setGitStatus] = useState<GitStatus | null>(null);
   const [statusMessage, setStatusMessage] = useState<string>('');
-  const [showSettings, setShowSettings] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  const commitMessageDisabled = useMemo(() => {
+    if (!gitStatus) return true;
+    return gitStatus.staged.length === 0;
+  }, [gitStatus]);
 
   // Gitステータスを取得
   const fetchGitStatus = async () => {
@@ -140,11 +144,6 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  // 設定の表示/非表示を切り替え
-  const toggleSettings = () => {
-    setShowSettings(!showSettings);
   };
 
   // すべての変更をステージングする処理
@@ -307,13 +306,13 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
               value={commitMessage}
               onChange={(e) => setCommitMessage(e.target.value)}
               placeholder="コミットメッセージを入力"
-              disabled={isLoading || !selectedFile}
+              disabled={commitMessageDisabled}
               className="w-full p-2 border border-gray-300 rounded mb-2 text-sm"
               rows={3}
             />
             <button
               onClick={handleCommit}
-              disabled={isLoading || !selectedFile || !commitMessage}
+              disabled={!commitMessage}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               <GitCommit className="w-4 h-4" />
