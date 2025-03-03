@@ -2,7 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 
 import { contextBridge, ipcRenderer } from 'electron';
-import { AppSettings } from './types/appSettings';
+import { AppSettings } from '../types/appSettings';
 
 // レンダラープロセスに公開するAPI
 contextBridge.exposeInMainWorld('api', {

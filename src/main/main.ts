@@ -8,7 +8,7 @@ import started from 'electron-squirrel-startup';
 // compilerOptionsを変更したが、そうするとこのインポートがCommonJSとして認識され、エラーになるので
 // ここでは型を無視している
 import Store from 'electron-store';
-import { AppSettings } from './types/appSettings.js';
+import { AppSettings } from '../types/appSettings.js';
 
 const appSettingsStore = new Store<AppSettings>({
   name: 'app-settings',
