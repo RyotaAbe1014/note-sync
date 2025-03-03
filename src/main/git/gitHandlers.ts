@@ -40,10 +40,13 @@ export function setupGitHandlers() {
   });
 
   // 変更のステージング
-  ipcMain.handle('git:add', async (event, repoPath, filepath) => {
-    // モック実装 - 実際には isomorphic-git を使用
-    console.log(`Git add ${filepath} in ${repoPath}`);
-    return true;
+  ipcMain.handle('git:add', async (event, repoPath, filepath: string | string[]) => {
+    await git.add({
+      fs: fs,
+      dir: repoPath,
+      gitdir: path.join(repoPath, '.git'),
+      filepath: filepath
+    });
   });
 
   // コミット
