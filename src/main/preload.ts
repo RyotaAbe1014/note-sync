@@ -34,6 +34,7 @@ contextBridge.exposeInMainWorld('api', {
   git: {
     init: (repoPath: string) => ipcRenderer.invoke('git:init', repoPath),
     add: (repoPath: string, filepath: string) => ipcRenderer.invoke('git:add', repoPath, filepath),
+    remove: (repoPath: string, filepath: string) => ipcRenderer.invoke('git:remove', repoPath, filepath),
     commit: (repoPath: string, message: string, author: { name: string, email: string }) =>
       ipcRenderer.invoke('git:commit', repoPath, message, author),
     push: (repoPath: string, remoteUrl: string, token: string) =>

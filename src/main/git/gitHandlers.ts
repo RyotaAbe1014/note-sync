@@ -49,6 +49,16 @@ export function setupGitHandlers() {
     });
   });
 
+  // 変更のステージング解除
+  ipcMain.handle('git:remove', async (event, repoPath, filepath: string) => {
+    await git.remove({
+      fs: fs,
+      dir: repoPath,
+      gitdir: path.join(repoPath, '.git'),
+      filepath: filepath
+    });
+  });
+
   // コミット
   ipcMain.handle('git:commit', async (event, repoPath, message, author) => {
     // モック実装 - 実際には isomorphic-git を使用
