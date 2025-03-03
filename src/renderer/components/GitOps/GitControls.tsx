@@ -1,27 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Settings } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Settings, Plus, RefreshCw, GitBranch } from 'lucide-react';
 import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '../../../types/gitStatus';
 
 interface GitControlsProps {
   selectedFile: string | null;
 }
 
+// ファイル名から末尾のみを取得する関数
+const getFileName = (path: string): string => {
+  return path.split('/').pop() || path;
+};
 
 export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const [commitMessage, setCommitMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [gitStatus, setGitStatus] = useState<GitStatus | null>(null);
   const [statusMessage, setStatusMessage] = useState<string>('');
-  const [remoteUrl, setRemoteUrl] = useState<string>('https://github.com/username/repo.git');
-  const [token, setToken] = useState<string>('');
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
-  // リポジトリのパスを取得
-  const getRepoPath = () => {
-    if (!selectedFile) return null;
-    return selectedFile.split('/').slice(0, -1).join('/');
-  };
 
   // Gitステータスを取得
   const fetchGitStatus = async () => {
@@ -89,9 +85,6 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const handleCommit = async () => {
     if (!selectedFile || !commitMessage) return;
 
-    const repoPath = getRepoPath();
-    if (!repoPath) return;
-
     setIsLoading(true);
     try {
       // ファイルをステージング
@@ -119,10 +112,6 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   // 変更をプッシュする処理
   const handlePush = async () => {
     if (!selectedFile) return;
-
-    const repoPath = getRepoPath();
-    if (!repoPath) return;
-
     setIsLoading(true);
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
@@ -139,10 +128,6 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   // 変更をプルする処理
   const handlePull = async () => {
     if (!selectedFile) return;
-
-    const repoPath = getRepoPath();
-    if (!repoPath) return;
-
     setIsLoading(true);
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
@@ -160,6 +145,59 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   // 設定の表示/非表示を切り替え
   const toggleSettings = () => {
     setShowSettings(!showSettings);
+  };
+
+  // すべての変更をステージングする処理
+  const handleStageAll = async () => {
+    if (!gitStatus || gitStatus.unstaged.length === 0) return;
+
+    try {
+      setIsLoading(true);
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const settings = await window.api.app.getSettings();
+      const repoPath = settings.rootDirectory.path;
+
+      // すべての未ステージングファイルをステージング
+      for (const file of gitStatus.unstaged) {
+        // @ts-ignore - APIはプリロードスクリプトで定義されている
+        await window.api.git.add(repoPath, file.filename);
+      }
+
+      setStatusMessage(`すべての変更をステージングしました`);
+      fetchGitStatus(); // ステータスを更新
+    } catch (error) {
+      console.error('Error staging all files:', error);
+      setStatusMessage(`変更のステージングに失敗しました`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ステータスを再取得する処理
+  const handleRefreshStatus = () => {
+    fetchGitStatus();
+    setStatusMessage('Gitステータスを更新しました');
+  };
+
+  // ファイルをステージングする処理
+  const handleStageFile = async (filename: string) => {
+    try {
+      setIsLoading(true);
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const settings = await window.api.app.getSettings();
+      const repoPath = settings.rootDirectory.path;
+
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      await window.api.git.add(repoPath, filename);
+
+      setStatusMessage(`${getFileName(filename)} をステージングしました`);
+      fetchGitStatus(); // ステータスを更新
+    } catch (error) {
+      console.error('Error staging file:', error);
+      setStatusMessage(`${getFileName(filename)} のステージングに失敗しました`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -180,7 +218,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
           {/* ファイル選択状態の表示 */}
           {selectedFile ? (
             <div className="mb-4">
-              <p className="text-sm text-gray-600">選択中: <span className="font-medium">{selectedFile.split('/').pop()}</span></p>
+              <p className="text-sm text-gray-600">選択中: <span className="font-medium">{getFileName(selectedFile)}</span></p>
             </div>
           ) : (
             <div className="mb-4 text-gray-500 text-sm">
@@ -188,29 +226,77 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
             </div>
           )}
 
+          {/* Git ステータスヘッダー */}
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="font-medium">Gitステータス</h4>
+            <div className="flex space-x-2">
+              <button
+                onClick={handleRefreshStatus}
+                className="p-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors duration-150 flex items-center text-xs"
+                title="ステータスを更新"
+              >
+                <RefreshCw className="w-3 h-3" />
+              </button>
+              {gitStatus && gitStatus.unstaged.length > 0 && (
+                <button
+                  onClick={handleStageAll}
+                  disabled={isLoading}
+                  className="p-1.5 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors duration-150 flex items-center text-xs"
+                  title="すべての変更をステージング"
+                >
+                  <GitBranch className="w-3 h-3 mr-1" />
+                  すべてステージング
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Git ステータス */}
           {gitStatus && (
             <div className="mb-4 p-3 bg-gray-50 rounded text-sm">
-              <h4 className="font-medium mb-2">Gitステータス</h4>
               {gitStatus.staged.length > 0 && (
                 <div className="mb-2">
-                  <p className="text-green-600 font-medium">ステージされている変更:</p>
-                  <ul className="ml-4">
+                  <p className="text-green-600 font-medium mb-1">ステージされている変更:</p>
+                  <ul className="ml-2 space-y-1">
                     {gitStatus.staged.map(file => (
-                      <li key={file.filename} className="text-green-600">{file.filename}</li>
+                      <li key={file.filename} className="text-green-600 truncate" title={file.filename}>
+                        {getFileName(file.filename)}
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
               {gitStatus.unstaged.length > 0 && (
                 <div className="mb-2">
-                  <p className="text-yellow-600 font-medium">変更:</p>
-                  <ul className="ml-4">
+                  <p className="text-yellow-600 font-medium mb-1">変更:</p>
+                  <ul className="ml-2 space-y-1">
                     {gitStatus.unstaged.map(file => (
-                      <li key={file.filename} className={file.isDeleted ? 'text-red-600' : 'text-yellow-600'}>{file.filename}</li>
+                      <li
+                        key={file.filename}
+                        className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
+                      >
+                        <span
+                          className={`${file.isDeleted ? 'text-red-600' : 'text-yellow-600'} truncate max-w-[80%]`}
+                          title={file.filename}
+                        >
+                          {getFileName(file.filename)}
+                        </span>
+                        <button
+                          onClick={() => handleStageFile(file.filename)}
+                          disabled={isLoading}
+                          className="ml-2 p-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors duration-150 flex items-center text-xs opacity-0 group-hover:opacity-100"
+                          title="ステージングする"
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          ステージ
+                        </button>
+                      </li>
                     ))}
                   </ul>
                 </div>
+              )}
+              {gitStatus.staged.length === 0 && gitStatus.unstaged.length === 0 && (
+                <p className="text-gray-500 text-center py-2">変更はありません</p>
               )}
             </div>
           )}
@@ -254,45 +340,6 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
               プル
             </button>
           </div>
-
-          {/* 設定ボタン */}
-          <button
-            onClick={toggleSettings}
-            className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded mb-4 text-sm flex items-center justify-center gap-2"
-          >
-            <Settings className="w-4 h-4" />
-            {showSettings ? '設定を閉じる' : 'リモート設定を表示'}
-          </button>
-
-          {/* 設定パネル */}
-          {showSettings && (
-            <div className="p-3 bg-gray-50 rounded mb-4">
-              <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  リモートURL
-                </label>
-                <input
-                  type="text"
-                  value={remoteUrl}
-                  onChange={(e) => setRemoteUrl(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded text-sm"
-                  placeholder="https://github.com/username/repo.git"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  GitHubトークン
-                </label>
-                <input
-                  type="password"
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded text-sm"
-                  placeholder="ghp_xxxxxxxxxxxx"
-                />
-              </div>
-            </div>
-          )}
 
           {/* ステータスメッセージ */}
           {statusMessage && (

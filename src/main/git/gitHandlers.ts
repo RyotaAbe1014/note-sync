@@ -33,7 +33,7 @@ export function setupGitHandlers() {
           // シンプルなワイルドカードマッチング
           const regex = new RegExp(pattern.replace(/\*/g, '.*'));
           return regex.test(filepath);
-        }) && !filepath.startsWith('.git');
+        }) && !filepath.startsWith('.git') && !filepath.startsWith('.cursor');
       }
     });
     return status;
