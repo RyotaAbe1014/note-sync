@@ -36,102 +36,38 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
         staged: [],
         unstaged: [],
       };
+      statusMatrix.forEach((status) => {
+        const [filename, head, workTree, stage] = status;
 
-      statusMatrix.map((status) => {
-        console.log(status);
-        // [0,2,0]: "Untracked" - 新規ファイル（未追跡）
-        // [0,2,2]: "Added" - git add 済み
-        // [0,2,3]: "Added & Modified" - git add 済み & さらに変更あり
-        // [1,1,1]: "Unmodified" - 変更なし
-        // [1,2,1]: "Modified" - 変更あり（未ステージング）
-        // [1,2,2]: "Staged" - git add 済み
-        // [1,2,3]: "Staged & Modified" - git add 済み & さらに変更あり
-        // [1,0,1]: "Deleted" - 削除（未ステージング）
-        // [1,0,0]: "Deleted (Staged)" - 削除（ステージング済み）
-        // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
-        // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更された
-
-        if (status[3] === StageStatus.ABSENT) {
+        if (stage === StageStatus.ABSENT) {
           // [0,2,0]: "Untracked" - 新規ファイル（未追跡）
+          if (workTree === WorkdirStatus.MODIFIED && head === HeadStatus.ABSENT) {
+            gitStatus.unstaged.push({ filename, isDeleted: false });
+          }
           // [1,0,0]: "Deleted (Staged)" - 削除（ステージング済み）
-          // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
-          // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更された
-          if (status[2] === WorkdirStatus.MODIFIED) {
-            // [0,2,0]: "Untracked" - 新規ファイル（未追跡）
-            // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
-            if (status[1] === HeadStatus.ABSENT) {
-              // [0,2,0]: "Untracked" - 新規ファイル（未追跡）が入るのでunstagedにpush
-              gitStatus.unstaged.push({
-                filename: status[0],
-                isDeleted: false,
-              });
-            }
-            if (status[1] === HeadStatus.PRESENT) {
-              // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
-              gitStatus.staged.push({
-                filename: status[0],
-                isDeleted: false,
-              });
-            }
+          if (workTree === WorkdirStatus.ABSENT && head === HeadStatus.PRESENT) {
+            gitStatus.staged.push({ filename, isDeleted: true });
           }
-          if (status[2] === WorkdirStatus.IDENTICAL) {
-            // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更された
-            if (status[1] === HeadStatus.PRESENT) {
-              // [1,1,0]: "Deleted & Modified" - 削除後、同じ名前で変更されたが入るのでunstagedにpush
-              gitStatus.unstaged.push({
-                filename: status[0],
-                isDeleted: false,
-              });
-            }
+        } else if (stage === StageStatus.IDENTICAL) {
+          // [1,0,1]: "Deleted" - 削除（未ステージング）
+          if (workTree === WorkdirStatus.ABSENT) {
+            gitStatus.unstaged.push({ filename, isDeleted: true });
           }
-          if (status[2] === WorkdirStatus.MODIFIED) {
-            // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られた
-            if (status[1] === HeadStatus.PRESENT) {
-              // [1,2,0]: "Deleted & New" - 削除後、同じ名前の新しいファイルが作られたが入るのでunstagedにpush
-              gitStatus.unstaged.push({
-                filename: status[0],
-                isDeleted: false,
-              });
-            }
+          // [1,2,1]: "Modified" - 変更あり（未ステージング）
+          if (workTree === WorkdirStatus.MODIFIED) {
+            gitStatus.unstaged.push({ filename, isDeleted: false });
           }
-        } else if (status[3] === StageStatus.IDENTICAL) {
-          if (status[2] === WorkdirStatus.ABSENT) {
-            // [1,0,1]: "Deleted" - 削除（未ステージング）が入るのでunstagedにpush
-            gitStatus.unstaged.push({
-              filename: status[0],
-              isDeleted: true,
-            });
-          }
-          if (status[2] === WorkdirStatus.MODIFIED) {
-            // [1,2,1]: "Modified" - 変更あり（未ステージング）が入るのでunstagedにpush
-            gitStatus.unstaged.push({
-              filename: status[0],
-              isDeleted: false,
-            });
-          }
-        } else if (status[3] === StageStatus.MODIFIED) {
+        } else if (stage === StageStatus.MODIFIED) {
           // [1,2,2]: "Staged" - git add 済み
           // [0,2,2]: "Added" - git add 済み
-          if (status[2] === WorkdirStatus.MODIFIED) {
-            // [1,2,2]: "Staged" - git add 済みが入るのでstagedにpush
-            gitStatus.staged.push({
-              filename: status[0],
-              isDeleted: false,
-            });
+          if (workTree === WorkdirStatus.MODIFIED) {
+            gitStatus.staged.push({ filename, isDeleted: false });
           }
-        } else if (status[3] === StageStatus.MODIFIED_AGAIN) {
-          // [0,2,3]: "Added & Modified" - git add 済み & さらに変更あり
+        } else if (stage === StageStatus.MODIFIED_AGAIN) {
           // [1,2,3]: "Staged & Modified" - git add 済み & さらに変更あり
-          if (status[2] === WorkdirStatus.MODIFIED) {
-            // [0,2,3]: "Added & Modified" - git add 済み & さらに変更ありが入るのでunstagedとstagedにpush
-            gitStatus.unstaged.push({
-              filename: status[0],
-              isDeleted: false,
-            });
-            gitStatus.staged.push({
-              filename: status[0],
-              isDeleted: false,
-            });
+          if (workTree === WorkdirStatus.MODIFIED) {
+            gitStatus.unstaged.push({ filename, isDeleted: false });
+            gitStatus.staged.push({ filename, isDeleted: false });
           }
         }
       });
