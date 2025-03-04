@@ -16,6 +16,11 @@ const getRepoPath = () => {
   return settings?.rootDirectory?.path;
 };
 
+const getGitSettings = () => {
+  const settings: AppSettings | undefined = store.get('settings');
+  return settings?.git;
+};
+
 export function setupGitHandlers() {
   // リポジトリの状態を取得
   ipcMain.handle('git:status', async () => {
@@ -85,14 +90,17 @@ export function setupGitHandlers() {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
+    const gitSettings = getGitSettings();
+    if (!gitSettings) throw new Error('Gitの設定が設定されていません');
+
     await git.commit({
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),
       message: message,
       author: {
-        name: 'CommitNotes User',
-        email: 'user@example.com'
+        name: gitSettings.author.name,
+        email: gitSettings.author.email
       }
     });
   });
