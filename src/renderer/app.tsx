@@ -75,7 +75,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-100 pt-8 pb-2">
       <header className="mb-8 px-8 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">CommitNotes</h1>
+        <h1 className="text-2xl font-bold text-gray-800">NoteSync</h1>
         <button
           className="rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           onClick={() => {

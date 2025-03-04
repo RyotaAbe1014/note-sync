@@ -1,6 +1,6 @@
 {
-  "name": "commit-notes",
-  "productName": "Commit Notes",
+  "name": "notesync",
+  "productName": "NoteSync",
   "version": "1.0.0",
   "description": "Commit Notes",
   "main": ".vite/build/main.js",
