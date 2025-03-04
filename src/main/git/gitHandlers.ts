@@ -1,12 +1,27 @@
 import fs from 'fs';
 import { ipcMain } from 'electron';
+import path from 'path';
 // @ts-ignore
 import git from 'isomorphic-git';
-import path from 'path';
+// @ts-ignore
+import Store from 'electron-store';
+import { AppSettings } from '../../types/appSettings';
+
+
+const store = new Store<AppSettings>();
+
+// リポジトリのパスを取得する関数
+const getRepoPath = () => {
+  const settings: AppSettings | undefined = store.get('settings');
+  return settings?.rootDirectory?.path;
+};
 
 export function setupGitHandlers() {
   // リポジトリの状態を取得
-  ipcMain.handle('git:status', async (event, repoPath) => {
+  ipcMain.handle('git:status', async () => {
+    const repoPath = getRepoPath();
+    if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
     // gitignoreの内容を取得
     const gitignorePath = path.join(repoPath, '.gitignore');
     let gitignoreContent = '';
@@ -40,7 +55,10 @@ export function setupGitHandlers() {
   });
 
   // 変更のステージング
-  ipcMain.handle('git:add', async (event, repoPath, filepath: string | string[]) => {
+  ipcMain.handle('git:add', async (event, filepath: string | string[]) => {
+    const repoPath = getRepoPath();
+    if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
     await git.add({
       fs: fs,
       dir: repoPath,
@@ -50,7 +68,10 @@ export function setupGitHandlers() {
   });
 
   // 変更のステージング解除
-  ipcMain.handle('git:unstage', async (event, repoPath, filepath: string) => {
+  ipcMain.handle('git:unstage', async (event, filepath: string) => {
+    const repoPath = getRepoPath();
+    if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
     await git.resetIndex({
       fs: fs,
       dir: repoPath,
@@ -60,7 +81,10 @@ export function setupGitHandlers() {
   });
 
   // コミット
-  ipcMain.handle('git:commit', async (event, repoPath, message) => {
+  ipcMain.handle('git:commit', async (event, message) => {
+    const repoPath = getRepoPath();
+    if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
     await git.commit({
       fs: fs,
       dir: repoPath,
@@ -74,14 +98,20 @@ export function setupGitHandlers() {
   });
 
   // プッシュ
-  ipcMain.handle('git:push', async (event, repoPath, remoteUrl, token) => {
+  ipcMain.handle('git:push', async (event, remoteUrl, token) => {
+    const repoPath = getRepoPath();
+    if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
     // モック実装 - 実際には isomorphic-git を使用
     console.log(`Git push from ${repoPath} to ${remoteUrl}`);
     return true;
   });
 
   // プル
-  ipcMain.handle('git:pull', async (event, repoPath, remoteUrl, token) => {
+  ipcMain.handle('git:pull', async (event, remoteUrl, token) => {
+    const repoPath = getRepoPath();
+    if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
     // モック実装 - 実際には isomorphic-git を使用
     console.log(`Git pull to ${repoPath} from ${remoteUrl}`);
     return true;

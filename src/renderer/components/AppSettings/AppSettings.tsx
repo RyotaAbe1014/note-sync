@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { AppSettings as AppSettingsType } from '../../../types/appSettings';
 import { CheckIcon } from 'lucide-react';
 
-export const AppSettings = () => {
+export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void }) => {
   const [settings, setSettings] = useState<AppSettingsType>({
     rootDirectory: {
       path: '',
@@ -45,6 +45,7 @@ export const AppSettings = () => {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
       await window.api.app.setSettings(settings);
       setSaveMessage({ type: 'success', text: '設定を保存しました' });
+      onSettingsChange();
     } catch (error) {
       console.error('設定の保存に失敗しました:', error);
       setSaveMessage({ type: 'error', text: '設定の保存に失敗しました' });

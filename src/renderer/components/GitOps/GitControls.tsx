@@ -27,9 +27,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const fetchGitStatus = async () => {
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const settings = await window.api.app.getSettings();
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const statusMatrix: StatusMatrix = await window.api.git.status(settings.rootDirectory.path);
+      const statusMatrix: StatusMatrix = await window.api.git.status();
 
       // gitStatusに格納できる形に変換する
       const gitStatus: GitStatus = {
@@ -93,10 +91,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
     try {
       // コミット
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const settings = await window.api.app.getSettings();
-      const repoPath = settings.rootDirectory.path;
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const sha = await window.api.git.commit(repoPath, commitMessage);
+      const sha = await window.api.git.commit(commitMessage);
       setStatusMessage(`変更をコミットしました: ${sha.slice(0, 7)}`);
       setCommitMessage('');
       fetchGitStatus();
@@ -114,7 +109,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
     setIsLoading(true);
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.push(repoPath, remoteUrl, token);
+      await window.api.git.push(remoteUrl, token);
       setStatusMessage('変更をGitHubにプッシュしました');
     } catch (error) {
       console.error('Error pushing changes:', error);
@@ -130,7 +125,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
     setIsLoading(true);
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.pull(repoPath, remoteUrl, token);
+      await window.api.git.pull(remoteUrl, token);
       setStatusMessage('GitHubから最新の変更を取得しました');
       fetchGitStatus();
     } catch (error) {
@@ -147,14 +142,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
 
     try {
       setIsLoading(true);
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const settings = await window.api.app.getSettings();
-      const repoPath = settings.rootDirectory.path;
 
       // すべての未ステージングファイルをステージング
       for (const file of gitStatus.unstaged) {
         // @ts-ignore - APIはプリロードスクリプトで定義されている
-        await window.api.git.add(repoPath, file.filename);
+        await window.api.git.add(file.filename);
       }
 
       setStatusMessage(`すべての変更をステージングしました`);
@@ -177,12 +169,9 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const handleStageFile = async (filename: string) => {
     try {
       setIsLoading(true);
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const settings = await window.api.app.getSettings();
-      const repoPath = settings.rootDirectory.path;
 
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.add(repoPath, filename);
+      await window.api.git.add(filename);
 
       setStatusMessage(`${getFileName(filename)} をステージングしました`);
       fetchGitStatus(); // ステータスを更新
@@ -198,12 +187,9 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const handleUnstageFile = async (filename: string) => {
     try {
       setIsLoading(true);
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const settings = await window.api.app.getSettings();
-      const repoPath = settings.rootDirectory.path;
 
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.unstage(repoPath, filename);
+      await window.api.git.unstage(filename);
 
       setStatusMessage(`${getFileName(filename)} のステージングを取り消しました`);
       fetchGitStatus(); // ステータスを更新
@@ -221,14 +207,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
 
     try {
       setIsLoading(true);
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const settings = await window.api.app.getSettings();
-      const repoPath = settings.rootDirectory.path;
 
       // すべてのステージング済みファイルのステージングを取り消す
       for (const file of gitStatus.staged) {
         // @ts-ignore - APIはプリロードスクリプトで定義されている
-        await window.api.git.unstage(repoPath, file.filename);
+        await window.api.git.unstage(file.filename);
       }
 
       setStatusMessage(`すべてのステージングを取り消しました`);
