@@ -95,7 +95,7 @@ export function setupGitHandlers() {
     const gitSettings = getGitSettings();
     if (!gitSettings) throw new Error('Gitの設定が設定されていません');
 
-    await git.commit({
+    const sha = await git.commit({
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),
@@ -105,6 +105,7 @@ export function setupGitHandlers() {
         email: gitSettings.author.email
       }
     });
+    return sha;
   });
 
   // プッシュ
