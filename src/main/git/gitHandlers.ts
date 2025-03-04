@@ -8,7 +8,9 @@ import Store from 'electron-store';
 import { AppSettings } from '../../types/appSettings';
 
 
-const store = new Store<AppSettings>();
+const store = new Store<AppSettings>({
+  name: 'app-settings',
+});
 
 // リポジトリのパスを取得する関数
 const getRepoPath = () => {
@@ -110,7 +112,7 @@ export function setupGitHandlers() {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
-    // モック実装 - 実際には isomorphic-git を使用
+    // モック実装 - 実際には isomorphic-git を使用qw
     console.log(`Git push from ${repoPath} to ${remoteUrl}`);
     return true;
   });
