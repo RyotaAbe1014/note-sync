@@ -60,10 +60,17 @@ export function setupGitHandlers() {
   });
 
   // コミット
-  ipcMain.handle('git:commit', async (event, repoPath, message, author) => {
-    // モック実装 - 実際には isomorphic-git を使用
-    console.log(`Git commit in ${repoPath} with message: ${message}`);
-    return 'mock-commit-sha';
+  ipcMain.handle('git:commit', async (event, repoPath, message) => {
+    await git.commit({
+      fs: fs,
+      dir: repoPath,
+      gitdir: path.join(repoPath, '.git'),
+      message: message,
+      author: {
+        name: 'CommitNotes User',
+        email: 'user@example.com'
+      }
+    });
   });
 
   // プッシュ

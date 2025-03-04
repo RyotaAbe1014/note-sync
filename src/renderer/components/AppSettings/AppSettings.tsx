@@ -10,6 +10,10 @@ export const AppSettings = () => {
     git: {
       remoteUrl: '',
       token: '',
+      author: {
+        name: '',
+        email: '',
+      },
     },
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -139,6 +143,54 @@ export const AppSettings = () => {
             <p className="mt-1 text-sm text-gray-500">
               GitHubのパーソナルアクセストークンを入力してください
             </p>
+          </div>
+
+          <div className="mt-4">
+            <h4 className="text-md font-medium mb-3">コミットの作成者情報</h4>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="authorName" className="block text-sm font-medium text-gray-700 mb-1">
+                  作者名
+                </label>
+                <input
+                  id="authorName"
+                  type="text"
+                  value={settings.git.author.name}
+                  onChange={(e) =>
+                    setSettings((prev: AppSettingsType) => ({
+                      ...prev,
+                      git: {
+                        ...prev.git,
+                        author: { ...prev.git.author, name: e.target.value }
+                      }
+                    }))
+                  }
+                  placeholder="Your Name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="authorEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                  メールアドレス
+                </label>
+                <input
+                  id="authorEmail"
+                  type="email"
+                  value={settings.git.author.email}
+                  onChange={(e) =>
+                    setSettings((prev: AppSettingsType) => ({
+                      ...prev,
+                      git: {
+                        ...prev.git,
+                        author: { ...prev.git.author, email: e.target.value }
+                      }
+                    }))
+                  }
+                  placeholder="your.email@example.com"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

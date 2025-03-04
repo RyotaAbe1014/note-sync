@@ -87,21 +87,16 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
 
   // 変更をコミットする処理
   const handleCommit = async () => {
-    if (!selectedFile || !commitMessage) return;
+    if (!commitMessage) return;
 
     setIsLoading(true);
     try {
-      // ファイルをステージング
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.add(repoPath, selectedFile);
-
       // コミット
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      const sha = await window.api.git.commit(repoPath, commitMessage, {
-        name: 'CommitNotes User',
-        email: 'user@example.com'
-      });
-
+      const settings = await window.api.app.getSettings();
+      const repoPath = settings.rootDirectory.path;
+      // @ts-ignore - APIはプリロードスクリプトで定義されている
+      const sha = await window.api.git.commit(repoPath, commitMessage);
       setStatusMessage(`変更をコミットしました: ${sha.slice(0, 7)}`);
       setCommitMessage('');
       fetchGitStatus();

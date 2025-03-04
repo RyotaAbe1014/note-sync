@@ -5,5 +5,9 @@ export type AppSettings = {
   git: {
     remoteUrl: string;
     token: string;
+    author: {
+      name: string;
+      email: string;
+    }
   };
 };

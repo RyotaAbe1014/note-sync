@@ -9,6 +9,7 @@ const appSettingsStore = new Store<AppSettings>({
 
 export function setupAppSettingsHandlers() {
   ipcMain.handle('app:get-settings', async (event) => {
+    appSettingsStore.delete("settings")
     return appSettingsStore.get('settings');
   });
 
