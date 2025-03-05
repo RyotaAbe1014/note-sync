@@ -32,15 +32,15 @@ contextBridge.exposeInMainWorld('api', {
 
   // Git操作
   git: {
-    init: (repoPath: string) => ipcRenderer.invoke('git:init', repoPath),
-    add: (repoPath: string, filepath: string) => ipcRenderer.invoke('git:add', repoPath, filepath),
-    unstage: (repoPath: string, filepath: string) => ipcRenderer.invoke('git:unstage', repoPath, filepath),
-    commit: (repoPath: string, message: string, author: { name: string, email: string }) =>
-      ipcRenderer.invoke('git:commit', repoPath, message, author),
-    push: (repoPath: string, remoteUrl: string, token: string) =>
-      ipcRenderer.invoke('git:push', repoPath, remoteUrl, token),
-    pull: (repoPath: string, remoteUrl: string, token: string) =>
-      ipcRenderer.invoke('git:pull', repoPath, remoteUrl, token),
-    status: (repoPath: string) => ipcRenderer.invoke('git:status', repoPath)
+    add: (filepath: string) => ipcRenderer.invoke('git:add', filepath),
+    unstage: (filepath: string) => ipcRenderer.invoke('git:unstage', filepath),
+    commit: (message: string, author: { name: string, email: string }) =>
+      ipcRenderer.invoke('git:commit', message, author),
+    push: () =>
+      ipcRenderer.invoke('git:push'),
+    pull: () =>
+      ipcRenderer.invoke('git:pull'),
+    status: () =>
+      ipcRenderer.invoke('git:status')
   }
 });
