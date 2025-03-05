@@ -105,11 +105,10 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
 
   // 変更をプッシュする処理
   const handlePush = async () => {
-    if (!selectedFile) return;
     setIsLoading(true);
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.push(remoteUrl, token);
+      await window.api.git.push();
       setStatusMessage('変更をGitHubにプッシュしました');
     } catch (error) {
       console.error('Error pushing changes:', error);
@@ -121,11 +120,10 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
 
   // 変更をプルする処理
   const handlePull = async () => {
-    if (!selectedFile) return;
     setIsLoading(true);
     try {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
-      await window.api.git.pull(remoteUrl, token);
+      await window.api.git.pull();
       setStatusMessage('GitHubから最新の変更を取得しました');
       fetchGitStatus();
     } catch (error) {
@@ -377,7 +375,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
           <div className="flex space-x-2 mb-4">
             <button
               onClick={handlePush}
-              disabled={isLoading || !selectedFile}
+              disabled={isLoading}
               className="flex-1 bg-green-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
               <Upload className="w-4 h-4" />
@@ -385,7 +383,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
             </button>
             <button
               onClick={handlePull}
-              disabled={isLoading || !selectedFile}
+              disabled={isLoading}
               className="flex-1 bg-yellow-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
               <Download className="w-4 h-4" />
