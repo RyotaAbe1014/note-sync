@@ -4,9 +4,10 @@ import path from 'path';
 // @ts-ignore
 import git from 'isomorphic-git';
 // @ts-ignore
+import http from 'isomorphic-git/http/node';
+// @ts-ignore
 import Store from 'electron-store';
 import { AppSettings } from '../../types/appSettings';
-
 
 const store = new Store<AppSettings>({
   name: 'app-settings',
@@ -109,12 +110,23 @@ export function setupGitHandlers() {
   });
 
   // プッシュ
-  ipcMain.handle('git:push', async (event, remoteUrl, token) => {
+  ipcMain.handle('git:push', async (event) => {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+    const gitSettings = getGitSettings();
+    if (!gitSettings) throw new Error('Gitの設定が設定されていません');
 
-    // モック実装 - 実際には isomorphic-git を使用qw
-    console.log(`Git push from ${repoPath} to ${remoteUrl}`);
+    // モック実装 - 実際には isomorphic-git を使用
+    await git.push({
+      http,
+      fs: fs,
+      dir: repoPath,
+      gitdir: path.join(repoPath, '.git'),
+      remote: "origin",
+      ref: "main",
+      onAuth: () => ({ username: gitSettings.token}),
+    });
+
     return true;
   });
 
