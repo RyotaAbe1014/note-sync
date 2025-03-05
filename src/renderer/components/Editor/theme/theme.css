@@ -15,47 +15,59 @@
 .EditorTheme__paragraph {
   margin: 0;
   position: relative;
+  line-height: 1.6;
+  color: #2c3e50;
+  font-size: 16px;
 }
 .EditorTheme__quote {
   margin: 0;
   margin-left: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   font-size: 15px;
-  color: rgb(101, 103, 107);
-  border-left-color: rgb(206, 208, 212);
+  color: #64748b;
+  border-left-color: #e2e8f0;
   border-left-width: 4px;
   border-left-style: solid;
   padding-left: 16px;
+  font-style: italic;
 }
 
 .EditorTheme__h1 {
-  font-size: 30px; /* サイズを調整 */
-  color: rgb(5, 5, 5);
-  font-weight: 400;
-  margin: 0;
+  font-size: 2.5rem;
+  color: #1e293b;
+  font-weight: 700;
+  margin: 1.5rem 0 1rem;
+  line-height: 1.2;
 }
 .EditorTheme__h2 {
-  font-size: 26px; /* サイズを調整 */
-  color: rgb(5, 5, 5);
-  font-weight: 200;
-  margin: 0;
+  font-size: 2rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin: 1.25rem 0 1rem;
+  line-height: 1.3;
 }
 .EditorTheme__h3 {
-  font-size: 22px; /* サイズを調整 */
-  color: rgb(5, 5, 5);
-  margin: 0;
+  font-size: 1.75rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin: 1.25rem 0 1rem;
+  line-height: 1.3;
 }
 
 .EditorTheme__h4 {
-  font-size: 16px; /* サイズを調整 */
-  color: rgb(5, 5, 5);
-  margin: 0;
+  font-size: 1.5rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin: 1rem 0;
+  line-height: 1.4;
 }
 
 .EditorTheme__h5 {
-  font-size: 10px; /* サイズを調整 */
-  color: rgb(5, 5, 5);
-  margin: 0;
+  font-size: 1.25rem;
+  color: #1e293b;
+  font-weight: 600;
+  margin: 1rem 0;
+  line-height: 1.4;
 }
 
 .EditorTheme__indent {
@@ -68,8 +80,9 @@
   background-color: unset;
 }
 .EditorTheme__textHighlight {
-  background: rgba(255, 212, 0, 0.14);
-  border-bottom: 2px solid rgba(255, 212, 0, 0.3);
+  background: rgba(255, 212, 0, 0.1);
+  border-bottom: 2px solid rgba(255, 212, 0, 0.2);
+  padding: 0 2px;
 }
 .EditorTheme__textItalic {
   font-style: italic;
@@ -136,10 +149,13 @@
   vertical-align: super;
 }
 .EditorTheme__textCode {
-  background-color: rgb(240, 242, 245);
-  padding: 1px 0.25rem;
-  font-family: Menlo, Consolas, Monaco, monospace;
-  font-size: 94%;
+  background-color: #1e293b;
+  color: #e2e8f0;
+  font-family: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, Monaco, monospace;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid #334155;
 }
 .EditorTheme__textLowercase {
   text-transform: lowercase;
@@ -155,12 +171,14 @@
   border-bottom: 1px solid rgba(88, 144, 255, 0.3);
 }
 .EditorTheme__link {
-  color: rgb(33, 111, 219);
+  color: #3b82f6;
   text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
 }
 .EditorTheme__link:hover {
-  text-decoration: underline;
-  cursor: pointer;
+  border-bottom-color: #3b82f6;
+  color: #2563eb;
 }
 .EditorTheme__blockCursor {
   display: block;
@@ -182,31 +200,34 @@
   }
 }
 .EditorTheme__code {
-  background-color: rgb(240, 242, 245);
-  font-family: Menlo, Consolas, Monaco, monospace;
+  background-color: #1e293b;
+  font-family: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, Monaco, monospace;
   display: block;
-  padding: 8px 8px 8px 52px;
-  line-height: 1.53;
-  font-size: 13px;
-  margin: 0;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  padding: 1.25rem;
+  line-height: 1.6;
+  font-size: 14px;
+  margin: 1.5rem 0;
   overflow-x: auto;
   position: relative;
   tab-size: 2;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  color: #e2e8f0;
 }
 .EditorTheme__code:before {
   content: attr(data-gutter);
   position: absolute;
-  background-color: #eee;
+  background-color: #1e293b;
   left: 0;
   top: 0;
-  border-right: 1px solid #ccc;
-  padding: 8px;
-  color: #777;
+  border-right: 1px solid #334155;
+  padding: 1.25rem 0.5rem;
+  color: #94a3b8;
   white-space: pre-wrap;
   text-align: right;
-  min-width: 25px;
+  min-width: 2.5rem;
+  font-size: 13px;
 }
 .EditorTheme__tableScrollableWrapper {
   overflow-x: auto;
@@ -463,7 +484,8 @@
 
 }
 .EditorTheme__listItem {
-  margin: 0 32px;
+  margin: 0.5rem 32px;
+  line-height: 1.6;
 }
 .EditorTheme__listItemChecked,
 .EditorTheme__listItemUnchecked {
@@ -533,28 +555,28 @@
   display: none;
 }
 .EditorTheme__tokenComment {
-  color: slategray;
+  color: #94a3b8;
 }
 .EditorTheme__tokenPunctuation {
-  color: #999;
+  color: #cbd5e1;
 }
 .EditorTheme__tokenProperty {
-  color: #905;
+  color: #f472b6;
 }
 .EditorTheme__tokenSelector {
-  color: #690;
+  color: #4ade80;
 }
 .EditorTheme__tokenOperator {
-  color: #9a6e3a;
+  color: #fbbf24;
 }
 .EditorTheme__tokenAttr {
-  color: #07a;
+  color: #60a5fa;
 }
 .EditorTheme__tokenVariable {
-  color: #e90;
+  color: #f59e0b;
 }
 .EditorTheme__tokenFunction {
-  color: #dd4a68;
+  color: #a78bfa;
 }
 .EditorTheme__mark {
   background: rgba(255, 212, 0, 0.14);
@@ -594,17 +616,17 @@
   color: #ccc;
 }
 .EditorTheme__hr {
-  padding: 2px 2px;
+  padding: 2px 0;
   border: none;
-  margin: 1em 0;
+  margin: 2rem 0;
   cursor: pointer;
 }
 .EditorTheme__hr:after {
   content: '';
   display: block;
-  height: 2px;
-  background-color: #ccc;
-  line-height: 2px;
+  height: 1px;
+  background-color: #e2e8f0;
+  line-height: 1px;
 }
 .EditorTheme__hr.selected {
   outline: 2px solid rgb(60, 132, 244);
