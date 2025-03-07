@@ -4,9 +4,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import {
-  TRANSFORMERS,
-} from '@lexical/markdown';
+
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
@@ -17,6 +15,7 @@ import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
 import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
 import { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { SavePlugin } from './plugins/SavePlugin';
+import { TRANSFORMERS } from './plugins/MarkdownTransformers';
 
 function onError(error: Error) {
   console.error(error);

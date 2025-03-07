@@ -1,6 +1,7 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useImperativeHandle } from "react";
-import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import { $convertToMarkdownString } from "@lexical/markdown";
+import { TRANSFORMERS as MARKDOWN_TRANSFORMERS } from "./MarkdownTransformers";
 
 interface SavePluginProps {
   ref: React.RefObject<{ getMarkdown: () => string }>;
@@ -14,7 +15,7 @@ export const SavePlugin = ({ ref }: SavePluginProps) => {
       getMarkdown: () => {
         let markdown = '';
         editor.read(() => {
-          markdown = $convertToMarkdownString(TRANSFORMERS);
+          markdown = $convertToMarkdownString(MARKDOWN_TRANSFORMERS);
         });
         return markdown;
       }
