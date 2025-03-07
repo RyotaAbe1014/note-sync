@@ -68,7 +68,6 @@ const TABLE_ROW_DIVIDER_REG_EXP = /^(\| ?:?-*:? ?)+\|\s?$/;
 export const TABLE: ElementTransformer = {
   dependencies: [TableNode, TableRowNode, TableCellNode],
   export: (node: LexicalNode) => {
-    console.log('TABLE export called with node:', node);
     if (!$isTableNode(node)) {
       return null;
     }
@@ -106,7 +105,6 @@ export const TABLE: ElementTransformer = {
   },
   regExp: TABLE_ROW_REG_EXP,
   replace: (parentNode, _1, match) => {
-    console.log('TABLE replace called with match:', match);
     // Header row
     if (TABLE_ROW_DIVIDER_REG_EXP.test(match[0])) {
       const table = parentNode.getPreviousSibling();
@@ -230,10 +228,3 @@ export const TRANSFORMERS: Array<Transformer> = [
   ...TEXT_FORMAT_TRANSFORMERS,
   ...TEXT_MATCH_TRANSFORMERS,
 ];
-
-// TRANSFORMERSの内容を確認
-console.log('TRANSFORMERS:', TRANSFORMERS);
-
-// テーブル正規表現のテスト
-console.log('TABLE_ROW_REG_EXP test:', TABLE_ROW_REG_EXP.test('| test | test |'));
-console.log('TABLE_ROW_DIVIDER_REG_EXP test:', TABLE_ROW_DIVIDER_REG_EXP.test('| --- | --- |'));

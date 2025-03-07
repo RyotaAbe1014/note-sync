@@ -1,6 +1,6 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useEffect } from 'react';
-import { $getRoot, $createParagraphNode, $createTextNode, CLEAR_HISTORY_COMMAND } from 'lexical';
+import { CLEAR_HISTORY_COMMAND } from 'lexical';
 import { $convertFromMarkdownString } from '@lexical/markdown';
 import { TRANSFORMERS } from '../plugins/MarkdownTransformers';
 
@@ -16,7 +16,6 @@ export function FileChangeUpdateStatePlugin({
 
     // テーブルのテスト
     const hasTableSyntax = initialContent.includes('|') && initialContent.includes('---');
-    console.log('Has table syntax:', hasTableSyntax);
 
     editor.update(() => {
       // 履歴をクリア
