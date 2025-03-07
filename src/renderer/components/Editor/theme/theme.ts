@@ -84,14 +84,14 @@ export const theme: EditorThemeClasses = {
   rtl: 'EditorTheme__rtl',
   specialText: 'EditorTheme__specialText',
   tab: 'EditorTheme__tabNode',
-  table: 'EditorTheme__table',
+  table: 'border-collapse border border-gray-300 w-full',
   tableAddColumns: 'EditorTheme__tableAddColumns',
   tableAddRows: 'EditorTheme__tableAddRows',
   tableAlignment: {
     center: 'EditorTheme__tableAlignmentCenter',
     right: 'EditorTheme__tableAlignmentRight',
   },
-  tableCell: 'EditorTheme__tableCell',
+  tableCell: 'border border-gray-300 p-2',
   tableCellActionButton: 'EditorTheme__tableCellActionButton',
   tableCellActionButtonContainer:
     'EditorTheme__tableCellActionButtonContainer',
@@ -118,6 +118,7 @@ export const theme: EditorThemeClasses = {
     underlineStrikethrough: 'EditorTheme__textUnderlineStrikethrough',
     uppercase: 'EditorTheme__textUppercase',
   },
+  tableRow: 'border-b border-gray-300',
 };
 
 export default theme;
