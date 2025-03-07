@@ -74,17 +74,16 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 
 ### 3. Git/GitHub連携機能の実装（2-3週間）
 
-- [ ] isomorphic-gitを使用したGit操作の実装
+- [x] isomorphic-gitを使用したGit操作の実装
   - ローカルリポジトリの初期化
   - commit操作
   - push/pull操作
-- [ ] GitHub認証の実装
-  - OAuth認証フロー
+- [x] GitHub認証の実装
   - トークン管理
-- [ ] リポジトリ選択
+- [x] リポジトリ選択
 
 ### 4. データ同期と履歴管理（1-2週間）
-- [ ] 変更の検出と同期機能
+- [x] 変更の検出と同期機能
 - [ ] 履歴表示機能（git log）
 
 ### 5. UI/UX改善とテスト（2週間）
