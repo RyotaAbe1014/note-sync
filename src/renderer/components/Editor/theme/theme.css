@@ -151,15 +151,12 @@
 .EditorTheme__textCode {
   background-color: #1e293b;
   font-family: 'JetBrains Mono', 'Fira Code', Menlo, Consolas, Monaco, monospace;
-  display: block;
-  padding: 1.25rem 1.25rem 1.25rem 3.5rem;
+  padding: 1px;
   line-height: 1.6;
   font-size: 14px;
   margin: 1.5rem 0;
-  overflow-x: auto;
-  position: relative;
   tab-size: 2;
-  border-radius: 8px;
+  border-radius: 5px;
   border: 1px solid #334155;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
   color: #e2e8f0;
