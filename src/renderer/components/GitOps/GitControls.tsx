@@ -6,9 +6,197 @@ interface GitControlsProps {
   selectedFile: string | null;
 }
 
+interface FileItem {
+  filename: string;
+  isDeleted: boolean;
+}
+
+// 共通のスタイル定義
+const styles = {
+  button: {
+    base: "rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 flex items-center justify-center",
+    primary: "bg-blue-500 text-white hover:bg-blue-600",
+    success: "bg-green-500 text-white hover:bg-green-600",
+    warning: "bg-yellow-500 text-white hover:bg-yellow-600",
+    light: "bg-gray-100 text-gray-700 hover:bg-gray-200",
+    successLight: "bg-green-100 text-green-700 hover:bg-green-200",
+    warningLight: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
+    small: "p-1.5 text-xs",
+    normal: "py-2 px-4 text-sm",
+  }
+};
+
 // ファイル名から末尾のみを取得する関数
 const getFileName = (path: string): string => {
   return path.split('/').pop() || path;
+};
+
+// ステージングされたファイルリストコンポーネント
+const StagedFilesList: React.FC<{
+  files: FileItem[];
+  onUnstage: (filename: string) => Promise<void>;
+  isLoading: boolean;
+}> = ({ files, onUnstage, isLoading }) => {
+  if (files.length === 0) return null;
+
+  return (
+    <div className="mb-2">
+      <p className="text-green-600 font-medium mb-1">ステージされている変更:</p>
+      <ul className="ml-2 space-y-1">
+        {files.map(file => (
+          <li
+            key={file.filename}
+            className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
+          >
+            <span
+              className="text-green-600 truncate max-w-[80%]"
+              title={file.filename}
+            >
+              {getFileName(file.filename)}
+            </span>
+            <button
+              onClick={() => onUnstage(file.filename)}
+              disabled={isLoading}
+              className={`ml-2 ${styles.button.base} ${styles.button.warningLight} ${styles.button.small} opacity-0 group-hover:opacity-100`}
+              title="ステージングを取り消す"
+            >
+              {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
+              {isLoading ? '処理中...' : '取り消し'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// 未ステージングのファイルリストコンポーネント
+const UnstagedFilesList: React.FC<{
+  files: FileItem[];
+  onStage: (filename: string) => Promise<void>;
+  isLoading: boolean;
+}> = ({ files, onStage, isLoading }) => {
+  if (files.length === 0) return null;
+
+  return (
+    <div className="mb-2">
+      <p className="text-yellow-600 font-medium mb-1">変更:</p>
+      <ul className="ml-2 space-y-1">
+        {files.map(file => (
+          <li
+            key={file.filename}
+            className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
+          >
+            <span
+              className={`${file.isDeleted ? 'text-red-600' : 'text-yellow-600'} truncate max-w-[80%]`}
+              title={file.filename}
+            >
+              {getFileName(file.filename)}
+            </span>
+            <button
+              onClick={() => onStage(file.filename)}
+              disabled={isLoading}
+              className={`ml-2 ${styles.button.base} ${styles.button.successLight} ${styles.button.small} opacity-0 group-hover:opacity-100`}
+              title="ステージングする"
+            >
+              {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
+              {isLoading ? '処理中...' : 'ステージ'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// Gitステータス表示コンポーネント
+const GitStatusDisplay: React.FC<{
+  gitStatus: GitStatus | null;
+  isLoading: boolean;
+  onStageFile: (filename: string) => Promise<void>;
+  onUnstageFile: (filename: string) => Promise<void>;
+}> = ({ gitStatus, isLoading, onStageFile, onUnstageFile }) => {
+  if (!gitStatus) return null;
+
+  const hasChanges = gitStatus.staged.length > 0 || gitStatus.unstaged.length > 0;
+
+  return (
+    <div className="mb-4 p-3 bg-gray-50 rounded text-sm">
+      <StagedFilesList
+        files={gitStatus.staged}
+        onUnstage={onUnstageFile}
+        isLoading={isLoading}
+      />
+
+      <UnstagedFilesList
+        files={gitStatus.unstaged}
+        onStage={onStageFile}
+        isLoading={isLoading}
+      />
+
+      {!hasChanges && (
+        <p className="text-gray-500 text-center py-2">変更はありません</p>
+      )}
+    </div>
+  );
+};
+
+// Gitアクションボタンコンポーネント
+const GitActionButtons: React.FC<{
+  onPush: () => Promise<void>;
+  onPull: () => Promise<void>;
+  isLoading: boolean;
+}> = ({ onPush, onPull, isLoading }) => {
+  return (
+    <div className="flex space-x-2 mb-4">
+      <button
+        onClick={onPush}
+        disabled={isLoading}
+        className={`flex-1 ${styles.button.base} ${styles.button.success} ${styles.button.normal}`}
+      >
+        {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+        {isLoading ? '処理中...' : 'プッシュ'}
+      </button>
+      <button
+        onClick={onPull}
+        disabled={isLoading}
+        className={`flex-1 ${styles.button.base} ${styles.button.warning} ${styles.button.normal}`}
+      >
+        {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+        {isLoading ? '処理中...' : 'プル'}
+      </button>
+    </div>
+  );
+};
+
+// コミットフォームコンポーネント
+const CommitForm: React.FC<{
+  commitMessage: string;
+  setCommitMessage: (message: string) => void;
+  onCommit: () => Promise<void>;
+  isDisabled: boolean;
+  isLoading: boolean;
+}> = ({ commitMessage, setCommitMessage, onCommit, isDisabled, isLoading }) => {
+  return (
+    <div className="mb-4">
+      <textarea
+        value={commitMessage}
+        onChange={(e) => setCommitMessage(e.target.value)}
+        placeholder="コミットメッセージを入力"
+        disabled={isDisabled || isLoading}
+        className="w-full p-2 border border-gray-300 rounded mb-2 text-sm"
+        rows={3}
+      />
+      <button
+        onClick={onCommit}
+        disabled={!commitMessage || isLoading}
+        className={`w-full ${styles.button.base} ${styles.button.primary} ${styles.button.normal}`}
+      >
+        {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <GitCommit className="w-4 h-4" />}
+        {isLoading ? '処理中...' : 'コミット'}
+      </button>
+    </div>
+  );
 };
 
 export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
@@ -96,7 +284,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       const sha = await window.api.git.commit(commitMessage);
       setStatusMessage(`変更をコミットしました: ${sha.slice(0, 7)}`);
       setCommitMessage('');
-      fetchGitStatus();
+      await fetchGitStatus();
     } catch (error) {
       console.error('Error committing changes:', error);
       setStatusMessage('コミットに失敗しました');
@@ -127,7 +315,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       // @ts-ignore - APIはプリロードスクリプトで定義されている
       await window.api.git.pull();
       setStatusMessage('GitHubから最新の変更を取得しました');
-      fetchGitStatus();
+      await fetchGitStatus();
     } catch (error) {
       console.error('Error pulling changes:', error);
       setStatusMessage('プルに失敗しました');
@@ -150,7 +338,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       }
 
       setStatusMessage(`すべての変更をステージングしました`);
-      fetchGitStatus(); // ステータスを更新
+      await fetchGitStatus(); // ステータスを更新
     } catch (error) {
       console.error('Error staging all files:', error);
       setStatusMessage(`変更のステージングに失敗しました`);
@@ -182,7 +370,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       await window.api.git.add(filename);
 
       setStatusMessage(`${getFileName(filename)} をステージングしました`);
-      fetchGitStatus(); // ステータスを更新
+      await fetchGitStatus(); // ステータスを更新
     } catch (error) {
       console.error('Error staging file:', error);
       setStatusMessage(`${getFileName(filename)} のステージングに失敗しました`);
@@ -200,7 +388,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       await window.api.git.unstage(filename);
 
       setStatusMessage(`${getFileName(filename)} のステージングを取り消しました`);
-      fetchGitStatus(); // ステータスを更新
+      await fetchGitStatus(); // ステータスを更新
     } catch (error) {
       console.error('Error unstaging file:', error);
       setStatusMessage(`${getFileName(filename)} のステージング取り消しに失敗しました`);
@@ -223,7 +411,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       }
 
       setStatusMessage(`すべてのステージングを取り消しました`);
-      fetchGitStatus(); // ステータスを更新
+      await fetchGitStatus(); // ステータスを更新
     } catch (error) {
       console.error('Error unstaging all files:', error);
       setStatusMessage(`ステージング取り消しに失敗しました`);
@@ -265,7 +453,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
               <button
                 onClick={handleRefreshStatus}
                 disabled={isLoading}
-                className="p-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors duration-150 flex items-center text-xs"
+                className={`${styles.button.base} ${styles.button.light} ${styles.button.small}`}
                 title="ステータスを更新"
               >
                 {isLoading ? <Loader className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
@@ -274,7 +462,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                 <button
                   onClick={handleStageAll}
                   disabled={isLoading}
-                  className="p-1.5 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors duration-150 flex items-center text-xs"
+                  className={`${styles.button.base} ${styles.button.successLight} ${styles.button.small}`}
                   title="すべての変更をステージング"
                 >
                   {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <GitBranch className="w-3 h-3 mr-1" />}
@@ -285,7 +473,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                 <button
                   onClick={handleUnstageAll}
                   disabled={isLoading}
-                  className="p-1.5 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors duration-150 flex items-center text-xs"
+                  className={`${styles.button.base} ${styles.button.warningLight} ${styles.button.small}`}
                   title="すべてのステージングを取り消し"
                 >
                   {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
@@ -296,111 +484,28 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
           </div>
 
           {/* Git ステータス */}
-          {gitStatus && (
-            <div className="mb-4 p-3 bg-gray-50 rounded text-sm">
-              {gitStatus.staged.length > 0 && (
-                <div className="mb-2">
-                  <p className="text-green-600 font-medium mb-1">ステージされている変更:</p>
-                  <ul className="ml-2 space-y-1">
-                    {gitStatus.staged.map(file => (
-                      <li
-                        key={file.filename}
-                        className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
-                      >
-                        <span
-                          className="text-green-600 truncate max-w-[80%]"
-                          title={file.filename}
-                        >
-                          {getFileName(file.filename)}
-                        </span>
-                        <button
-                          onClick={() => handleUnstageFile(file.filename)}
-                          disabled={isLoading}
-                          className="ml-2 p-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors duration-150 flex items-center text-xs opacity-0 group-hover:opacity-100"
-                          title="ステージングを取り消す"
-                        >
-                          {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
-                          {isLoading ? '処理中...' : '取り消し'}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {gitStatus.unstaged.length > 0 && (
-                <div className="mb-2">
-                  <p className="text-yellow-600 font-medium mb-1">変更:</p>
-                  <ul className="ml-2 space-y-1">
-                    {gitStatus.unstaged.map(file => (
-                      <li
-                        key={file.filename}
-                        className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
-                      >
-                        <span
-                          className={`${file.isDeleted ? 'text-red-600' : 'text-yellow-600'} truncate max-w-[80%]`}
-                          title={file.filename}
-                        >
-                          {getFileName(file.filename)}
-                        </span>
-                        <button
-                          onClick={() => handleStageFile(file.filename)}
-                          disabled={isLoading}
-                          className="ml-2 p-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors duration-150 flex items-center text-xs opacity-0 group-hover:opacity-100"
-                          title="ステージングする"
-                        >
-                          {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
-                          {isLoading ? '処理中...' : 'ステージ'}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {gitStatus.staged.length === 0 && gitStatus.unstaged.length === 0 && (
-                <p className="text-gray-500 text-center py-2">変更はありません</p>
-              )}
-            </div>
-          )}
+          <GitStatusDisplay
+            gitStatus={gitStatus}
+            isLoading={isLoading}
+            onStageFile={handleStageFile}
+            onUnstageFile={handleUnstageFile}
+          />
 
           {/* コミットセクション */}
-          <div className="mb-4">
-            <textarea
-              value={commitMessage}
-              onChange={(e) => setCommitMessage(e.target.value)}
-              placeholder="コミットメッセージを入力"
-              disabled={commitMessageDisabled || isLoading}
-              className="w-full p-2 border border-gray-300 rounded mb-2 text-sm"
-              rows={3}
-            />
-            <button
-              onClick={handleCommit}
-              disabled={!commitMessage || isLoading}
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <GitCommit className="w-4 h-4" />}
-              {isLoading ? '処理中...' : 'コミット'}
-            </button>
-          </div>
+          <CommitForm
+            commitMessage={commitMessage}
+            setCommitMessage={setCommitMessage}
+            onCommit={handleCommit}
+            isDisabled={commitMessageDisabled}
+            isLoading={isLoading}
+          />
 
           {/* Git操作ボタン */}
-          <div className="flex space-x-2 mb-4">
-            <button
-              onClick={handlePush}
-              disabled={isLoading}
-              className="flex-1 bg-green-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
-            >
-              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              {isLoading ? '処理中...' : 'プッシュ'}
-            </button>
-            <button
-              onClick={handlePull}
-              disabled={isLoading}
-              className="flex-1 bg-yellow-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
-            >
-              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-              {isLoading ? '処理中...' : 'プル'}
-            </button>
-          </div>
+          <GitActionButtons
+            onPush={handlePush}
+            onPull={handlePull}
+            isLoading={isLoading}
+          />
 
           {/* ステータスメッセージ */}
           {statusMessage && (
