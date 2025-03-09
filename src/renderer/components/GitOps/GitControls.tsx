@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Plus, RefreshCw, GitBranch, Minus } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Plus, RefreshCw, GitBranch, Minus, Loader } from 'lucide-react';
 import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '../../../types/gitStatus';
 
 interface GitControlsProps {
@@ -71,9 +71,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
       });
 
       setGitStatus(gitStatus);
+      return gitStatus;
     } catch (error) {
       console.error('Error fetching git status:', error);
       setStatusMessage('Gitステータスの取得に失敗しました');
+      throw error;
     }
   };
 
@@ -158,9 +160,17 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   };
 
   // ステータスを再取得する処理
-  const handleRefreshStatus = () => {
-    fetchGitStatus();
-    setStatusMessage('Gitステータスを更新しました');
+  const handleRefreshStatus = async () => {
+    setIsLoading(true);
+    try {
+      await fetchGitStatus();
+      setStatusMessage('Gitステータスを更新しました');
+    } catch (error) {
+      console.error('Error refreshing git status:', error);
+      setStatusMessage('Gitステータスの更新に失敗しました');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // ファイルをステージングする処理
@@ -254,10 +264,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
             <div className="flex space-x-2">
               <button
                 onClick={handleRefreshStatus}
+                disabled={isLoading}
                 className="p-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors duration-150 flex items-center text-xs"
                 title="ステータスを更新"
               >
-                <RefreshCw className="w-3 h-3" />
+                {isLoading ? <Loader className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
               </button>
               {gitStatus && gitStatus.unstaged.length > 0 && (
                 <button
@@ -266,8 +277,8 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                   className="p-1.5 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors duration-150 flex items-center text-xs"
                   title="すべての変更をステージング"
                 >
-                  <GitBranch className="w-3 h-3 mr-1" />
-                  すべてステージング
+                  {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <GitBranch className="w-3 h-3 mr-1" />}
+                  {isLoading ? '処理中...' : 'すべてステージング'}
                 </button>
               )}
               {gitStatus && gitStatus.staged.length > 0 && (
@@ -277,8 +288,8 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                   className="p-1.5 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors duration-150 flex items-center text-xs"
                   title="すべてのステージングを取り消し"
                 >
-                  <Minus className="w-3 h-3 mr-1" />
-                  すべて取り消し
+                  {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
+                  {isLoading ? '処理中...' : 'すべて取り消し'}
                 </button>
               )}
             </div>
@@ -308,8 +319,8 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                           className="ml-2 p-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 transition-colors duration-150 flex items-center text-xs opacity-0 group-hover:opacity-100"
                           title="ステージングを取り消す"
                         >
-                          <Minus className="w-3 h-3 mr-1" />
-                          取り消し
+                          {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
+                          {isLoading ? '処理中...' : '取り消し'}
                         </button>
                       </li>
                     ))}
@@ -337,8 +348,8 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                           className="ml-2 p-1 bg-green-100 text-green-700 rounded hover:bg-green-200 transition-colors duration-150 flex items-center text-xs opacity-0 group-hover:opacity-100"
                           title="ステージングする"
                         >
-                          <Plus className="w-3 h-3 mr-1" />
-                          ステージ
+                          {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
+                          {isLoading ? '処理中...' : 'ステージ'}
                         </button>
                       </li>
                     ))}
@@ -357,16 +368,16 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
               value={commitMessage}
               onChange={(e) => setCommitMessage(e.target.value)}
               placeholder="コミットメッセージを入力"
-              disabled={commitMessageDisabled}
+              disabled={commitMessageDisabled || isLoading}
               className="w-full p-2 border border-gray-300 rounded mb-2 text-sm"
               rows={3}
             />
             <button
               onClick={handleCommit}
-              disabled={!commitMessage}
+              disabled={!commitMessage || isLoading}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              <GitCommit className="w-4 h-4" />
+              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <GitCommit className="w-4 h-4" />}
               {isLoading ? '処理中...' : 'コミット'}
             </button>
           </div>
@@ -378,16 +389,16 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
               disabled={isLoading}
               className="flex-1 bg-green-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
-              <Upload className="w-4 h-4" />
-              プッシュ
+              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              {isLoading ? '処理中...' : 'プッシュ'}
             </button>
             <button
               onClick={handlePull}
               disabled={isLoading}
               className="flex-1 bg-yellow-500 text-white py-2 px-4 rounded disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center gap-2"
             >
-              <Download className="w-4 h-4" />
-              プル
+              {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {isLoading ? '処理中...' : 'プル'}
             </button>
           </div>
 
