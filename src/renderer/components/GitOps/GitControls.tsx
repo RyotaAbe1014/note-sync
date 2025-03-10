@@ -214,7 +214,6 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   // Gitステータスを取得
   const fetchGitStatus = async () => {
     try {
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       const statusMatrix: StatusMatrix = await window.api.git.status();
 
       // gitStatusに格納できる形に変換する

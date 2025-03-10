@@ -24,7 +24,6 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   const loadDirectory = async (dirPath: string | null) => {
     try {
       setLoading(true);
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       const fileList = await window.api.fs.listFiles(dirPath);
       setFiles(fileList);
       setCurrentDir(dirPath);
@@ -39,7 +38,6 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        // @ts-ignore - APIはプリロードスクリプトで定義されている
         const savedSettings = await window.api.app.getSettings();
         if (savedSettings) {
           setRootDir(savedSettings.rootDirectory.path);
@@ -73,17 +71,14 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   };
 
   const handleRename = async (file: FileItem, newName: string) => {
-    // @ts-ignore - APIはプリロードスクリプトで定義されている
     await window.api.fs.renameFile(file.path, newName);
     loadDirectory(currentDir);
   }
 
   const handleDeleteClick = async (file: FileItem) => {
     if (file.isDirectory) {
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       await window.api.fs.removeDirectory(file.path);
     } else {
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       await window.api.fs.removeFile(file.path);
     }
     loadDirectory(currentDir);

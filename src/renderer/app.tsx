@@ -20,7 +20,6 @@ export default function App() {
   // Gitの設定を確認する関数
   const checkGitSettings = async () => {
     try {
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       const settings = await window.api.app.getSettings();
       setHasGitSettings(!!settings?.rootDirectory?.path);
     } catch (error) {
@@ -38,7 +37,6 @@ export default function App() {
   const handleFileSelect = async (filePath: string) => {
     try {
       setSelectedFile(filePath);
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       const content = await window.api.fs.readFile(filePath);
       setFileContent(content);
     } catch (error) {
@@ -57,7 +55,6 @@ export default function App() {
         }
         console.log('contentToSave', contentToSave);
 
-        // @ts-ignore - APIはプリロードスクリプトで定義されている
         await window.api.fs.writeFile(selectedFile, contentToSave);
         console.log('File saved successfully');
       } catch (error) {

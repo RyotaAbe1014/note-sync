@@ -23,7 +23,6 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        // @ts-ignore - APIはプリロードスクリプトで定義されている
         const savedSettings = await window.api.app.getSettings();
         if (savedSettings) {
           setSettings(savedSettings);
@@ -42,7 +41,6 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
     setSaveMessage(null);
 
     try {
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       await window.api.app.setSettings(settings);
       setSaveMessage({ type: 'success', text: '設定を保存しました' });
       onSettingsChange();
@@ -57,7 +55,6 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
   // ディレクトリ選択ダイアログを開く
   const handleSelectDirectory = async () => {
     try {
-      // @ts-ignore - APIはプリロードスクリプトで定義されている
       const dirPath = await window.api.dialog.selectDirectory();
       if (dirPath) {
         setSettings((prev: AppSettingsType) => ({
