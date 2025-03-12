@@ -2,7 +2,7 @@
   "name": "notesync",
   "productName": "NoteSync",
   "version": "1.0.0",
-  "description": "Commit Notes",
+  "description": "Notes Sync",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
