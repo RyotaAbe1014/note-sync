@@ -71,18 +71,18 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 pt-8 pb-2">
-      <header className="mb-8 px-8 flex justify-between items-center">
+      <header className="mb-8 flex items-center justify-between px-8">
         <h1 className="text-2xl font-bold text-gray-800">NoteSync</h1>
         <button
-          className="rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          className="flex cursor-pointer items-center gap-2 rounded disabled:cursor-not-allowed disabled:opacity-50"
           onClick={() => {
             setIsSettingsOpen(!isSettingsOpen);
           }}
         >
-          {isSettingsOpen ? <Undo2 className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
+          {isSettingsOpen ? <Undo2 className="h-6 w-6" /> : <Settings className="h-6 w-6" />}
         </button>
       </header>
-      <main className="px-8 flex gap-6">
+      <main className="flex gap-6 px-8">
         {isSettingsOpen ? (
           <AppSettings onSettingsChange={handleSettingsChange} />
         ) : (
@@ -95,27 +95,22 @@ export default function App() {
               />
             </div>
             <div className="w-3/4">
-              <div className="bg-white rounded-lg shadow p-4 mb-4">
-                <div className="flex justify-between items-center mb-4">
+              <div className="mb-4 rounded-lg bg-white p-4 shadow">
+                <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-lg font-medium">
                     {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
                   </h2>
                   <button
                     onClick={handleSave}
                     disabled={!selectedFile}
-                    className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="flex cursor-pointer items-center gap-2 rounded bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <Save className="w-4 h-4" />
+                    <Save className="h-4 w-4" />
                     保存
                   </button>
                 </div>
 
-                {fileContent && (
-                  <Editor
-                    initialContent={fileContent}
-                    ref={editorRef}
-                  />
-                )}
+                {fileContent && <Editor initialContent={fileContent} ref={editorRef} />}
               </div>
             </div>
           </>

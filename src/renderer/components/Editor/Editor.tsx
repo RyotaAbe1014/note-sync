@@ -34,14 +34,18 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent }
   const savePluginRef = useRef<{ getMarkdown: () => string }>(null);
 
   // 外部のrefに内部のsavePluginRefの機能を公開
-  useImperativeHandle(ref, () => ({
-    getMarkdown: () => {
-      if (savePluginRef.current) {
-        return savePluginRef.current.getMarkdown();
-      }
-      return '';
-    }
-  }), [savePluginRef]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      getMarkdown: () => {
+        if (savePluginRef.current) {
+          return savePluginRef.current.getMarkdown();
+        }
+        return '';
+      },
+    }),
+    [savePluginRef]
+  );
 
   const initialConfig = {
     namespace: 'CommitNotes',
@@ -57,12 +61,12 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent }
   };
 
   return (
-    <div className="w-full mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="mx-auto w-full rounded-lg bg-white p-4 shadow-md">
       <LexicalComposer initialConfig={initialConfig}>
         <div className="mb-4">
           <ToolbarPlugin />
         </div>
-        <div className="border border-gray-300 rounded-md p-4">
+        <div className="rounded-md border border-gray-300 p-4">
           <RichTextPlugin
             contentEditable={
               <div id="editor" className="editor h-[calc(100vh-400px)] overflow-y-auto" ref={onRef}>

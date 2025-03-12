@@ -1,4 +1,4 @@
-import { EditorThemeClasses } from "lexical";
+import { EditorThemeClasses } from 'lexical';
 
 import './theme.css';
 
@@ -93,8 +93,7 @@ export const theme: EditorThemeClasses = {
   },
   tableCell: 'border border-gray-300 p-2',
   tableCellActionButton: 'EditorTheme__tableCellActionButton',
-  tableCellActionButtonContainer:
-    'EditorTheme__tableCellActionButtonContainer',
+  tableCellActionButtonContainer: 'EditorTheme__tableCellActionButtonContainer',
   tableCellHeader: 'EditorTheme__tableCellHeader',
   tableCellResizer: 'EditorTheme__tableCellResizer',
   tableCellSelected: 'EditorTheme__tableCellSelected',

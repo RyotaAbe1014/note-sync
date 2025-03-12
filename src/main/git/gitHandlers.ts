@@ -42,8 +42,8 @@ export function setupGitHandlers() {
     // gitignoreのパターンを配列に変換
     const ignorePatterns = gitignoreContent
       .split('\n')
-      .map(line => line.trim())
-      .filter(line => line && !line.startsWith('#'));
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'));
 
     const status = await git.statusMatrix({
       fs: fs,
@@ -52,12 +52,16 @@ export function setupGitHandlers() {
       ignored: true,
       filter: (filepath) => {
         // gitignoreのパターンに一致するファイルを除外
-        return !ignorePatterns.some(pattern => {
-          // シンプルなワイルドカードマッチング
-          const regex = new RegExp(pattern.replace(/\*/g, '.*'));
-          return regex.test(filepath);
-        }) && !filepath.startsWith('.git') && !filepath.startsWith('.cursor');
-      }
+        return (
+          !ignorePatterns.some((pattern) => {
+            // シンプルなワイルドカードマッチング
+            const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+            return regex.test(filepath);
+          }) &&
+          !filepath.startsWith('.git') &&
+          !filepath.startsWith('.cursor')
+        );
+      },
     });
     return status;
   });
@@ -71,7 +75,7 @@ export function setupGitHandlers() {
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),
-      filepath: filepath
+      filepath: filepath,
     });
   });
 
@@ -84,7 +88,7 @@ export function setupGitHandlers() {
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),
-      filepath: filepath
+      filepath: filepath,
     });
   });
 
@@ -103,8 +107,8 @@ export function setupGitHandlers() {
       message: message,
       author: {
         name: gitSettings.author.name,
-        email: gitSettings.author.email
-      }
+        email: gitSettings.author.email,
+      },
     });
     return sha;
   });
@@ -122,9 +126,9 @@ export function setupGitHandlers() {
       fs: fs,
       dir: repoPath,
       gitdir: path.join(repoPath, '.git'),
-      remote: "origin",
-      ref: "main",
-      onAuth: () => ({ username: gitSettings.token}),
+      remote: 'origin',
+      ref: 'main',
+      onAuth: () => ({ username: gitSettings.token }),
     });
 
     return true;

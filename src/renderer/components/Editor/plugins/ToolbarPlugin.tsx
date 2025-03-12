@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  *
-*/
+ */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
@@ -26,32 +26,32 @@ import {
   $createQuoteNode,
   $isHeadingNode,
   $isQuoteNode,
-  HeadingTagType
+  HeadingTagType,
 } from '@lexical/rich-text';
 import { $isCodeNode, $createCodeNode } from '@lexical/code';
 
 const LowPriority = 1;
 
 function Divider() {
-  return <div className="h-6 w-px mx-1 bg-gray-300" />;
+  return <div className="mx-1 h-6 w-px bg-gray-300" />;
 }
 
 const SupportedBlockType = {
-  paragraph: "段落",
-  h1: "見出し 1",
-  h2: "見出し 2",
-  h3: "見出し 3",
-  h4: "見出し 4",
-  h5: "見出し 5",
-  code: "コード",
-  quote: "引用",
+  paragraph: '段落',
+  h1: '見出し 1',
+  h2: '見出し 2',
+  h3: '見出し 3',
+  h4: '見出し 4',
+  h5: '見出し 5',
+  code: 'コード',
+  quote: '引用',
 } as const;
 type BlockType = keyof typeof SupportedBlockType;
 
 export const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext();
   const toolbarRef = useRef(null);
-  const [blockType, setBlockType] = useState<BlockType>("paragraph");
+  const [blockType, setBlockType] = useState<BlockType>('paragraph');
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
   const [isBold, setIsBold] = useState(false);
@@ -70,9 +70,8 @@ export const ToolbarPlugin = () => {
 
       // Update block type
       const anchorNode = selection.anchor.getNode();
-      const element = anchorNode.getKey() === 'root'
-        ? anchorNode
-        : anchorNode.getTopLevelElementOrThrow();
+      const element =
+        anchorNode.getKey() === 'root' ? anchorNode : anchorNode.getTopLevelElementOrThrow();
 
       const elementKey = element.getKey();
       const elementDOM = editor.getElementByKey(elementKey);
@@ -147,7 +146,7 @@ export const ToolbarPlugin = () => {
           $updateToolbar();
           return false;
         },
-        LowPriority,
+        LowPriority
       ),
       editor.registerCommand(
         CAN_UNDO_COMMAND,
@@ -155,7 +154,7 @@ export const ToolbarPlugin = () => {
           setCanUndo(payload);
           return false;
         },
-        LowPriority,
+        LowPriority
       ),
       editor.registerCommand(
         CAN_REDO_COMMAND,
@@ -163,48 +162,57 @@ export const ToolbarPlugin = () => {
           setCanRedo(payload);
           return false;
         },
-        LowPriority,
-      ),
+        LowPriority
+      )
     );
   }, [editor, $updateToolbar]);
 
   return (
-    <div className="flex flex-wrap items-center p-3 bg-gray-50 rounded-md border border-gray-300 shadow-sm" ref={toolbarRef}>
-      <div className="flex items-center flex-wrap mb-2 sm:mb-0">
+    <div
+      className="flex flex-wrap items-center rounded-md border border-gray-300 bg-gray-50 p-3 shadow-sm"
+      ref={toolbarRef}
+    >
+      <div className="mb-2 flex flex-wrap items-center sm:mb-0">
         <button
           onClick={formatParagraph}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${blockType === 'paragraph' ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="段落">
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'paragraph' ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="段落"
+        >
           <span className="font-medium">P</span>
         </button>
         <button
           onClick={() => formatHeading('h1')}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${blockType === 'h1' ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="見出し1">
-          <span className="font-bold text-lg">H1</span>
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h1' ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="見出し1"
+        >
+          <span className="text-lg font-bold">H1</span>
         </button>
         <button
           onClick={() => formatHeading('h2')}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${blockType === 'h2' ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="見出し2">
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h2' ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="見出し2"
+        >
           <span className="font-bold">H2</span>
         </button>
         <button
           onClick={() => formatHeading('h3')}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${blockType === 'h3' ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="見出し3">
-          <span className="font-bold text-sm">H3</span>
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h3' ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="見出し3"
+        >
+          <span className="text-sm font-bold">H3</span>
         </button>
         <button
           onClick={formatCode}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${blockType === 'code' ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="コード">
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'code' ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="コード"
+        >
           <span className="font-mono">{`<>`}</span>
         </button>
         <button
           onClick={formatQuote}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${blockType === 'quote' ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="引用">
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'quote' ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="引用"
+        >
           <span className="font-serif">"</span>
         </button>
         <Divider />
@@ -213,8 +221,9 @@ export const ToolbarPlugin = () => {
           onClick={() => {
             editor.dispatchCommand(UNDO_COMMAND, undefined);
           }}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${!canUndo ? 'opacity-50 cursor-not-allowed' : 'bg-white '}`}
-          aria-label="元に戻す">
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${!canUndo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
+          aria-label="元に戻す"
+        >
           <span className="font-bold">↩</span>
         </button>
         <button
@@ -222,46 +231,51 @@ export const ToolbarPlugin = () => {
           onClick={() => {
             editor.dispatchCommand(REDO_COMMAND, undefined);
           }}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 transition-colors ${!canRedo ? 'opacity-50 cursor-not-allowed' : 'bg-white '}`}
-          aria-label="やり直し">
+          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${!canRedo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
+          aria-label="やり直し"
+        >
           <span className="font-bold">↪</span>
         </button>
       </div>
       <Divider />
-      <div className="flex items-center flex-wrap">
+      <div className="flex flex-wrap items-center">
         <button
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
           }}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer transition-colors ${isBold ? 'bg-blue-200' : 'bg-white '}`}
-          aria-label="太字">
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isBold ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="太字"
+        >
           <span className="font-bold">B</span>
         </button>
         <button
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
           }}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer transition-colors ${isItalic ? 'bg-blue-200' : 'bg-white '}`}
-          aria-label="斜体">
-          <span className="italic font-bold">I</span>
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isItalic ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="斜体"
+        >
+          <span className="font-bold italic">I</span>
         </button>
         <button
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
           }}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer transition-colors ${isUnderline ? 'bg-blue-200' : 'bg-white '}`}
-          aria-label="下線">
-          <span className="underline font-bold">U</span>
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isUnderline ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="下線"
+        >
+          <span className="font-bold underline">U</span>
         </button>
         <button
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
           }}
-          className={`p-2 rounded hover:bg-blue-200 mx-1 cursor-pointer transition-colors ${isStrikethrough ? 'bg-blue-200' : 'bg-white'}`}
-          aria-label="取り消し線">
-          <span className="line-through font-bold">S</span>
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isStrikethrough ? 'bg-blue-200' : 'bg-white'}`}
+          aria-label="取り消し線"
+        >
+          <span className="font-bold line-through">S</span>
         </button>
       </div>
     </div>
   );
-}
+};

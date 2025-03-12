@@ -34,11 +34,7 @@ import {
   TableNode,
   TableRowNode,
 } from '@lexical/table';
-import {
-  $isParagraphNode,
-  $isTextNode,
-  LexicalNode,
-} from 'lexical';
+import { $isParagraphNode, $isTextNode, LexicalNode } from 'lexical';
 
 export const HR: ElementTransformer = {
   dependencies: [HorizontalRuleNode],
@@ -84,11 +80,7 @@ export const TABLE: ElementTransformer = {
       for (const cell of row.getChildren()) {
         // It's TableCellNode so it's just to make flow happy
         if ($isTableCellNode(cell)) {
-          rowOutput.push(
-            $convertToMarkdownString(TRANSFORMERS, cell)
-              .replace(/\n/g, '\\n')
-              .trim(),
-          );
+          rowOutput.push($convertToMarkdownString(TRANSFORMERS, cell).replace(/\n/g, '\\n').trim());
           if (cell.__headerState === TableCellHeaderStates.ROW) {
             isHeaderRow = true;
           }
@@ -123,10 +115,7 @@ export const TABLE: ElementTransformer = {
         if (!$isTableCellNode(cell)) {
           return;
         }
-        cell.setHeaderStyles(
-          TableCellHeaderStates.ROW,
-          TableCellHeaderStates.ROW,
-        );
+        cell.setHeaderStyles(TableCellHeaderStates.ROW, TableCellHeaderStates.ROW);
       });
 
       // Remove line
@@ -184,10 +173,7 @@ export const TABLE: ElementTransformer = {
     }
 
     const previousSibling = parentNode.getPreviousSibling();
-    if (
-      $isTableNode(previousSibling) &&
-      getTableColumnsSize(previousSibling) === maxCells
-    ) {
+    if ($isTableNode(previousSibling) && getTableColumnsSize(previousSibling) === maxCells) {
       previousSibling.append(...table.getChildren());
       parentNode.remove();
     } else {

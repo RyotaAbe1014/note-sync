@@ -10,10 +10,10 @@ export function setupFileSystemHandlers() {
       await fs.mkdir(basePath, { recursive: true });
 
       const files = await fs.readdir(basePath, { withFileTypes: true });
-      return files.map(file => ({
+      return files.map((file) => ({
         name: file.name,
         isDirectory: file.isDirectory(),
-        path: path.join(basePath, file.name)
+        path: path.join(basePath, file.name),
       }));
     } catch (error) {
       console.error('Error listing files:', error);

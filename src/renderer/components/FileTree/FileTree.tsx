@@ -73,7 +73,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   const handleRename = async (file: FileItem, newName: string) => {
     await window.api.fs.renameFile(file.path, newName);
     loadDirectory(currentDir);
-  }
+  };
 
   const handleDeleteClick = async (file: FileItem) => {
     if (file.isDirectory) {
@@ -82,7 +82,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
       await window.api.fs.removeFile(file.path);
     }
     loadDirectory(currentDir);
-  }
+  };
 
   // 右クリックをしたときの処理
   const handleRightClick = (e: React.MouseEvent, file: FileItem) => {
@@ -112,61 +112,63 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   }, [selectedFile]);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-5 h-fit mt-4 border border-gray-100">
+    <div className="mt-4 h-fit rounded-lg border border-gray-100 bg-white p-5 shadow-md">
       {loading && !rootDir ? (
-        <div className="text-center py-8">
-          <p className="text-gray-600 mb-4">ルートディレクトリが設定されていません</p>
+        <div className="py-8 text-center">
+          <p className="mb-4 text-gray-600">ルートディレクトリが設定されていません</p>
           <button
             onClick={onSettingsClick}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200"
+            className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-blue-600"
           >
             設定画面で設定する
           </button>
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
+          <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-3">
             <button
               onClick={handleBackClick}
               disabled={currentDir === rootDir}
-              className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1"
+              className="flex items-center gap-1 rounded-md bg-gray-100 px-3 py-1.5 text-gray-700 transition-colors duration-200 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="h-4 w-4" />
               戻る
             </button>
-            <span className="text-sm font-medium truncate ml-2 text-gray-600 max-w-[70%]">
+            <span className="ml-2 max-w-[70%] truncate text-sm font-medium text-gray-600">
               {currentDir === rootDir ? 'ルート' : currentDir}
             </span>
           </div>
 
           {loading ? (
-            <div className="flex justify-center items-center h-40">
-              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            <div className="flex h-40 items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-blue-500"></div>
               <p className="ml-3 text-gray-600">読み込み中...</p>
             </div>
           ) : (
-            <ul className="space-y-1 h-[calc(100vh-300px)] overflow-y-auto pr-1">
+            <ul className="h-[calc(100vh-300px)] space-y-1 overflow-y-auto pr-1">
               {files.length === 0 ? (
-                <li className="text-gray-500 text-center py-8 bg-gray-50 rounded-md">
-                  <Sparkles className="w-10 h-10 mx-auto text-gray-400 mb-2" />
+                <li className="rounded-md bg-gray-50 py-8 text-center text-gray-500">
+                  <Sparkles className="mx-auto mb-2 h-10 w-10 text-gray-400" />
                   <p>ファイルがありません</p>
                 </li>
               ) : (
                 files.map((file) => (
                   <li
                     key={file.path}
-                    className={`px-3 py-2.5 rounded-md cursor-pointer hover:bg-gray-50 flex items-center transition-colors duration-150 ${file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                      } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
-                    onClick={() => file.isDirectory
-                      ? handleDirectoryClick(file.path)
-                      : handleFileClick(file.path)
+                    className={`flex cursor-pointer items-center rounded-md px-3 py-2.5 transition-colors duration-150 hover:bg-gray-50 ${
+                      file.isDirectory ? 'text-blue-600' : 'text-gray-700'
+                    } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
+                    onClick={() =>
+                      file.isDirectory
+                        ? handleDirectoryClick(file.path)
+                        : handleFileClick(file.path)
                     }
                     onContextMenu={(e) => handleRightClick(e, file)}
                   >
                     {file.isDirectory ? (
-                      <FolderIcon className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <FolderIcon className="mr-2 h-5 w-5 flex-shrink-0" />
                     ) : (
-                      <FileIcon className="w-5 h-5 mr-2 flex-shrink-0" />
+                      <FileIcon className="mr-2 h-5 w-5 flex-shrink-0" />
                     )}
                     <span className="truncate">{file.name}</span>
                   </li>
@@ -198,7 +200,13 @@ interface FileMenuProps {
   handleDeleteClick: (file: FileItem) => void;
 }
 
-const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick }: FileMenuProps) => {
+const FileMenu = ({
+  file,
+  position,
+  handleClose,
+  handleRename,
+  handleDeleteClick,
+}: FileMenuProps) => {
   const [isRenaming, setIsRenaming] = useState<boolean>(false);
   const [newName, setNewName] = useState(file.name);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -227,11 +235,11 @@ const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick
 
   const handleRenameClick = () => {
     setIsRenaming(true);
-  }
+  };
 
   const handleDelete = async () => {
     handleDeleteClick(file);
-  }
+  };
 
   // クリックイベントの伝播を止める
   const handleMenuClick = (e: React.MouseEvent) => {
@@ -241,17 +249,19 @@ const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick
   return (
     <div
       ref={menuRef}
-      className="fixed bg-white shadow-lg rounded-md flex flex-col border border-gray-100 z-50 min-w-[180px]"
+      className="fixed z-50 flex min-w-[180px] flex-col rounded-md border border-gray-100 bg-white shadow-lg"
       onClick={handleMenuClick}
       style={{ left: position.x, top: position.y }}
     >
-      <div className="flex justify-between items-center p-2 border-b border-gray-100">
-        <span className="text-xs font-medium text-gray-500 truncate max-w-[120px]">{file.name}</span>
+      <div className="flex items-center justify-between border-b border-gray-100 p-2">
+        <span className="max-w-[120px] truncate text-xs font-medium text-gray-500">
+          {file.name}
+        </span>
         <button
-          className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors duration-150"
+          className="rounded-full p-1 text-gray-400 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-600"
           onClick={handleClose}
         >
-          <X className="w-4 h-4" />
+          <X className="h-4 w-4" />
         </button>
       </div>
       {isRenaming ? (
@@ -260,18 +270,18 @@ const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick
             type="text"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
             autoFocus
           />
-          <div className="flex justify-end gap-2 mt-2">
+          <div className="mt-2 flex justify-end gap-2">
             <button
-              className="px-3 py-1.5 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-150"
+              className="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-700 transition-colors duration-150 hover:bg-gray-200"
               onClick={() => setIsRenaming(false)}
             >
               キャンセル
             </button>
             <button
-              className="px-3 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-150"
+              className="rounded-md bg-blue-500 px-3 py-1.5 text-sm text-white transition-colors duration-150 hover:bg-blue-600"
               onClick={() => handleRename(file, newName)}
             >
               変更
@@ -281,17 +291,17 @@ const FileMenu = ({ file, position, handleClose, handleRename, handleDeleteClick
       ) : (
         <>
           <button
-            className="p-2.5 text-left text-sm cursor-pointer hover:bg-gray-50 transition-colors duration-150 flex items-center"
+            className="flex cursor-pointer items-center p-2.5 text-left text-sm transition-colors duration-150 hover:bg-gray-50"
             onClick={() => handleRenameClick()}
           >
-            <Edit className="w-4 h-4 mr-2 text-gray-500" />
+            <Edit className="mr-2 h-4 w-4 text-gray-500" />
             名前の変更
           </button>
           <button
-            className="p-2.5 text-left text-sm cursor-pointer hover:bg-red-50 text-red-500 transition-colors duration-150 flex items-center"
+            className="flex cursor-pointer items-center p-2.5 text-left text-sm text-red-500 transition-colors duration-150 hover:bg-red-50"
             onClick={() => handleDelete()}
           >
-            <Trash2 className="w-4 h-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             削除
           </button>
         </>

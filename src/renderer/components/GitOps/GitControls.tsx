@@ -1,6 +1,23 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, ChevronRight, GitCommit, Upload, Download, Plus, RefreshCw, GitBranch, Minus, Loader } from 'lucide-react';
-import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '../../../types/gitStatus';
+import {
+  ChevronDown,
+  ChevronRight,
+  GitCommit,
+  Upload,
+  Download,
+  Plus,
+  RefreshCw,
+  GitBranch,
+  Minus,
+  Loader,
+} from 'lucide-react';
+import {
+  GitStatus,
+  HeadStatus,
+  StageStatus,
+  StatusMatrix,
+  WorkdirStatus,
+} from '../../../types/gitStatus';
 
 interface GitControlsProps {
   selectedFile: string | null;
@@ -14,16 +31,16 @@ interface FileItem {
 // 共通のスタイル定義
 const styles = {
   button: {
-    base: "rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 flex items-center justify-center",
-    primary: "bg-blue-500 text-white hover:bg-blue-600",
-    success: "bg-green-500 text-white hover:bg-green-600",
-    warning: "bg-yellow-500 text-white hover:bg-yellow-600",
-    light: "bg-gray-100 text-gray-700 hover:bg-gray-200",
-    successLight: "bg-green-100 text-green-700 hover:bg-green-200",
-    warningLight: "bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
-    small: "p-1.5 text-xs",
-    normal: "py-2 px-4 text-sm",
-  }
+    base: 'rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 flex items-center justify-center',
+    primary: 'bg-blue-500 text-white hover:bg-blue-600',
+    success: 'bg-green-500 text-white hover:bg-green-600',
+    warning: 'bg-yellow-500 text-white hover:bg-yellow-600',
+    light: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+    successLight: 'bg-green-100 text-green-700 hover:bg-green-200',
+    warningLight: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
+    small: 'p-1.5 text-xs',
+    normal: 'py-2 px-4 text-sm',
+  },
 };
 
 // ファイル名から末尾のみを取得する関数
@@ -41,17 +58,14 @@ const StagedFilesList: React.FC<{
 
   return (
     <div className="mb-2">
-      <p className="text-green-600 font-medium mb-1">ステージされている変更:</p>
+      <p className="mb-1 font-medium text-green-600">ステージされている変更:</p>
       <ul className="ml-2 space-y-1">
-        {files.map(file => (
+        {files.map((file) => (
           <li
             key={file.filename}
-            className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
+            className="group flex items-center justify-between rounded px-1 py-1 transition-colors duration-150 hover:bg-gray-100"
           >
-            <span
-              className="text-green-600 truncate max-w-[80%]"
-              title={file.filename}
-            >
+            <span className="max-w-[80%] truncate text-green-600" title={file.filename}>
               {getFileName(file.filename)}
             </span>
             <button
@@ -60,7 +74,11 @@ const StagedFilesList: React.FC<{
               className={`ml-2 ${styles.button.base} ${styles.button.warningLight} ${styles.button.small} opacity-0 group-hover:opacity-100`}
               title="ステージングを取り消す"
             >
-              {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
+              {isLoading ? (
+                <Loader className="mr-1 h-3 w-3 animate-spin" />
+              ) : (
+                <Minus className="mr-1 h-3 w-3" />
+              )}
               {isLoading ? '処理中...' : '取り消し'}
             </button>
           </li>
@@ -80,15 +98,15 @@ const UnstagedFilesList: React.FC<{
 
   return (
     <div className="mb-2">
-      <p className="text-yellow-600 font-medium mb-1">変更:</p>
+      <p className="mb-1 font-medium text-yellow-600">変更:</p>
       <ul className="ml-2 space-y-1">
-        {files.map(file => (
+        {files.map((file) => (
           <li
             key={file.filename}
-            className="group flex justify-between items-center py-1 px-1 hover:bg-gray-100 rounded transition-colors duration-150"
+            className="group flex items-center justify-between rounded px-1 py-1 transition-colors duration-150 hover:bg-gray-100"
           >
             <span
-              className={`${file.isDeleted ? 'text-red-600' : 'text-yellow-600'} truncate max-w-[80%]`}
+              className={`${file.isDeleted ? 'text-red-600' : 'text-yellow-600'} max-w-[80%] truncate`}
               title={file.filename}
             >
               {getFileName(file.filename)}
@@ -99,7 +117,11 @@ const UnstagedFilesList: React.FC<{
               className={`ml-2 ${styles.button.base} ${styles.button.successLight} ${styles.button.small} opacity-0 group-hover:opacity-100`}
               title="ステージングする"
             >
-              {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Plus className="w-3 h-3 mr-1" />}
+              {isLoading ? (
+                <Loader className="mr-1 h-3 w-3 animate-spin" />
+              ) : (
+                <Plus className="mr-1 h-3 w-3" />
+              )}
               {isLoading ? '処理中...' : 'ステージ'}
             </button>
           </li>
@@ -121,22 +143,12 @@ const GitStatusDisplay: React.FC<{
   const hasChanges = gitStatus.staged.length > 0 || gitStatus.unstaged.length > 0;
 
   return (
-    <div className="mb-4 p-3 bg-gray-50 rounded text-sm">
-      <StagedFilesList
-        files={gitStatus.staged}
-        onUnstage={onUnstageFile}
-        isLoading={isLoading}
-      />
+    <div className="mb-4 rounded bg-gray-50 p-3 text-sm">
+      <StagedFilesList files={gitStatus.staged} onUnstage={onUnstageFile} isLoading={isLoading} />
 
-      <UnstagedFilesList
-        files={gitStatus.unstaged}
-        onStage={onStageFile}
-        isLoading={isLoading}
-      />
+      <UnstagedFilesList files={gitStatus.unstaged} onStage={onStageFile} isLoading={isLoading} />
 
-      {!hasChanges && (
-        <p className="text-gray-500 text-center py-2">変更はありません</p>
-      )}
+      {!hasChanges && <p className="py-2 text-center text-gray-500">変更はありません</p>}
     </div>
   );
 };
@@ -148,13 +160,13 @@ const GitActionButtons: React.FC<{
   isLoading: boolean;
 }> = ({ onPush, onPull, isLoading }) => {
   return (
-    <div className="flex space-x-2 mb-4">
+    <div className="mb-4 flex space-x-2">
       <button
         onClick={onPush}
         disabled={isLoading}
         className={`flex-1 ${styles.button.base} ${styles.button.success} ${styles.button.normal}`}
       >
-        {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+        {isLoading ? <Loader className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
         {isLoading ? '処理中...' : 'プッシュ'}
       </button>
       <button
@@ -162,7 +174,7 @@ const GitActionButtons: React.FC<{
         disabled={isLoading}
         className={`flex-1 ${styles.button.base} ${styles.button.warning} ${styles.button.normal}`}
       >
-        {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+        {isLoading ? <Loader className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
         {isLoading ? '処理中...' : 'プル'}
       </button>
     </div>
@@ -184,7 +196,7 @@ const CommitForm: React.FC<{
         onChange={(e) => setCommitMessage(e.target.value)}
         placeholder="コミットメッセージを入力"
         disabled={isDisabled || isLoading}
-        className="w-full p-2 border border-gray-300 rounded mb-2 text-sm"
+        className="mb-2 w-full rounded border border-gray-300 p-2 text-sm"
         rows={3}
       />
       <button
@@ -192,7 +204,11 @@ const CommitForm: React.FC<{
         disabled={!commitMessage || isLoading}
         className={`w-full ${styles.button.base} ${styles.button.primary} ${styles.button.normal}`}
       >
-        {isLoading ? <Loader className="w-4 h-4 animate-spin" /> : <GitCommit className="w-4 h-4" />}
+        {isLoading ? (
+          <Loader className="h-4 w-4 animate-spin" />
+        ) : (
+          <GitCommit className="h-4 w-4" />
+        )}
         {isLoading ? '処理中...' : 'コミット'}
       </button>
     </div>
@@ -420,14 +436,14 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-4">
+    <div className="rounded-lg bg-white p-4 shadow">
       <div
-        className="flex justify-between items-center cursor-pointer mb-4"
+        className="mb-4 flex cursor-pointer items-center justify-between"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h3 className="text-lg font-medium">Git操作</h3>
         <span className="text-gray-500">
-          {isExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </span>
       </div>
 
@@ -437,16 +453,16 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
           {/* ファイル選択状態の表示 */}
           {selectedFile ? (
             <div className="mb-4">
-              <p className="text-sm text-gray-600">選択中: <span className="font-medium">{getFileName(selectedFile)}</span></p>
+              <p className="text-sm text-gray-600">
+                選択中: <span className="font-medium">{getFileName(selectedFile)}</span>
+              </p>
             </div>
           ) : (
-            <div className="mb-4 text-gray-500 text-sm">
-              ファイルを選択してください
-            </div>
+            <div className="mb-4 text-sm text-gray-500">ファイルを選択してください</div>
           )}
 
           {/* Git ステータスヘッダー */}
-          <div className="flex justify-between items-center mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <h4 className="font-medium">Gitステータス</h4>
             <div className="flex space-x-2">
               <button
@@ -455,7 +471,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                 className={`${styles.button.base} ${styles.button.light} ${styles.button.small}`}
                 title="ステータスを更新"
               >
-                {isLoading ? <Loader className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+                {isLoading ? (
+                  <Loader className="h-3 w-3 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-3 w-3" />
+                )}
               </button>
               {gitStatus && gitStatus.unstaged.length > 0 && (
                 <button
@@ -464,7 +484,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                   className={`${styles.button.base} ${styles.button.successLight} ${styles.button.small}`}
                   title="すべての変更をステージング"
                 >
-                  {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <GitBranch className="w-3 h-3 mr-1" />}
+                  {isLoading ? (
+                    <Loader className="mr-1 h-3 w-3 animate-spin" />
+                  ) : (
+                    <GitBranch className="mr-1 h-3 w-3" />
+                  )}
                   {isLoading ? '処理中...' : 'すべてステージング'}
                 </button>
               )}
@@ -475,7 +499,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
                   className={`${styles.button.base} ${styles.button.warningLight} ${styles.button.small}`}
                   title="すべてのステージングを取り消し"
                 >
-                  {isLoading ? <Loader className="w-3 h-3 animate-spin mr-1" /> : <Minus className="w-3 h-3 mr-1" />}
+                  {isLoading ? (
+                    <Loader className="mr-1 h-3 w-3 animate-spin" />
+                  ) : (
+                    <Minus className="mr-1 h-3 w-3" />
+                  )}
                   {isLoading ? '処理中...' : 'すべて取り消し'}
                 </button>
               )}
@@ -500,17 +528,11 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
           />
 
           {/* Git操作ボタン */}
-          <GitActionButtons
-            onPush={handlePush}
-            onPull={handlePull}
-            isLoading={isLoading}
-          />
+          <GitActionButtons onPush={handlePush} onPull={handlePull} isLoading={isLoading} />
 
           {/* ステータスメッセージ */}
           {statusMessage && (
-            <div className="mt-4 p-3 bg-blue-50 text-blue-700 rounded text-sm">
-              {statusMessage}
-            </div>
+            <div className="mt-4 rounded bg-blue-50 p-3 text-sm text-blue-700">{statusMessage}</div>
           )}
         </div>
       )}

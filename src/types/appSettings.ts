@@ -8,6 +8,6 @@ export type AppSettings = {
     author: {
       name: string;
       email: string;
-    }
+    };
   };
 };

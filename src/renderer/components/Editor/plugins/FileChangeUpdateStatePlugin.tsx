@@ -19,10 +19,10 @@ export function FileChangeUpdateStatePlugin({
 
     editor.update(() => {
       // 履歴をクリア
-      $convertFromMarkdownString(initialContent, TRANSFORMERS)
+      $convertFromMarkdownString(initialContent, TRANSFORMERS);
       editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined);
       requestAnimationFrame(() => {
-        const editorElement = document.getElementById("editor");
+        const editorElement = document.getElementById('editor');
         if (editorElement) {
           editorElement.scrollTop = 0;
         }
