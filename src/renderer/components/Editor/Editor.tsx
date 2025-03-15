@@ -16,6 +16,7 @@ import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlug
 import { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { SavePlugin } from './plugins/SavePlugin';
 import { TRANSFORMERS } from './plugins/MarkdownTransformers';
+import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 
 function onError(error: Error) {
   console.error(error);
@@ -88,6 +89,7 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(({ initialContent }
         <CheckListPlugin />
         <FileChangeUpdateStatePlugin initialContent={initialContent} />
         <SavePlugin ref={savePluginRef} />
+        <TablePlugin hasCellMerge={true} hasCellBackgroundColor={true} hasHorizontalScroll={true} />
       </LexicalComposer>
     </div>
   );
