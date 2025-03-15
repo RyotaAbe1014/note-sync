@@ -93,49 +93,48 @@ export function InsertTableDialog({
   };
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="space-y-2">
-        <label htmlFor="rows" className="block text-sm font-medium text-gray-700">
-          Rows
+    <>
+      <div className="form-control w-full">
+        <label htmlFor="rows" className="label">
+          <span className="label-text">行数</span>
         </label>
         <input
           id="rows"
           type="number"
-          placeholder="# of rows (1-500)"
+          placeholder="行数 (1-500)"
           value={rows}
           onChange={(e) => setRows(e.target.value)}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="input input-bordered w-full"
           data-test-id="table-modal-rows"
         />
       </div>
-      <div className="space-y-2">
-        <label htmlFor="columns" className="block text-sm font-medium text-gray-700">
-          Columns
+      <div className="form-control mt-2 w-full">
+        <label htmlFor="columns" className="label">
+          <span className="label-text">列数</span>
         </label>
         <input
           id="columns"
           type="number"
-          placeholder="# of columns (1-50)"
+          placeholder="列数 (1-50)"
           value={columns}
           onChange={(e) => setColumns(e.target.value)}
-          className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="input input-bordered w-full"
           data-test-id="table-modal-columns"
         />
       </div>
-      <div className="mt-5 sm:mt-6" data-test-id="table-model-confirm-insert">
+      <div className="modal-action">
         <button
           type="button"
           disabled={isDisabled}
           onClick={onClick}
-          className={`inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white shadow-sm ${
-            isDisabled
-              ? 'cursor-not-allowed bg-gray-300'
-              : 'bg-blue-600 hover:bg-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none'
-          }`}
+          className={`btn ${isDisabled ? 'btn-disabled' : 'btn-primary'}`}
         >
-          Confirm
+          確認
+        </button>
+        <button type="button" onClick={onClose} className="btn">
+          キャンセル
         </button>
       </div>
-    </div>
+    </>
   );
 }

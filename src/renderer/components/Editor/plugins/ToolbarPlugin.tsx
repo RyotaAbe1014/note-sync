@@ -286,12 +286,23 @@ export const ToolbarPlugin = () => {
         </button>
       </div>
       {showTableDialog && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-800">
-          <div className="w-96 rounded-lg bg-white p-6 shadow-xl">
-            <h2 className="mb-4 text-lg font-semibold">テーブルを挿入</h2>
+        <dialog open className="modal modal-open">
+          <div className="modal-box">
+            <form method="dialog">
+              <button
+                className="btn btn-sm btn-circle btn-ghost absolute top-2 right-2"
+                onClick={() => setShowTableDialog(false)}
+              >
+                ✕
+              </button>
+            </form>
+            <h3 className="mb-4 text-lg font-bold">テーブルを挿入</h3>
             <InsertTableDialog activeEditor={editor} onClose={() => setShowTableDialog(false)} />
           </div>
-        </div>
+          <form method="dialog" className="modal-backdrop">
+            <button onClick={() => setShowTableDialog(false)}>close</button>
+          </form>
+        </dialog>
       )}
     </div>
   );
