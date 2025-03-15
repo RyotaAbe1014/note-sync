@@ -177,49 +177,49 @@ export const ToolbarPlugin = () => {
       <div className="mb-2 flex flex-wrap items-center sm:mb-0">
         <button
           onClick={formatParagraph}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'paragraph' ? 'bg-blue-200' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'paragraph' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="段落"
         >
           <span className="font-medium">P</span>
         </button>
         <button
           onClick={() => formatHeading('h1')}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h1' ? 'bg-blue-200' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h1' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="見出し1"
         >
           <span className="text-lg font-bold">H1</span>
         </button>
         <button
           onClick={() => formatHeading('h2')}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h2' ? 'bg-blue-200' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h2' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="見出し2"
         >
           <span className="font-bold">H2</span>
         </button>
         <button
           onClick={() => formatHeading('h3')}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h3' ? 'bg-blue-200' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h3' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="見出し3"
         >
           <span className="text-sm font-bold">H3</span>
         </button>
         <button
           onClick={formatCode}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'code' ? 'bg-blue-200' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'code' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="コード"
         >
           <span className="font-mono">{`<>`}</span>
         </button>
         <button
           onClick={formatQuote}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'quote' ? 'bg-blue-200' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'quote' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="引用"
         >
           <span className="font-serif">"</span>
         </button>
         <button
           onClick={() => setShowTableDialog(true)}
-          className="mx-1 rounded bg-white p-2 transition-colors hover:bg-blue-200"
+          className="mx-1 cursor-pointer rounded bg-white p-2 transition-colors hover:bg-blue-200"
           aria-label="テーブル挿入"
         >
           <span className="font-mono">⊞</span>
@@ -230,7 +230,7 @@ export const ToolbarPlugin = () => {
           onClick={() => {
             editor.dispatchCommand(UNDO_COMMAND, undefined);
           }}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${!canUndo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${!canUndo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
           aria-label="元に戻す"
         >
           <span className="font-bold">↩</span>
@@ -240,7 +240,7 @@ export const ToolbarPlugin = () => {
           onClick={() => {
             editor.dispatchCommand(REDO_COMMAND, undefined);
           }}
-          className={`mx-1 rounded p-2 transition-colors hover:bg-blue-200 ${!canRedo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
+          className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${!canRedo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
           aria-label="やり直し"
         >
           <span className="font-bold">↪</span>
@@ -286,7 +286,7 @@ export const ToolbarPlugin = () => {
         </button>
       </div>
       {showTableDialog && (
-        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-gray-800">
           <div className="w-96 rounded-lg bg-white p-6 shadow-xl">
             <h2 className="mb-4 text-lg font-semibold">テーブルを挿入</h2>
             <InsertTableDialog activeEditor={editor} onClose={() => setShowTableDialog(false)} />
