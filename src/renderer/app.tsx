@@ -79,7 +79,7 @@ export default function App() {
           {isSettingsOpen ? <Undo2 className="h-6 w-6" /> : <Settings className="h-6 w-6" />}
         </button>
       </header>
-      <main className="flex gap-6 px-8">
+      <main className="flex h-[calc(100vh-6rem)] gap-6 px-8">
         {isSettingsOpen ? (
           <AppSettings onSettingsChange={handleSettingsChange} />
         ) : (
@@ -91,9 +91,9 @@ export default function App() {
                 onSettingsClick={() => setIsSettingsOpen(true)}
               />
             </div>
-            <div className="w-3/4">
-              <div className="mb-4 rounded-lg bg-white p-4 shadow">
-                <div className="mb-4 flex items-center justify-between">
+            <div className="flex h-full w-3/4 flex-col">
+              <div className="mb-1 flex flex-1 flex-col rounded-lg bg-white p-4 shadow">
+                <div className="flex items-center justify-between">
                   <h2 className="text-lg font-medium">
                     {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
                   </h2>
@@ -106,8 +106,9 @@ export default function App() {
                     保存
                   </button>
                 </div>
-
-                {fileContent && <Editor initialContent={fileContent} ref={editorRef} />}
+                {fileContent && (
+                  <Editor initialContent={fileContent} ref={editorRef} className="flex-1" />
+                )}
               </div>
             </div>
           </>
