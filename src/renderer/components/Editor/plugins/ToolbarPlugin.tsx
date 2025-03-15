@@ -29,6 +29,7 @@ import {
   HeadingTagType,
 } from '@lexical/rich-text';
 import { $isCodeNode, $createCodeNode } from '@lexical/code';
+import { InsertTableDialog } from './TablePlugin';
 
 const LowPriority = 1;
 
@@ -58,6 +59,7 @@ export const ToolbarPlugin = () => {
   const [isItalic, setIsItalic] = useState(false);
   const [isUnderline, setIsUnderline] = useState(false);
   const [isStrikethrough, setIsStrikethrough] = useState(false);
+  const [showTableDialog, setShowTableDialog] = useState(false);
 
   const $updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -215,6 +217,13 @@ export const ToolbarPlugin = () => {
         >
           <span className="font-serif">"</span>
         </button>
+        <button
+          onClick={() => setShowTableDialog(true)}
+          className="mx-1 rounded bg-white p-2 transition-colors hover:bg-blue-200"
+          aria-label="テーブル挿入"
+        >
+          <span className="font-mono">⊞</span>
+        </button>
         <Divider />
         <button
           disabled={!canUndo}
@@ -276,6 +285,14 @@ export const ToolbarPlugin = () => {
           <span className="font-bold line-through">S</span>
         </button>
       </div>
+      {showTableDialog && (
+        <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+          <div className="w-96 rounded-lg bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-lg font-semibold">テーブルを挿入</h2>
+            <InsertTableDialog activeEditor={editor} onClose={() => setShowTableDialog(false)} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
