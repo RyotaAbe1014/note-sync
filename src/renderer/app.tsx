@@ -71,13 +71,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-100 pt-8 pb-2">
-      <header className="mb-8 flex items-center justify-between px-8">
-        <h1 className="text-2xl font-bold text-gray-800">NoteSync</h1>
+      <header className="mb-4 flex justify-end px-8">
         <button
-          className="flex cursor-pointer items-center gap-2 rounded disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={() => {
-            setIsSettingsOpen(!isSettingsOpen);
-          }}
+          className="cursor-pointer"
+          onClick={() => setIsSettingsOpen((prevState) => !prevState)}
         >
           {isSettingsOpen ? <Undo2 className="h-6 w-6" /> : <Settings className="h-6 w-6" />}
         </button>
