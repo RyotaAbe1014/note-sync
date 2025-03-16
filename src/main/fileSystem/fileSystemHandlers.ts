@@ -1,6 +1,8 @@
 import { app, ipcMain } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
 
 export function setupFileSystemHandlers() {
   // ディレクトリ内のファイル一覧を取得
@@ -30,6 +32,72 @@ export function setupFileSystemHandlers() {
       console.error('Error reading file:', error);
       throw error;
     }
+  });
+
+  // ファイルの情報を取得
+  ipcMain.handle('fs:get-file-info', async (event, filePath) => {
+    try {
+      const stats = await fs.stat(filePath);
+      return {
+        size: stats.size,
+        isLargeFile: stats.size > 1024 * 1024, // 1MB以上を大きなファイルとみなす
+      };
+    } catch (error) {
+      console.error('Error getting file info:', error);
+      throw error;
+    }
+  });
+
+  // 大きなファイルを部分的に読み込む
+  ipcMain.handle('fs:read-file-chunk', async (event, filePath, start, end) => {
+    try {
+      // ファイルを開いて指定された範囲を読み込む
+      const fileHandle = await fs.open(filePath, 'r');
+      const buffer = Buffer.alloc(end - start);
+      await fileHandle.read(buffer, 0, end - start, start);
+      await fileHandle.close();
+      return buffer.toString('utf-8');
+    } catch (error) {
+      console.error('Error reading file chunk:', error);
+      throw error;
+    }
+  });
+
+  // ファイルを行単位で読み込む
+  ipcMain.handle('fs:read-file-lines', async (event, filePath, startLine, lineCount) => {
+    return new Promise((resolve, reject) => {
+      try {
+        const lines: string[] = [];
+        let currentLine = 0;
+
+        const readStream = createReadStream(filePath, { encoding: 'utf-8' });
+        const rl = createInterface({ input: readStream });
+
+        rl.on('line', (line) => {
+          currentLine++;
+
+          if (currentLine >= startLine && currentLine < startLine + lineCount) {
+            lines.push(line);
+          }
+
+          if (currentLine >= startLine + lineCount) {
+            rl.close();
+            readStream.close();
+          }
+        });
+
+        rl.on('close', () => {
+          resolve(lines.join('\n'));
+        });
+
+        rl.on('error', (err) => {
+          reject(err);
+        });
+      } catch (error) {
+        console.error('Error reading file lines:', error);
+        reject(error);
+      }
+    });
   });
 
   // ファイルの書き込み

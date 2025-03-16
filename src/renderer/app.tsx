@@ -6,16 +6,25 @@ import { GitControls } from './components/GitOps/GitControls';
 import { useState, useRef, useEffect } from 'react';
 import { Save, Settings, Undo2 } from 'lucide-react';
 import { AppSettings } from './components/AppSettings/AppSettings';
+import { useFileLoader } from './hooks/useFileLoader';
 
 const root = createRoot(document.body);
 root.render(<App />);
 
 export default function App() {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [fileContent, setFileContent] = useState<string>('');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [hasGitSettings, setHasGitSettings] = useState<boolean>(false);
   const editorRef = useRef<EditorRefType>(null);
+
+  // 新しいファイルローダーフックを使用
+  const {
+    content: fileContent,
+    isLoading,
+    error,
+    fileInfo,
+    loadProgress,
+  } = useFileLoader(selectedFile);
 
   // Gitの設定を確認する関数
   const checkGitSettings = async () => {
@@ -35,13 +44,7 @@ export default function App() {
 
   // ファイルが選択されたときの処理
   const handleFileSelect = async (filePath: string) => {
-    try {
-      setSelectedFile(filePath);
-      const content = await window.api.fs.readFile(filePath);
-      setFileContent(content);
-    } catch (error) {
-      console.error('Error loading file:', error);
-    }
+    setSelectedFile(filePath);
   };
 
   // ファイルを保存する処理
@@ -106,7 +109,28 @@ export default function App() {
                     保存
                   </button>
                 </div>
-                {fileContent && (
+
+                {isLoading && (
+                  <div className="flex h-40 items-center justify-center">
+                    <div className="flex flex-col items-center">
+                      <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-blue-500"></div>
+                      <p className="mt-3 text-gray-600">読み込み中... {loadProgress}%</p>
+                      {fileInfo?.isLargeFile && (
+                        <p className="mt-1 text-sm text-gray-500">
+                          大きなファイル ({Math.round(fileInfo.size / 1024)} KB) を読み込んでいます
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="mt-4 rounded-md bg-red-50 p-4 text-red-600">
+                    <p>エラーが発生しました: {error.message}</p>
+                  </div>
+                )}
+
+                {!isLoading && fileContent && (
                   <Editor initialContent={fileContent} ref={editorRef} className="flex-1" />
                 )}
               </div>
