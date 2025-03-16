@@ -21,6 +21,11 @@ contextBridge.exposeInMainWorld('api', {
   fs: {
     listFiles: (dirPath: string | null) => ipcRenderer.invoke('fs:list-files', dirPath),
     readFile: (filePath: string) => ipcRenderer.invoke('fs:read-file', filePath),
+    getFileInfo: (filePath: string) => ipcRenderer.invoke('fs:get-file-info', filePath),
+    readFileChunk: (filePath: string, start: number, end: number) =>
+      ipcRenderer.invoke('fs:read-file-chunk', filePath, start, end),
+    readFileLines: (filePath: string, startLine: number, lineCount: number) =>
+      ipcRenderer.invoke('fs:read-file-lines', filePath, startLine, lineCount),
     writeFile: (filePath: string, content: string) =>
       ipcRenderer.invoke('fs:write-file', filePath, content),
     addFile: (filePath: string, content: string) =>
