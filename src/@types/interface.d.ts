@@ -7,6 +7,11 @@ interface FileInfo {
   path: string;
 }
 
+interface FileStats {
+  size: number;
+  isLargeFile: boolean;
+}
+
 interface GitAuthor {
   name: string;
   email: string;
@@ -25,6 +30,9 @@ declare global {
       fs: {
         listFiles: (dirPath: string | null) => Promise<FileInfo[]>;
         readFile: (filePath: string) => Promise<string>;
+        getFileInfo: (filePath: string) => Promise<FileStats>;
+        readFileChunk: (filePath: string, start: number, end: number) => Promise<string>;
+        readFileLines: (filePath: string, startLine: number, lineCount: number) => Promise<string>;
         writeFile: (filePath: string, content: string) => Promise<boolean>;
         addFile: (filePath: string, content: string) => Promise<boolean>;
         renameFile: (filePath: string, newName: string) => Promise<boolean>;
