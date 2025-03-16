@@ -9,21 +9,28 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 提案された技術スタックは以下の通りです：
 
 ### フロントエンド
+
 - React
 - TypeScript
 - Vite
 - Lexical（リッチテキストエディタ）
+- TailwindCSS
+- DaisyUI
+- Lucide
 
 ### バックエンド（Electron アプリ）
+
 - Electron
 - Node.js
 - isomorphic-git
 
 ### データ管理
+
 - Markdownファイル（ローカル保存 & GitHub同期）
 - Electron Store（アプリの設定をローカル保存）
 
 ### GitHub連携
+
 - GitHub API
 - Git操作（commit, push, pull）
 
@@ -34,10 +41,12 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 提案されたCommitNotesプロジェクトは、現在の技術スタックと開発環境で十分に実現可能です。以下にその理由を説明します：
 
 1. **基本技術の整備**：
+
    - 現在のプロジェクトはすでにElectron + React + TypeScriptの基本構成が整っています
    - Viteを使用したビルド環境も構築済みです
 
 2. **必要な追加ライブラリ**：
+
    - isomorphic-git：Node.js環境でGit操作を行うために必要
    - Lexical：Facebookが開発したリッチテキストエディタ
    - Electron Store：設定の保存に必要
@@ -83,6 +92,7 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 - [x] リポジトリ選択
 
 ### 4. データ同期と履歴管理（1-2週間）
+
 - [x] 変更の検出と同期機能
 - [ ] 履歴表示機能（git log）
 
@@ -124,10 +134,12 @@ src/
 ### データフロー
 
 1. **メモの作成・編集**：
+
    - ユーザーがUIでMarkdownを編集
    - 明示的な保存操作でファイルシステムに書き込み
 
 2. **Git操作**：
+
    - ユーザーが明示的にcommit操作を実行
    - isomorphic-gitを使用してローカルリポジトリにcommit
    - push操作でGitHubに同期
@@ -137,7 +149,7 @@ src/
    - Electron Storeを使用してアプリ設定を保存
      - 設定する内容は以下
        - ルートディレクトリの設定
-   - GitHub認証情報の安全な保存
+       -
 
 ## 結論
 
