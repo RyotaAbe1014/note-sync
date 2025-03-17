@@ -97,6 +97,11 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
     setMenuPosition(null);
   };
 
+  const isDisabled = (file: FileItem) => {
+    // ディレクトリとmdファイル以外をクリックできないようにする
+    return file.isDirectory || !file.name.endsWith('.md');
+  };
+
   // 画面外クリックでメニューを閉じる
   useEffect(() => {
     const handleClickOutside = () => {
@@ -153,24 +158,26 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
                 </li>
               ) : (
                 files.map((file) => (
-                  <li
-                    key={file.path}
-                    className={`flex cursor-pointer items-center rounded-md px-3 py-2.5 transition-colors duration-150 hover:bg-gray-50 ${
-                      file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                    } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''}`}
-                    onClick={() =>
-                      file.isDirectory
-                        ? handleDirectoryClick(file.path)
-                        : handleFileClick(file.path)
-                    }
-                    onContextMenu={(e) => handleRightClick(e, file)}
-                  >
-                    {file.isDirectory ? (
-                      <FolderIcon className="mr-2 h-5 w-5 flex-shrink-0" />
-                    ) : (
-                      <FileIcon className="mr-2 h-5 w-5 flex-shrink-0" />
-                    )}
-                    <span className="truncate">{file.name}</span>
+                  <li key={file.path} onContextMenu={(e) => handleRightClick(e, file)}>
+                    <button
+                      className={`flex cursor-pointer items-center rounded-md px-3 py-2.5 transition-colors duration-150 hover:bg-gray-50 ${
+                        file.isDirectory ? 'text-blue-600' : 'text-gray-700'
+                      } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''} ${file.isDirectory ? 'cursor-not-allowed' : ''}`}
+                      onClick={() =>
+                        file.isDirectory
+                          ? handleDirectoryClick(file.path)
+                          : handleFileClick(file.path)
+                      }
+                      onContextMenu={(e) => handleRightClick(e, file)}
+                      disabled={isDisabled(file)}
+                    >
+                      {file.isDirectory ? (
+                        <FolderIcon className="mr-2 h-5 w-5 flex-shrink-0" />
+                      ) : (
+                        <FileIcon className="mr-2 h-5 w-5 flex-shrink-0" />
+                      )}
+                      <span className="truncate">{file.name}</span>
+                    </button>
                   </li>
                 ))
               )}
