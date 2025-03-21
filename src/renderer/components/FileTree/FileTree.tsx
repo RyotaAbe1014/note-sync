@@ -372,6 +372,30 @@ const FileMenu = ({
               </button>
             </>
           )}
+          {!file.isDirectory && (
+            <>
+              <button
+                className="flex cursor-pointer items-center p-2.5 text-left text-sm transition-colors duration-150 hover:bg-gray-50"
+                onClick={() => {
+                  // TODO: PDF変換機能の実装
+                  console.log('Convert to PDF:', file.path);
+                }}
+              >
+                <FileIcon className="mr-2 h-4 w-4 text-gray-500" />
+                PDFに変換
+              </button>
+              <button
+                className="flex cursor-pointer items-center p-2.5 text-left text-sm transition-colors duration-150 hover:bg-gray-50"
+                onClick={() => {
+                  // TODO: EPUB変換機能の実装
+                  console.log('Convert to EPUB:', file.path);
+                }}
+              >
+                <FileIcon className="mr-2 h-4 w-4 text-gray-500" />
+                EPUBに変換
+              </button>
+            </>
+          )}
           <button
             className="flex cursor-pointer items-center p-2.5 text-left text-sm transition-colors duration-150 hover:bg-gray-50"
             onClick={() => handleRenameClick()}
