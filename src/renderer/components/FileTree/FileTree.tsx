@@ -98,8 +98,8 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   };
 
   const isDisabled = (file: FileItem) => {
-    // ディレクトリとmdファイル以外をクリックできないようにする
-    return file.isDirectory || !file.name.endsWith('.md');
+    // ディレクトリは常に有効、ファイルは.mdのみ有効
+    return !file.isDirectory && !file.name.endsWith('.md');
   };
 
   // 画面外クリックでメニューを閉じる
@@ -160,9 +160,9 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
                 files.map((file) => (
                   <li key={file.path} onContextMenu={(e) => handleRightClick(e, file)}>
                     <button
-                      className={`flex cursor-pointer items-center rounded-md px-3 py-2.5 transition-colors duration-150 hover:bg-gray-50 ${
+                      className={`flex items-center rounded-md px-3 py-2.5 transition-colors duration-150 hover:bg-gray-50 ${
                         file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                      } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''} ${file.isDirectory ? 'cursor-not-allowed' : ''}`}
+                      } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''} ${isDisabled(file) ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                       onClick={() =>
                         file.isDirectory
                           ? handleDirectoryClick(file.path)
