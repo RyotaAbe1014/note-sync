@@ -12,6 +12,11 @@ interface FileTreeProps {
   onSettingsClick: () => void;
 }
 
+interface ExportResult {
+  success: boolean;
+  outputPath: string;
+}
+
 export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClick }) => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [rootDir, setRootDir] = useState<string | null>(null);
@@ -375,9 +380,18 @@ const FileMenu = ({
             <>
               <button
                 className="flex cursor-pointer items-center p-2.5 text-left text-sm transition-colors duration-150 hover:bg-gray-50"
-                onClick={() => {
-                  // TODO: PDF変換機能の実装
-                  console.log('Convert to PDF:', file.path);
+                onClick={async () => {
+                  try {
+                    const result = await window.api.export.exportPdf(file.path);
+                    const exportResult = result as unknown as ExportResult;
+                    if (exportResult.success) {
+                      // TODO: 成功通知の実装
+                      console.log('PDF変換成功:', exportResult.outputPath);
+                    }
+                  } catch (error) {
+                    // TODO: エラー通知の実装
+                    console.error('PDF変換エラー:', error);
+                  }
                 }}
               >
                 <FileIcon className="mr-2 h-4 w-4 text-gray-500" />
@@ -385,9 +399,18 @@ const FileMenu = ({
               </button>
               <button
                 className="flex cursor-pointer items-center p-2.5 text-left text-sm transition-colors duration-150 hover:bg-gray-50"
-                onClick={() => {
-                  // TODO: EPUB変換機能の実装
-                  console.log('Convert to EPUB:', file.path);
+                onClick={async () => {
+                  try {
+                    const result = await window.api.export.exportEpub(file.path);
+                    const exportResult = result as unknown as ExportResult;
+                    if (exportResult.success) {
+                      // TODO: 成功通知の実装
+                      console.log('EPUB変換成功:', exportResult.outputPath);
+                    }
+                  } catch (error) {
+                    // TODO: エラー通知の実装
+                    console.error('EPUB変換エラー:', error);
+                  }
                 }}
               >
                 <FileIcon className="mr-2 h-4 w-4 text-gray-500" />
