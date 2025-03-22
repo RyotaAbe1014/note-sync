@@ -7,7 +7,7 @@ const execPromise = promisify(exec);
 
 export function setupExportHandlers() {
   // PDF変換
-  ipcMain.handle('fs:export-pdf', async (event, filePath) => {
+  ipcMain.handle('export:export-pdf', async (event, filePath) => {
     try {
       const title = path.basename(filePath, path.extname(filePath));
       const outputPath = `${filePath}.pdf`;
@@ -34,7 +34,7 @@ export function setupExportHandlers() {
   });
 
   // EPUB変換
-  ipcMain.handle('fs:export-epub', async (event, filePath) => {
+  ipcMain.handle('export:export-epub', async (event, filePath) => {
     try {
       const title = path.basename(filePath, path.extname(filePath));
       const outputPath = `${filePath}.epub`;

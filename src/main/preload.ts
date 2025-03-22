@@ -41,8 +41,8 @@ contextBridge.exposeInMainWorld('api', {
 
   // エクスポート
   export: {
-    exportPdf: (filePath: string) => ipcRenderer.invoke('fs:export-pdf', filePath),
-    exportEpub: (filePath: string) => ipcRenderer.invoke('fs:export-epub', filePath),
+    exportPdf: (filePath: string) => ipcRenderer.invoke('export:export-pdf', filePath),
+    exportEpub: (filePath: string) => ipcRenderer.invoke('export:export-epub', filePath),
   },
 
   // Git操作
