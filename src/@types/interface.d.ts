@@ -41,6 +41,10 @@ declare global {
         renameDirectory: (dirPath: string, newName: string) => Promise<boolean>;
         removeDirectory: (dirPath: string) => Promise<boolean>;
       };
+      export: {
+        exportPdf: (filePath: string) => Promise<string>;
+        exportEpub: (filePath: string) => Promise<string>;
+      };
       git: {
         add: (filepath: string) => Promise<void>;
         unstage: (filepath: string) => Promise<void>;
