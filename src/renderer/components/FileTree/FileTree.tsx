@@ -103,7 +103,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   };
 
   const isDisabled = (file: FileItem) => {
-    return !file.isDirectory;
+    return !file.isDirectory && !file.name.endsWith('.md');
   };
 
   // 画面外クリックでメニューを閉じる
