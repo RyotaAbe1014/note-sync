@@ -39,6 +39,12 @@ contextBridge.exposeInMainWorld('api', {
     removeDirectory: (dirPath: string) => ipcRenderer.invoke('fs:remove-directory', dirPath),
   },
 
+  // エクスポート
+  export: {
+    exportPdf: (filePath: string) => ipcRenderer.invoke('fs:export-pdf', filePath),
+    exportEpub: (filePath: string) => ipcRenderer.invoke('fs:export-epub', filePath),
+  },
+
   // Git操作
   git: {
     add: (filepath: string) => ipcRenderer.invoke('git:add', filepath),
