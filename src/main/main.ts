@@ -6,6 +6,7 @@ import { setupAppSettingsHandlers } from './settings/settingsHandlers';
 import { setupDialogHandlers } from './dialog/dialogHandlers';
 import { setupFileSystemHandlers } from './fileSystem/fileSystemHandlers';
 import { setupGitHandlers } from './git/gitHandlers';
+import { setupExportHandlers } from './export/exportHandler';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -46,6 +47,7 @@ app.on('ready', () => {
   setupDialogHandlers();
   setupFileSystemHandlers();
   setupGitHandlers();
+  setupExportHandlers();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
