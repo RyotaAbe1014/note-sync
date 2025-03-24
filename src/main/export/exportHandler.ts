@@ -12,8 +12,6 @@ interface ExportResult {
   outputPath: string;
 }
 
-let isPandocAvailable = false;
-
 async function checkPandocAvailability(): Promise<boolean> {
   try {
     const { stdout } = await execPromise('pandoc --version');
@@ -26,6 +24,8 @@ async function checkPandocAvailability(): Promise<boolean> {
 }
 
 async function convertDocument(filePath: string, format: ExportFormat): Promise<ExportResult> {
+  // エクスポート時にPandocの可用性を確認
+  const isPandocAvailable = await checkPandocAvailability();
   if (!isPandocAvailable) {
     throw new Error(
       'Pandocがインストールされていません。Pandocをインストールしてから再度お試しください。'
@@ -57,10 +57,7 @@ async function convertDocument(filePath: string, format: ExportFormat): Promise<
   }
 }
 
-export async function setupExportHandlers() {
-  // Pandocの可用性を確認
-  isPandocAvailable = await checkPandocAvailability();
-
+export function setupExportHandlers() {
   // PDF変換
   ipcMain.handle('export:export-pdf', async (event, filePath: string) => {
     return convertDocument(filePath, 'pdf');
