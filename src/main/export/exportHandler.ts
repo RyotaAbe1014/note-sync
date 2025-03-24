@@ -12,7 +12,26 @@ interface ExportResult {
   outputPath: string;
 }
 
+let isPandocAvailable = false;
+
+async function checkPandocAvailability(): Promise<boolean> {
+  try {
+    const { stdout } = await execPromise('pandoc --version');
+    console.log('Pandoc version:', stdout.split('\n')[0]);
+    return true;
+  } catch (error) {
+    console.error('Pandocがインストールされていません:', error);
+    return false;
+  }
+}
+
 async function convertDocument(filePath: string, format: ExportFormat): Promise<ExportResult> {
+  if (!isPandocAvailable) {
+    throw new Error(
+      'Pandocがインストールされていません。Pandocをインストールしてから再度お試しください。'
+    );
+  }
+
   try {
     const title = path.basename(filePath, path.extname(filePath));
     const outputPath = `${filePath}.${format}`;
@@ -38,7 +57,10 @@ async function convertDocument(filePath: string, format: ExportFormat): Promise<
   }
 }
 
-export function setupExportHandlers() {
+export async function setupExportHandlers() {
+  // Pandocの可用性を確認
+  isPandocAvailable = await checkPandocAvailability();
+
   // PDF変換
   ipcMain.handle('export:export-pdf', async (event, filePath: string) => {
     return convertDocument(filePath, 'pdf');
