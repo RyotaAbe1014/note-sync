@@ -73,10 +73,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-8 pb-2">
+    <div className="bg-base-200 min-h-screen pt-8 pb-2">
       <header className="mb-4 flex justify-end px-8">
         <button
-          className="cursor-pointer"
+          className="btn btn-ghost btn-circle"
           onClick={() => setIsSettingsOpen((prevState) => !prevState)}
         >
           {isSettingsOpen ? <Undo2 className="h-6 w-6" /> : <Settings className="h-6 w-6" />}
@@ -95,44 +95,47 @@ export default function App() {
               />
             </div>
             <div className="flex h-full w-3/4 flex-col">
-              <div className="mb-1 flex flex-1 flex-col rounded-lg bg-white p-4 shadow">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-medium">
-                    {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
-                  </h2>
-                  <button
-                    onClick={handleSave}
-                    disabled={!selectedFile}
-                    className="flex cursor-pointer items-center gap-2 rounded bg-blue-500 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <Save className="h-4 w-4" />
-                    保存
-                  </button>
-                </div>
+              <div className="card bg-base-100 flex-1 shadow-xl">
+                <div className="card-body">
+                  <div className="flex items-center justify-between">
+                    <h2 className="card-title">
+                      {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
+                    </h2>
+                    <button
+                      onClick={handleSave}
+                      disabled={!selectedFile}
+                      className="btn btn-primary gap-2"
+                    >
+                      <Save className="h-4 w-4" />
+                      保存
+                    </button>
+                  </div>
 
-                {isLoading && (
-                  <div className="flex h-40 items-center justify-center">
-                    <div className="flex flex-col items-center">
-                      <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-blue-500"></div>
-                      <p className="mt-3 text-gray-600">読み込み中... {loadProgress}%</p>
-                      {fileInfo?.isLargeFile && (
-                        <p className="mt-1 text-sm text-gray-500">
-                          大きなファイル ({Math.round(fileInfo.size / 1024)} KB) を読み込んでいます
-                        </p>
-                      )}
+                  {isLoading && (
+                    <div className="flex h-40 items-center justify-center">
+                      <div className="flex flex-col items-center">
+                        <span className="loading loading-spinner loading-lg text-primary"></span>
+                        <p className="text-base-content mt-3">読み込み中... {loadProgress}%</p>
+                        {fileInfo?.isLargeFile && (
+                          <p className="text-base-content/70 mt-1 text-sm">
+                            大きなファイル ({Math.round(fileInfo.size / 1024)} KB)
+                            を読み込んでいます
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {error && (
-                  <div className="mt-4 rounded-md bg-red-50 p-4 text-red-600">
-                    <p>エラーが発生しました: {error.message}</p>
-                  </div>
-                )}
+                  {error && (
+                    <div className="alert alert-error mt-4">
+                      <p>エラーが発生しました: {error.message}</p>
+                    </div>
+                  )}
 
-                {!isLoading && fileContent && (
-                  <Editor initialContent={fileContent} ref={editorRef} className="flex-1" />
-                )}
+                  {!isLoading && fileContent && (
+                    <Editor initialContent={fileContent} ref={editorRef} className="flex-1" />
+                  )}
+                </div>
               </div>
             </div>
           </>
