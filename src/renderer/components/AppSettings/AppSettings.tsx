@@ -80,33 +80,35 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
           {/* ルートディレクトリ設定 */}
           <div className="form-control">
             <h3 className="mb-4 text-lg font-medium">ルートディレクトリ設定</h3>
-            <div className="join w-full">
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  disabled
-                  value={settings.rootDirectory.path}
-                  placeholder="ルートディレクトリのパス"
-                  className="input input-bordered w-full pr-8"
-                />
-                {settings.rootDirectory.path && (
-                  <CheckIcon className="text-success absolute top-1/2 right-2 h-4 w-4 -translate-y-1/2" />
-                )}
+            <div className="form-control">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    disabled
+                    value={settings.rootDirectory.path}
+                    placeholder="ルートディレクトリのパス"
+                    className="input input-bordered w-full pr-8"
+                  />
+                  {settings.rootDirectory.path && (
+                    <CheckIcon className="text-success absolute top-1/2 right-2 h-4 w-4 -translate-y-1/2" />
+                  )}
+                </div>
+                <button
+                  onClick={handleSelectDirectory}
+                  className="btn btn-outline"
+                  title="ディレクトリを選択"
+                >
+                  <FolderOpen className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                onClick={handleSelectDirectory}
-                className="btn btn-outline join-item"
-                title="ディレクトリを選択"
-              >
-                <FolderOpen className="h-4 w-4" />
-              </button>
+              <label className="label">
+                <span className="label-text-alt">
+                  メモを保存している<code className="text-primary font-bold">.git</code>
+                  があるディレクトリを指定してください
+                </span>
+              </label>
             </div>
-            <label className="label">
-              <span className="label-text-alt">
-                メモを保存している<code className="text-primary font-bold">.git</code>
-                があるディレクトリを指定してください
-              </span>
-            </label>
           </div>
 
           {/* Git設定 */}
