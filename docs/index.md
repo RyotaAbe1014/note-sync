@@ -13,6 +13,7 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 - React
 - TypeScript
 - Vite
+- Jotai
 - Lexical（リッチテキストエディタ）
 - TailwindCSS
 - DaisyUI
