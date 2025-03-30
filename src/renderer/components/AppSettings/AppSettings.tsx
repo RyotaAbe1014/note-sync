@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { AppSettings as AppSettingsType } from '../../../types/appSettings';
 import { CheckIcon, FolderOpen } from 'lucide-react';
+import { useToast } from '../../hooks/useToast';
 
-export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void }) => {
+export const AppSettings = () => {
   const [settings, setSettings] = useState<AppSettingsType>({
     rootDirectory: {
       path: '',
@@ -18,10 +19,7 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
   });
 
   const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<{
-    type: 'success' | 'error';
-    text: string;
-  } | null>(null);
+  const { showToast } = useToast();
 
   // 設定を読み込む
   useEffect(() => {
@@ -42,15 +40,13 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
   // 設定を保存する
   const handleSave = async () => {
     setIsSaving(true);
-    setSaveMessage(null);
 
     try {
       await window.api.app.setSettings(settings);
-      setSaveMessage({ type: 'success', text: '設定を保存しました' });
-      onSettingsChange();
+      showToast('設定を保存しました', 'success');
     } catch (error) {
       console.error('設定の保存に失敗しました:', error);
-      setSaveMessage({ type: 'error', text: '設定の保存に失敗しました' });
+      showToast('設定の保存に失敗しました', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -207,7 +203,7 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
 
           {/* 保存ボタン */}
           <div className="divider"></div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <button onClick={handleSave} disabled={isSaving} className="btn btn-primary">
               {isSaving ? (
                 <span className="loading loading-spinner loading-sm"></span>
@@ -215,14 +211,6 @@ export const AppSettings = ({ onSettingsChange }: { onSettingsChange: () => void
                 '設定を保存'
               )}
             </button>
-
-            {saveMessage && (
-              <div
-                className={`alert ${saveMessage.type === 'success' ? 'alert-success' : 'alert-error'}`}
-              >
-                <span>{saveMessage.text}</span>
-              </div>
-            )}
           </div>
         </div>
       </div>

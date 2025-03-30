@@ -88,7 +88,7 @@ export default function App() {
       </header>
       <main className="flex h-[calc(100vh-6rem)] gap-6 px-8">
         {isSettingsOpen ? (
-          <AppSettings onSettingsChange={handleSettingsChange} />
+          <AppSettings />
         ) : (
           <>
             <div className="w-1/4">
