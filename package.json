@@ -72,6 +72,7 @@
     "@tailwindcss/postcss": "^4.0.9",
     "@tailwindcss/vite": "^4.0.9",
     "@xterm/xterm": "^5.5.0",
+    "clsx": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^10.0.1",
     "isomorphic-git": "^1.29.0",
