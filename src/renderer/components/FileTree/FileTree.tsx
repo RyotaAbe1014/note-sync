@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, X, Edit, Trash2, FolderIcon, FileIcon, Sparkles } from 'lucide-react';
+import { useToast } from '../../hooks/useToast';
 
 interface FileItem {
   name: string;
@@ -24,6 +25,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
+  const { showToast } = useToast();
 
   // ディレクトリの内容を読み込む
   const loadDirectory = async (dirPath: string | null) => {
@@ -34,6 +36,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
       setCurrentDir(dirPath);
     } catch (error) {
       console.error('Error loading directory:', error);
+      showToast('ディレクトリの読み込みに失敗しました', 'error');
     } finally {
       setLoading(false);
     }
@@ -76,17 +79,30 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   };
 
   const handleRename = async (file: FileItem, newName: string) => {
-    await window.api.fs.renameFile(file.path, newName);
-    loadDirectory(currentDir);
+    try {
+      await window.api.fs.renameFile(file.path, newName);
+      loadDirectory(currentDir);
+      showToast(`${file.name}を${newName}に変更しました`, 'success');
+    } catch (error) {
+      console.error('Error renaming file:', error);
+      showToast('名前の変更に失敗しました', 'error');
+    }
   };
 
   const handleDeleteClick = async (file: FileItem) => {
-    if (file.isDirectory) {
-      await window.api.fs.removeDirectory(file.path);
-    } else {
-      await window.api.fs.removeFile(file.path);
+    try {
+      if (file.isDirectory) {
+        await window.api.fs.removeDirectory(file.path);
+        showToast(`フォルダ "${file.name}" を削除しました`, 'success');
+      } else {
+        await window.api.fs.removeFile(file.path);
+        showToast(`ファイル "${file.name}" を削除しました`, 'success');
+      }
+      loadDirectory(currentDir);
+    } catch (error) {
+      console.error('Error deleting file/directory:', error);
+      showToast('削除に失敗しました', 'error');
     }
-    loadDirectory(currentDir);
   };
 
   // 右クリックをしたときの処理
@@ -195,6 +211,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
               handleClose={handleCloseMenu}
               handleRename={handleRename}
               handleDeleteClick={handleDeleteClick}
+              showToast={showToast}
             />
           )}
         </>
@@ -209,6 +226,7 @@ interface FileMenuProps {
   handleClose: () => void;
   handleRename: (file: FileItem, newName: string) => void;
   handleDeleteClick: (file: FileItem) => void;
+  showToast: (message: string, type: 'success' | 'error') => void;
 }
 
 const FileMenu = ({
@@ -217,6 +235,7 @@ const FileMenu = ({
   handleClose,
   handleRename,
   handleDeleteClick,
+  showToast,
 }: FileMenuProps) => {
   const [isRenaming, setIsRenaming] = useState<boolean>(false);
   const [newName, setNewName] = useState(file.name);
@@ -261,8 +280,10 @@ const FileMenu = ({
     try {
       if (type === 'file') {
         await window.api.fs.addFile(`${file.path}/${newItemName}.md`, '');
+        showToast(`ファイル "${newItemName}.md" を作成しました`, 'success');
       } else {
         await window.api.fs.createDirectory(`${file.path}/${newItemName}`);
+        showToast(`フォルダ "${newItemName}" を作成しました`, 'success');
       }
       // 親コンポーネントのloadDirectoryを呼び出す
       window.api.fs.listFiles(file.path);
@@ -271,6 +292,7 @@ const FileMenu = ({
       setNewItemType(null);
     } catch (error) {
       console.error('Error creating new item:', error);
+      showToast(`${type === 'file' ? 'ファイル' : 'フォルダ'}の作成に失敗しました`, 'error');
     }
   };
 
@@ -385,12 +407,11 @@ const FileMenu = ({
                     const result = await window.api.export.exportPdf(file.path);
                     const exportResult = result as unknown as ExportResult;
                     if (exportResult.success) {
-                      // TODO: 成功通知の実装
-                      console.log('PDF変換成功:', exportResult.outputPath);
+                      showToast(`PDFに変換しました: ${exportResult.outputPath}`, 'success');
                     }
                   } catch (error) {
-                    // TODO: エラー通知の実装
                     console.error('PDF変換エラー:', error);
+                    showToast('PDFへの変換に失敗しました', 'error');
                   }
                 }}
               >
@@ -404,12 +425,11 @@ const FileMenu = ({
                     const result = await window.api.export.exportEpub(file.path);
                     const exportResult = result as unknown as ExportResult;
                     if (exportResult.success) {
-                      // TODO: 成功通知の実装
-                      console.log('EPUB変換成功:', exportResult.outputPath);
+                      showToast(`EPUBに変換しました: ${exportResult.outputPath}`, 'success');
                     }
                   } catch (error) {
-                    // TODO: エラー通知の実装
                     console.error('EPUB変換エラー:', error);
+                    showToast('EPUBへの変換に失敗しました', 'error');
                   }
                 }}
               >
