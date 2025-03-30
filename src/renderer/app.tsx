@@ -59,12 +59,12 @@ export default function App() {
         if (editorRef.current) {
           contentToSave = editorRef.current.getMarkdown();
         }
-        console.log('contentToSave', contentToSave);
 
         await window.api.fs.writeFile(selectedFile, contentToSave);
-        console.log('File saved successfully');
+        showToast('ファイルを保存しました', 'success');
       } catch (error) {
         console.error('Error saving file:', error);
+        showToast('ファイルを保存できませんでした', 'error');
       }
     }
   };
