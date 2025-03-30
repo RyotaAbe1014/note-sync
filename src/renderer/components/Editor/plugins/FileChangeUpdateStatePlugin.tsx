@@ -15,8 +15,6 @@ export function FileChangeUpdateStatePlugin({
   useEffect(() => {
     if (!initialContent || isProcessing) return;
 
-    console.log('FileChangeUpdateStatePlugin initialContent length:', initialContent.length);
-
     // 大きなファイルの場合は処理を最適化
     const isLargeContent = initialContent.length > 100000; // 約100KB以上を大きなコンテンツとみなす
 
