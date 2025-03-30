@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Save, Settings, Undo2 } from 'lucide-react';
 import { AppSettings } from './components/AppSettings/AppSettings';
 import { useFileLoader } from './hooks/useFileLoader';
+import { useToast } from './hooks/useToast';
 
 const root = createRoot(document.body);
 root.render(<App />);
@@ -16,6 +17,8 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [hasGitSettings, setHasGitSettings] = useState<boolean>(false);
   const editorRef = useRef<EditorRefType>(null);
+
+  const { Toast, showToast } = useToast();
 
   // 新しいファイルローダーフックを使用
   const {
@@ -74,6 +77,7 @@ export default function App() {
 
   return (
     <div className="bg-base-200 min-h-screen pt-8 pb-2">
+      <Toast />
       <header className="mb-4 flex justify-end px-8">
         <button
           className="btn btn-ghost btn-circle"
