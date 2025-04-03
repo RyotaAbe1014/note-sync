@@ -23,7 +23,11 @@ async function checkPandocAvailability(): Promise<boolean> {
   }
 }
 
-async function convertDocument(filePath: string, format: ExportFormat): Promise<ExportResult> {
+async function convertDocument(
+  filePath: string,
+  format: ExportFormat,
+  cssPath?: string
+): Promise<ExportResult> {
   // エクスポート時にPandocの可用性を確認
   const isPandocAvailable = await checkPandocAvailability();
   if (!isPandocAvailable) {
@@ -40,10 +44,11 @@ async function convertDocument(filePath: string, format: ExportFormat): Promise<
     const escapedFilePath = JSON.stringify(filePath);
     const escapedOutputPath = JSON.stringify(outputPath);
     const escapedTitle = JSON.stringify(title);
+    const cssOption = cssPath ? ` --css=${JSON.stringify(cssPath)}` : '';
 
     // 非同期処理を待機
     const { stderr } = await execPromise(
-      `pandoc ${escapedFilePath} -o ${escapedOutputPath} --metadata title=${escapedTitle}`
+      `pandoc ${escapedFilePath} -o ${escapedOutputPath} --metadata title=${escapedTitle}${cssOption}`
     );
 
     if (stderr) {
@@ -64,7 +69,7 @@ export function setupExportHandlers() {
   });
 
   // EPUB変換
-  ipcMain.handle('export:export-epub', async (event, filePath: string) => {
-    return convertDocument(filePath, 'epub');
+  ipcMain.handle('export:export-epub', async (event, filePath: string, cssPath?: string) => {
+    return convertDocument(filePath, 'epub', cssPath);
   });
 }

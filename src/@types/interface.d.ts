@@ -43,7 +43,7 @@ declare global {
       };
       export: {
         exportPdf: (filePath: string) => Promise<string>;
-        exportEpub: (filePath: string) => Promise<string>;
+        exportEpub: (filePath: string, cssPath?: string) => Promise<string>;
       };
       git: {
         add: (filepath: string) => Promise<void>;
