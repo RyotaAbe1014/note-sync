@@ -28,7 +28,6 @@ async function convertDocument(
   format: ExportFormat,
   cssPath?: string
 ): Promise<ExportResult> {
-  // エクスポート時にPandocの可用性を確認
   const isPandocAvailable = await checkPandocAvailability();
   if (!isPandocAvailable) {
     throw new Error(
