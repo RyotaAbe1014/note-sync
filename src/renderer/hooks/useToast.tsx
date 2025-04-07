@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { useAtom } from 'jotai';
 import { toastAtom } from '../stores/toastAtom';
 import { useEffect, useState } from 'react';
