@@ -12,24 +12,38 @@ interface ExportResult {
   outputPath: string;
 }
 
+// Pandocが利用可能かどうかのキャッシュ
+let isPandocAvailable: boolean | null = null;
+
 async function checkPandocAvailability(): Promise<boolean> {
+  // キャッシュがあればそれを返す
+  if (isPandocAvailable !== null) {
+    return isPandocAvailable;
+  }
+
   try {
     const { stdout } = await execPromise('pandoc --version');
     console.log('Pandoc version:', stdout.split('\n')[0]);
+    isPandocAvailable = true;
     return true;
   } catch (error) {
     console.error('Pandocがインストールされていません:', error);
+    isPandocAvailable = false;
     return false;
   }
 }
+
+// アプリケーション起動時などに一度だけ実行する
+// checkPandocAvailability(); // setupExportHandlers 内で呼び出すように変更
 
 async function convertDocument(
   filePath: string,
   format: ExportFormat,
   cssPath?: string
 ): Promise<ExportResult> {
-  const isPandocAvailable = await checkPandocAvailability();
-  if (!isPandocAvailable) {
+  // キャッシュされた結果を確認 (setupExportHandlers で事前にチェックされるため、ここでのチェックは必須ではないが念のため残す)
+  if (isPandocAvailable === false) {
+    // checkPandocAvailability が完了していることを前提とする
     throw new Error(
       'Pandocがインストールされていません。Pandocをインストールしてから再度お試しください。'
     );
@@ -40,15 +54,19 @@ async function convertDocument(
     const outputPath = `${filePath}.${format}`;
 
     // シェルインジェクション対策としてパスとタイトルをエスケープ
+    // JSON.stringify はシェルによっては不完全な場合があるため、より堅牢なエスケープ方法を検討する価値あり
     const escapedFilePath = JSON.stringify(filePath);
     const escapedOutputPath = JSON.stringify(outputPath);
     const escapedTitle = JSON.stringify(title);
-    const cssOption = cssPath ? ` --css=${JSON.stringify(cssPath)}` : '';
+
+    let command = `pandoc ${escapedFilePath} -o ${escapedOutputPath} --metadata title=${escapedTitle}`;
+    if (format === 'epub' && cssPath) {
+      // EPUB の場合のみ CSS オプションを追加
+      command += ` --css=${JSON.stringify(cssPath)}`;
+    }
 
     // 非同期処理を待機
-    const { stderr } = await execPromise(
-      `pandoc ${escapedFilePath} -o ${escapedOutputPath} --metadata title=${escapedTitle}${cssOption}`
-    );
+    const { stderr } = await execPromise(command);
 
     if (stderr) {
       console.warn(`${format.toUpperCase()}変換中の警告:`, stderr);
@@ -57,18 +75,50 @@ async function convertDocument(
     return { success: true, outputPath };
   } catch (error) {
     console.error(`${format.toUpperCase()}変換エラー:`, error);
-    throw new Error(`${format.toUpperCase()}変換に失敗しました: ${error.message}`);
+    // エラーオブジェクトをそのまま投げると詳細が失われる可能性があるため、元のエラーを含める
+    throw new Error(
+      `${format.toUpperCase()}変換に失敗しました: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
+// 共通ハンドラ
+async function handleExport(
+  format: ExportFormat,
+  filePath: string,
+  cssPath?: string
+): Promise<ExportResult> {
+  // Pandocが利用可能かここで再度確認
+  if (!isPandocAvailable) {
+    await checkPandocAvailability(); // 最新の状態を確認
+    if (!isPandocAvailable) {
+      throw new Error('Pandocが利用できません。');
+    }
+  }
+  return convertDocument(filePath, format, cssPath);
+}
+
 export function setupExportHandlers() {
+  // Pandocの利用可能性を最初にチェック
+  checkPandocAvailability()
+    .then((available) => {
+      if (!available) {
+        console.warn('Pandocが見つからないため、エクスポート機能は無効になります。');
+        // 必要であれば、ここでユーザーに通知する処理を追加
+      }
+    })
+    .catch((err) => {
+      console.error('Pandocのチェック中にエラーが発生しました:', err);
+      isPandocAvailable = false; // エラー時も利用不可とする
+    });
+
   // PDF変換
-  ipcMain.handle('export:export-pdf', async (event, filePath: string) => {
-    return convertDocument(filePath, 'pdf');
+  ipcMain.handle('export:export-pdf', (event, filePath: string) => {
+    return handleExport('pdf', filePath);
   });
 
   // EPUB変換
-  ipcMain.handle('export:export-epub', async (event, filePath: string, cssPath?: string) => {
-    return convertDocument(filePath, 'epub', cssPath);
+  ipcMain.handle('export:export-epub', (event, filePath: string, cssPath?: string) => {
+    return handleExport('epub', filePath, cssPath);
   });
 }
