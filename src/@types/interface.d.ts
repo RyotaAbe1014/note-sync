@@ -48,7 +48,7 @@ declare global {
       git: {
         add: (filepath: string) => Promise<void>;
         unstage: (filepath: string) => Promise<void>;
-        commit: (message: string, author: GitAuthor) => Promise<string>;
+        commit: (message: string) => Promise<string>;
         push: () => Promise<boolean>;
         pull: () => Promise<boolean>;
         status: () => Promise<StatusMatrix>;
