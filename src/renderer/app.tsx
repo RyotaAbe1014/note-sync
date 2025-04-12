@@ -4,7 +4,7 @@ import { Editor, EditorRefType } from './components/Editor/Editor';
 import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
 import { useState, useRef, useEffect } from 'react';
-import { Save, Settings, Undo2 } from 'lucide-react';
+import { Save, Settings, Undo2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { AppSettings } from './components/AppSettings/AppSettings';
 import { useFileLoader } from './hooks/useFileLoader';
 import { useToast } from './hooks/useToast';
@@ -16,6 +16,7 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [hasGitSettings, setHasGitSettings] = useState<boolean>(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
   const editorRef = useRef<EditorRefType>(null);
 
   const { Toast, showToast } = useToast();
@@ -91,20 +92,42 @@ export default function App() {
           <AppSettings />
         ) : (
           <>
-            <div className="w-1/4">
+            <div
+              className={`transition-all duration-300 ease-in-out ${
+                isSidebarOpen ? 'w-1/4 opacity-100' : 'w-0 overflow-hidden opacity-0'
+              }`}
+            >
               {hasGitSettings && <GitControls selectedFile={selectedFile} />}
               <FileTree
                 onFileSelect={handleFileSelect}
                 onSettingsClick={() => setIsSettingsOpen(true)}
               />
             </div>
-            <div className="flex h-full w-3/4 flex-col">
+            <div
+              className={`flex h-full flex-col transition-all duration-300 ease-in-out ${
+                isSidebarOpen ? 'w-3/4' : 'w-full'
+              }`}
+            >
               <div className="card bg-base-100 flex-1 shadow-xl">
                 <div className="card-body">
                   <div className="flex items-center justify-between">
-                    <h2 className="card-title">
-                      {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
-                    </h2>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="btn btn-ghost btn-circle btn-sm"
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                      >
+                        {isSidebarOpen ? (
+                          <ChevronLeft className="h-4 w-4" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4" />
+                        )}
+                      </button>
+                      <h2 className="card-title">
+                        {selectedFile
+                          ? selectedFile.split('/').pop()
+                          : 'ファイルを選択してください'}
+                      </h2>
+                    </div>
                     <button
                       onClick={handleSave}
                       disabled={!selectedFile}
