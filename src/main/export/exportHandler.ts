@@ -36,11 +36,7 @@ async function checkPandocAvailability(): Promise<boolean> {
 // アプリケーション起動時などに一度だけ実行する
 // checkPandocAvailability(); // setupExportHandlers 内で呼び出すように変更
 
-async function convertDocument(
-  filePath: string,
-  format: ExportFormat,
-  cssPath?: string
-): Promise<ExportResult> {
+async function convertDocument(filePath: string, format: ExportFormat): Promise<ExportResult> {
   // キャッシュされた結果を確認 (setupExportHandlers で事前にチェックされるため、ここでのチェックは必須ではないが念のため残す)
   if (isPandocAvailable === false) {
     // checkPandocAvailability が完了していることを前提とする
@@ -60,9 +56,9 @@ async function convertDocument(
     const escapedTitle = JSON.stringify(title);
 
     let command = `pandoc ${escapedFilePath} -o ${escapedOutputPath} --metadata title=${escapedTitle}`;
-    if (format === 'epub' && cssPath) {
+    if (format === 'epub') {
       // EPUB の場合のみ CSS オプションを追加
-      command += ` --css=${JSON.stringify(cssPath)}`;
+      command += ` --css=style.css`;
     }
 
     // 非同期処理を待機
@@ -83,11 +79,7 @@ async function convertDocument(
 }
 
 // 共通ハンドラ
-async function handleExport(
-  format: ExportFormat,
-  filePath: string,
-  cssPath?: string
-): Promise<ExportResult> {
+async function handleExport(format: ExportFormat, filePath: string): Promise<ExportResult> {
   // Pandocが利用可能かここで再度確認
   if (!isPandocAvailable) {
     await checkPandocAvailability(); // 最新の状態を確認
@@ -95,7 +87,7 @@ async function handleExport(
       throw new Error('Pandocが利用できません。');
     }
   }
-  return convertDocument(filePath, format, cssPath);
+  return convertDocument(filePath, format);
 }
 
 export function setupExportHandlers() {
@@ -118,7 +110,7 @@ export function setupExportHandlers() {
   });
 
   // EPUB変換
-  ipcMain.handle('export:export-epub', (event, filePath: string, cssPath?: string) => {
-    return handleExport('epub', filePath, cssPath);
+  ipcMain.handle('export:export-epub', (event, filePath: string) => {
+    return handleExport('epub', filePath);
   });
 }
