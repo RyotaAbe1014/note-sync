@@ -9,15 +9,8 @@ import {
   RefreshCw,
   GitBranch,
   Minus,
-  Loader,
 } from 'lucide-react';
-import {
-  GitStatus,
-  HeadStatus,
-  StageStatus,
-  StatusMatrix,
-  WorkdirStatus,
-} from '../../../types/gitStatus';
+import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '@/types/gitStatus';
 
 interface GitControlsProps {
   selectedFile: string | null;
