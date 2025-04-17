@@ -30,6 +30,21 @@ import {
 } from '@lexical/rich-text';
 import { $isCodeNode, $createCodeNode } from '@lexical/code';
 import { InsertTableDialog } from './TablePlugin';
+import {
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Redo,
+  Undo,
+  Heading1,
+  Heading2,
+  Heading3,
+  Code,
+  Quote,
+  Table,
+  Pilcrow,
+} from 'lucide-react';
 
 const LowPriority = 1;
 
@@ -180,49 +195,49 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'paragraph' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="段落"
         >
-          <span className="font-medium">P</span>
+          <Pilcrow size={20} />
         </button>
         <button
           onClick={() => formatHeading('h1')}
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h1' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="見出し1"
         >
-          <span className="text-lg font-bold">H1</span>
+          <Heading1 size={20} />
         </button>
         <button
           onClick={() => formatHeading('h2')}
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h2' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="見出し2"
         >
-          <span className="font-bold">H2</span>
+          <Heading2 size={20} />
         </button>
         <button
           onClick={() => formatHeading('h3')}
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'h3' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="見出し3"
         >
-          <span className="text-sm font-bold">H3</span>
+          <Heading3 size={20} />
         </button>
         <button
           onClick={formatCode}
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'code' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="コード"
         >
-          <span className="font-mono">{`<>`}</span>
+          <Code size={20} />
         </button>
         <button
           onClick={formatQuote}
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${blockType === 'quote' ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="引用"
         >
-          <span className="font-serif">"</span>
+          <Quote size={20} />
         </button>
         <button
           onClick={() => setShowTableDialog(true)}
           className="mx-1 cursor-pointer rounded bg-white p-2 transition-colors hover:bg-blue-200"
           aria-label="テーブル挿入"
         >
-          <span className="font-mono">⊞</span>
+          <Table size={20} />
         </button>
         <Divider />
         <button
@@ -233,7 +248,7 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${!canUndo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
           aria-label="元に戻す"
         >
-          <span className="font-bold">↩</span>
+          <Undo size={20} />
         </button>
         <button
           disabled={!canRedo}
@@ -243,7 +258,7 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${!canRedo ? 'cursor-not-allowed opacity-50' : 'bg-white'}`}
           aria-label="やり直し"
         >
-          <span className="font-bold">↪</span>
+          <Redo size={20} />
         </button>
       </div>
       <Divider />
@@ -255,7 +270,7 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isBold ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="太字"
         >
-          <span className="font-bold">B</span>
+          <Bold size={20} />
         </button>
         <button
           onClick={() => {
@@ -264,7 +279,7 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isItalic ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="斜体"
         >
-          <span className="font-bold italic">I</span>
+          <Italic size={20} />
         </button>
         <button
           onClick={() => {
@@ -273,7 +288,7 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isUnderline ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="下線"
         >
-          <span className="font-bold underline">U</span>
+          <Underline size={20} />
         </button>
         <button
           onClick={() => {
@@ -282,7 +297,7 @@ export const ToolbarPlugin = () => {
           className={`mx-1 cursor-pointer rounded p-2 transition-colors hover:bg-blue-200 ${isStrikethrough ? 'bg-blue-200' : 'bg-white'}`}
           aria-label="取り消し線"
         >
-          <span className="font-bold line-through">S</span>
+          <Strikethrough size={20} />
         </button>
       </div>
       {showTableDialog && (
