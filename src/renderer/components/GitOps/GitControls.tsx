@@ -1,20 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import {
-  ChevronDown,
-  ChevronRight,
-  GitCommit,
-  Upload,
-  Download,
-  Plus,
-  RefreshCw,
-  GitBranch,
-  Minus,
-} from 'lucide-react';
+import React from 'react';
+import { RefreshCw, GitBranch, Minus } from 'lucide-react';
 import { GitActionButtons } from './components/GitActionButtons';
 import { GitStatusDisplay } from './components/GitStatusDisplay';
 import { CommitForm } from './components/CommitForm';
 import { useGitControl } from './hooks/useGitControl';
-import { getFileNameFromPath } from './functions/getFileName';
+
 interface GitControlsProps {
   selectedFile: string | null;
 }
