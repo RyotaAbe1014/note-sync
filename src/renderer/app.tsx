@@ -70,12 +70,6 @@ export default function App() {
     }
   };
 
-  // 設定が変更されたときの処理
-  const handleSettingsChange = () => {
-    checkGitSettings();
-    setIsSettingsOpen(false);
-  };
-
   return (
     <div className="bg-base-200 min-h-screen pt-8 pb-2">
       <Toast />

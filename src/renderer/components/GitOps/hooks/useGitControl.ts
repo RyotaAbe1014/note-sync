@@ -11,7 +11,6 @@ export const useGitControl = ({ selectedFile }: UseGitControlProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [gitStatus, setGitStatus] = useState<GitStatus | null>(null);
   const [statusMessage, setStatusMessage] = useState<string>('');
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const commitMessageDisabled = useMemo(() => {
     if (!gitStatus) return true;
@@ -224,8 +223,6 @@ export const useGitControl = ({ selectedFile }: UseGitControlProps) => {
     isLoading,
     gitStatus,
     statusMessage,
-    isExpanded,
-    setIsExpanded,
     handleCommit,
     handlePush,
     handlePull,

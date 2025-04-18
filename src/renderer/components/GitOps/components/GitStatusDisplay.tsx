@@ -13,7 +13,7 @@ export const GitStatusDisplay: React.FC<{
   const hasChanges = gitStatus.staged.length > 0 || gitStatus.unstaged.length > 0;
 
   return (
-    <div className="card bg-base-200 p-3 text-sm">
+    <div className="card bg-base-200 h-64 overflow-y-auto p-3 text-sm">
       <StagedFilesList files={gitStatus.staged} onUnstage={onUnstageFile} isLoading={isLoading} />
       <UnstagedFilesList files={gitStatus.unstaged} onStage={onStageFile} isLoading={isLoading} />
       {!hasChanges && <p className="text-base-content/70 py-2 text-center">変更はありません</p>}
