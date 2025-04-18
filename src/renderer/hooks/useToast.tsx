@@ -1,7 +1,7 @@
-import { useAtom } from 'jotai';
-import { toastAtom } from '../stores/toastAtom';
 import { useEffect, useState } from 'react';
+import { useAtom } from 'jotai';
 import { X } from 'lucide-react';
+import { toastAtom } from '../stores/toastAtom';
 
 export const useToast = () => {
   const [toast, setToast] = useAtom(toastAtom);
