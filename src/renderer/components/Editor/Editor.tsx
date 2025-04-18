@@ -1,22 +1,23 @@
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 
-import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
-import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
-import { ToolbarPlugin } from './plugins/ToolbarPlugin';
-import { nodes } from './nodes';
-import { theme } from './theme/theme';
-import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
-import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
-import { useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { SavePlugin } from './plugins/SavePlugin';
-import { TRANSFORMERS } from './plugins/MarkdownTransformers';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
+
+import { nodes } from './nodes';
+import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
+import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
+import { TRANSFORMERS } from './plugins/MarkdownTransformers';
+import { SavePlugin } from './plugins/SavePlugin';
+import { ToolbarPlugin } from './plugins/ToolbarPlugin';
+import { theme } from './theme/theme';
 
 function onError(error: Error) {
   console.error(error);

@@ -1,7 +1,9 @@
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useEffect, useState } from 'react';
-import { CLEAR_HISTORY_COMMAND } from 'lexical';
+
 import { $convertFromMarkdownString } from '@lexical/markdown';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { CLEAR_HISTORY_COMMAND } from 'lexical';
+
 import { TRANSFORMERS } from '../plugins/MarkdownTransformers';
 
 export function FileChangeUpdateStatePlugin({

@@ -1,11 +1,13 @@
 import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+
+import { ChevronLeft, ChevronRight, Save, Settings, Undo2 } from 'lucide-react';
+
+import { AppSettings } from './components/AppSettings/AppSettings';
 import { Editor, EditorRefType } from './components/Editor/Editor';
 import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
-import { useState, useRef, useEffect } from 'react';
-import { Save, Settings, Undo2, ChevronLeft, ChevronRight } from 'lucide-react';
-import { AppSettings } from './components/AppSettings/AppSettings';
 import { useFileLoader } from './hooks/useFileLoader';
 import { useToast } from './hooks/useToast';
 

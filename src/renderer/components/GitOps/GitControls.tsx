@@ -1,8 +1,10 @@
 import React from 'react';
-import { RefreshCw, GitBranch, Minus } from 'lucide-react';
+
+import { GitBranch, Minus, RefreshCw } from 'lucide-react';
+
+import { CommitForm } from './components/CommitForm';
 import { GitActionButtons } from './components/GitActionButtons';
 import { GitStatusDisplay } from './components/GitStatusDisplay';
-import { CommitForm } from './components/CommitForm';
 import { useGitControl } from './hooks/useGitControl';
 
 interface GitControlsProps {

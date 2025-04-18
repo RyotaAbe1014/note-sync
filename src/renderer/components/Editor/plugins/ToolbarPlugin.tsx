@@ -6,21 +6,9 @@
  *
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { $createCodeNode, $isCodeNode } from '@lexical/code';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { mergeRegister } from '@lexical/utils';
-import {
-  $getSelection,
-  $isRangeSelection,
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
-  FORMAT_TEXT_COMMAND,
-  REDO_COMMAND,
-  SELECTION_CHANGE_COMMAND,
-  UNDO_COMMAND,
-  $createParagraphNode,
-  $isParagraphNode,
-} from 'lexical';
-import { $setBlocksType } from '@lexical/selection';
 import {
   $createHeadingNode,
   $createQuoteNode,
@@ -28,23 +16,37 @@ import {
   $isQuoteNode,
   HeadingTagType,
 } from '@lexical/rich-text';
-import { $isCodeNode, $createCodeNode } from '@lexical/code';
-import { InsertTableDialog } from './TablePlugin';
+import { $setBlocksType } from '@lexical/selection';
+import { mergeRegister } from '@lexical/utils';
+import {
+  $createParagraphNode,
+  $getSelection,
+  $isParagraphNode,
+  $isRangeSelection,
+  CAN_REDO_COMMAND,
+  CAN_UNDO_COMMAND,
+  FORMAT_TEXT_COMMAND,
+  REDO_COMMAND,
+  SELECTION_CHANGE_COMMAND,
+  UNDO_COMMAND,
+} from 'lexical';
 import {
   Bold,
-  Italic,
-  Underline,
-  Strikethrough,
-  Redo,
-  Undo,
+  Code,
   Heading1,
   Heading2,
   Heading3,
-  Code,
-  Quote,
-  Table,
+  Italic,
   Pilcrow,
+  Quote,
+  Redo,
+  Strikethrough,
+  Table,
+  Underline,
+  Undo,
 } from 'lucide-react';
+
+import { InsertTableDialog } from './TablePlugin';
 
 const LowPriority = 1;
 

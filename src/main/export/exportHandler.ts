@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
-import path from 'node:path';
 import { exec } from 'node:child_process';
+import path from 'node:path';
 import { promisify } from 'node:util';
 
 const execPromise = promisify(exec);

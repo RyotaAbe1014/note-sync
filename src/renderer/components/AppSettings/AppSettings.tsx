@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
-import { AppSettings as AppSettingsType } from '../../../types/appSettings';
+import { useEffect, useState } from 'react';
+
 import { CheckIcon, FolderOpen } from 'lucide-react';
+
+import { AppSettings as AppSettingsType } from '../../../types/appSettings';
 import { useToast } from '../../hooks/useToast';
 
 export const AppSettings = () => {

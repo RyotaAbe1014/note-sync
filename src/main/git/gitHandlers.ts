@@ -1,12 +1,13 @@
-import fs from 'fs';
 import { ipcMain } from 'electron';
-import path from 'path';
+// @ts-ignore
+import Store from 'electron-store';
+import fs from 'fs';
 // @ts-ignore
 import git from 'isomorphic-git';
 // @ts-ignore
 import http from 'isomorphic-git/http/node';
-// @ts-ignore
-import Store from 'electron-store';
+import path from 'path';
+
 import { AppSettings } from '../../types/appSettings';
 
 const store = new Store<AppSettings>({

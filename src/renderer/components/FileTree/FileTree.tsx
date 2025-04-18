@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, X, Edit, Trash2, FolderIcon, FileIcon, Sparkles } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { ChevronLeft, Edit, FileIcon, FolderIcon, Sparkles, Trash2, X } from 'lucide-react';
+
 import { useToast } from '../../hooks/useToast';
 
 interface FileItem {

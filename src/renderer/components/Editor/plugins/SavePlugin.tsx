@@ -1,6 +1,8 @@
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { useImperativeHandle } from 'react';
+
 import { $convertToMarkdownString } from '@lexical/markdown';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+
 import { TRANSFORMERS as MARKDOWN_TRANSFORMERS } from './MarkdownTransformers';
 
 interface SavePluginProps {

@@ -1,6 +1,7 @@
 import { Minus } from 'lucide-react';
-import { FileItem } from '../types';
+
 import { getFileNameFromPath } from '../functions/getFileName';
+import { FileItem } from '../types';
 
 export const StagedFilesList: React.FC<{
   files: FileItem[];

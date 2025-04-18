@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 // @ts-ignore
 import Store from 'electron-store';
+
 import { AppSettings } from '../../types/appSettings';
 
 const appSettingsStore = new Store<AppSettings>({

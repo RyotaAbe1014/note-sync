@@ -1,12 +1,13 @@
-import { app, BrowserWindow } from 'electron';
-import path from 'node:path';
+import { BrowserWindow, app } from 'electron';
 // @ts-ignore
 import started from 'electron-squirrel-startup';
-import { setupAppSettingsHandlers } from './settings/settingsHandlers';
+import path from 'node:path';
+
 import { setupDialogHandlers } from './dialog/dialogHandlers';
+import { setupExportHandlers } from './export/exportHandler';
 import { setupFileSystemHandlers } from './fileSystem/fileSystemHandlers';
 import { setupGitHandlers } from './git/gitHandlers';
-import { setupExportHandlers } from './export/exportHandler';
+import { setupAppSettingsHandlers } from './settings/settingsHandlers';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
