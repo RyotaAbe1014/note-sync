@@ -51,7 +51,7 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(
     );
 
     const initialConfig = {
-      namespace: 'CommitNotes',
+      namespace: 'NoteSync',
       theme,
       onError,
       nodes,
