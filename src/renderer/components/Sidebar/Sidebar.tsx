@@ -43,14 +43,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <input type="radio" name="my_tabs_4" defaultChecked />
           <Folder className="h-4 w-4" />
         </label>
-
+        {/* ファイルタブ内容 */}
+        <div className="tab-content bg-base-100 border-base-300">
+          <FileTree onFileSelect={onFileSelect} onSettingsClick={onSettingsClick} />
+        </div>
         {hasGitSettings && (
           <>
-            {/* ファイルタブ内容 */}
-            <div className="tab-content bg-base-100 border-base-300 p-6">
-              <FileTree onFileSelect={onFileSelect} onSettingsClick={onSettingsClick} />
-            </div>
-
             {/* Gitタブ */}
             <label className="tab">
               <input type="radio" name="my_tabs_4" />
@@ -58,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </label>
 
             {/* Gitタブ内容 */}
-            <div className="tab-content bg-base-100 border-base-300 p-6">
+            <div className="tab-content bg-base-100 border-base-300">
               <GitControls selectedFile={selectedFile} />
             </div>
           </>

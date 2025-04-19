@@ -72,7 +72,7 @@ export default function App() {
   };
 
   return (
-    <div className="bg-base-200 min-h-screen pt-8 pb-2">
+    <div className="bg-base-200 min-h-screen pt-2 pb-2">
       <Toast />
       <header className="mb-2 flex justify-end px-8">
         <button
@@ -82,7 +82,7 @@ export default function App() {
           {isSettingsOpen ? <Undo2 className="h-6 w-6" /> : <Settings className="h-6 w-6" />}
         </button>
       </header>
-      <main className="flex h-[calc(100vh-6rem)] gap-6 px-8">
+      <main className="flex h-[calc(100vh-4rem)] gap-6 px-8">
         {isSettingsOpen ? (
           <AppSettings />
         ) : (
