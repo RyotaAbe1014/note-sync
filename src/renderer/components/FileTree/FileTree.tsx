@@ -129,7 +129,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   }, [selectedFile]);
 
   return (
-    <div className="h-fit rounded-lg border border-gray-100 bg-white p-5 shadow-md">
+    <div className="h-full rounded-lg border border-gray-100 bg-white p-5 shadow-md">
       {loading && !rootDir ? (
         <div className="py-8 text-center">
           <p className="mb-4 text-gray-600">ルートディレクトリが設定されていません</p>
@@ -162,7 +162,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
               <p className="ml-3 text-gray-600">読み込み中...</p>
             </div>
           ) : (
-            <ul className="h-[calc(100vh-300px)] space-y-1 overflow-y-auto pr-1">
+            <ul className="h-[calc(100vh-250px)] space-y-1 overflow-y-auto pr-1 pb-1">
               {files.length === 0 ? (
                 <li className="rounded-md bg-gray-50 py-8 text-center text-gray-500">
                   <Sparkles className="mx-auto mb-2 h-10 w-10 text-gray-400" />

@@ -37,7 +37,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </button>
 
       {/* タブ */}
-      <div className="tabs tabs-lift">
+      <div className="tabs tabs-lift h-[calc(100vh-100px)]">
         {/* ファイルタブ */}
         <label className="tab">
           <input type="radio" name="my_tabs_4" defaultChecked />
