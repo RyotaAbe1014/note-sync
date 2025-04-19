@@ -8,6 +8,7 @@ import { AppSettings } from './components/AppSettings/AppSettings';
 import { Editor, EditorRefType } from './components/Editor/Editor';
 import { FileTree } from './components/FileTree/FileTree';
 import { GitControls } from './components/GitOps/GitControls';
+import { Sidebar } from './components/Sidebar/Sidebar';
 import { useFileLoader } from './hooks/useFileLoader';
 import { useToast } from './hooks/useToast';
 
@@ -88,17 +89,14 @@ export default function App() {
           <AppSettings />
         ) : (
           <>
-            <div
-              className={`transition-all duration-300 ease-in-out ${
-                isSidebarOpen ? 'w-1/4 opacity-100' : 'w-0 overflow-hidden opacity-0'
-              }`}
-            >
-              {hasGitSettings && <GitControls selectedFile={selectedFile} />}
-              <FileTree
-                onFileSelect={handleFileSelect}
-                onSettingsClick={() => setIsSettingsOpen(true)}
-              />
-            </div>
+            <Sidebar
+              isOpen={isSidebarOpen}
+              onToggle={() => setIsSidebarOpen((prev) => !prev)}
+              hasGitSettings={hasGitSettings}
+              selectedFile={selectedFile}
+              onFileSelect={handleFileSelect}
+              onSettingsClick={() => setIsSettingsOpen(true)}
+            />
             <div
               className={`flex h-full flex-col transition-all duration-300 ease-in-out ${
                 isSidebarOpen ? 'w-3/4' : 'w-full'
@@ -108,16 +106,6 @@ export default function App() {
                 <div className="card-body">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <button
-                        className="btn btn-ghost btn-circle btn-sm"
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                      >
-                        {isSidebarOpen ? (
-                          <ChevronLeft className="h-4 w-4" />
-                        ) : (
-                          <ChevronRight className="h-4 w-4" />
-                        )}
-                      </button>
                       <h2 className="card-title">
                         {selectedFile
                           ? selectedFile.split('/').pop()
