@@ -142,7 +142,7 @@ src/
 
 ### 6.1 テスト種別
 
-- **単体テスト**: Jestを使用予定
+- **単体テスト**: Vitestを使用予定
 - **コンポーネントテスト**: React Testing Libraryを使用予定
 - **E2Eテスト**: Playwright（必要に応じて）
 
