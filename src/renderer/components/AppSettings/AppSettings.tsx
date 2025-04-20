@@ -111,7 +111,6 @@ export const AppSettings = () => {
           {/* Git設定 */}
           <div className="form-control">
             <h3 className="mb-4 text-lg font-medium">Git設定</h3>
-
             <div className="space-y-6">
               <div className="form-control">
                 <label className="label">
