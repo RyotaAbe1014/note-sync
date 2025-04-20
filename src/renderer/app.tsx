@@ -32,6 +32,11 @@ export default function App() {
     loadProgress,
   } = useFileLoader(selectedFile);
 
+  // Gitの設定を確認
+  useEffect(() => {
+    checkGitSettings();
+  }, []);
+
   // Gitの設定を確認する関数
   const checkGitSettings = async () => {
     try {
@@ -42,11 +47,6 @@ export default function App() {
       setHasGitSettings(false);
     }
   };
-
-  // Gitの設定を確認
-  useEffect(() => {
-    checkGitSettings();
-  }, []);
 
   // ファイルが選択されたときの処理
   const handleFileSelect = async (filePath: string) => {
