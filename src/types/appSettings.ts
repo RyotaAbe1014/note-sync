@@ -3,7 +3,6 @@ export type AppSettings = {
     path: string;
   };
   git: {
-    remoteUrl: string;
     token: string;
     author: {
       name: string;

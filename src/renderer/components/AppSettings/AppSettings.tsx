@@ -11,7 +11,6 @@ export const AppSettings = () => {
       path: '',
     },
     git: {
-      remoteUrl: '',
       token: '',
       author: {
         name: '',
@@ -114,24 +113,6 @@ export const AppSettings = () => {
             <h3 className="mb-4 text-lg font-medium">Git設定</h3>
 
             <div className="space-y-6">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">リモートURL</span>
-                </label>
-                <input
-                  type="text"
-                  value={settings.git.remoteUrl}
-                  onChange={(e) =>
-                    setSettings((prev: AppSettingsType) => ({
-                      ...prev,
-                      git: { ...prev.git, remoteUrl: e.target.value },
-                    }))
-                  }
-                  placeholder="https://github.com/username/repo.git"
-                  className="input input-bordered w-full"
-                />
-              </div>
-
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">アクセストークン</span>
