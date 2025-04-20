@@ -129,67 +129,67 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
   }, [selectedFile]);
 
   return (
-    <div className="h-full rounded-lg border border-gray-100 bg-white p-5 shadow-md">
+    <div className="card h-full bg-base-100 shadow-md">
       {loading && !rootDir ? (
-        <div className="py-8 text-center">
+        <div className="card-body items-center text-center">
           <p className="mb-4 text-gray-600">ルートディレクトリが設定されていません</p>
-          <button
-            onClick={onSettingsClick}
-            className="rounded-md bg-blue-500 px-4 py-2 text-white transition-colors duration-200 hover:bg-blue-600"
-          >
+          <button onClick={onSettingsClick} className="btn btn-primary">
             設定画面で設定する
           </button>
         </div>
       ) : (
-        <>
-          <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="card-body p-4">
+          <div className="flex items-center justify-between border-b border-base-200 pb-3">
             <button
               onClick={handleBackClick}
               disabled={currentDir === rootDir}
-              className="flex items-center gap-1 rounded-md bg-gray-100 px-3 py-1.5 text-gray-700 transition-colors duration-200 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40"
+              className="btn btn-sm btn-ghost gap-1"
             >
               <ChevronLeft className="h-4 w-4" />
               戻る
             </button>
-            <span className="ml-2 max-w-[70%] truncate text-sm font-medium text-gray-600">
+            <span className="ml-2 max-w-[70%] truncate text-sm font-medium text-base-content/70">
               {currentDir === rootDir ? 'ルート' : currentDir}
             </span>
           </div>
 
           {loading ? (
             <div className="flex h-40 items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-t-2 border-b-2 border-blue-500"></div>
-              <p className="ml-3 text-gray-600">読み込み中...</p>
+              <span className="loading loading-spinner loading-md text-primary"></span>
+              <p className="ml-3 text-base-content/70">読み込み中...</p>
             </div>
           ) : (
-            <ul className="h-[calc(100vh-250px)] space-y-1 overflow-y-auto pr-1 pb-1">
+            <ul className="menu h-[calc(100vh-250px)] overflow-y-auto p-0">
               {files.length === 0 ? (
-                <li className="rounded-md bg-gray-50 py-8 text-center text-gray-500">
-                  <Sparkles className="mx-auto mb-2 h-10 w-10 text-gray-400" />
-                  <p>ファイルがありません</p>
+                <li className="flex flex-col items-center justify-center rounded-md bg-base-200 py-8">
+                  <Sparkles className="mb-2 h-10 w-10 text-base-content/50" />
+                  <p className="text-base-content/70">ファイルがありません</p>
                 </li>
               ) : (
                 files.map((file) => (
-                  <li key={file.path} onContextMenu={(e) => handleRightClick(e, file)}>
-                    <button
-                      className={`flex items-center rounded-md px-3 py-2.5 transition-colors duration-150 hover:bg-gray-50 ${
-                        file.isDirectory ? 'text-blue-600' : 'text-gray-700'
-                      } ${selectedFile?.path === file.path ? 'bg-blue-50' : ''} ${isDisabled(file) ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  <li
+                    key={file.path}
+                    onContextMenu={(e) => handleRightClick(e, file)}
+                    className="w-full"
+                  >
+                    <a
+                      className={`${isDisabled(file) ? 'btn-disabled' : ''} ${
+                        selectedFile?.path === file.path ? 'active' : ''
+                      }`}
                       onClick={() =>
                         file.isDirectory
                           ? handleDirectoryClick(file.path)
-                          : handleFileClick(file.path)
+                          : !isDisabled(file) && handleFileClick(file.path)
                       }
                       onContextMenu={(e) => handleRightClick(e, file)}
-                      disabled={isDisabled(file)}
                     >
                       {file.isDirectory ? (
-                        <FolderIcon className="mr-2 h-5 w-5 flex-shrink-0" />
+                        <FolderIcon className="h-5 w-5 text-primary" />
                       ) : (
-                        <FileIcon className="mr-2 h-5 w-5 flex-shrink-0" />
+                        <FileIcon className="h-5 w-5 text-base-content/70" />
                       )}
                       <span className="truncate">{file.name}</span>
-                    </button>
+                    </a>
                   </li>
                 ))
               )}
@@ -206,7 +206,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
               showToast={showToast}
             />
           )}
-        </>
+        </div>
       )}
     </div>
   );
