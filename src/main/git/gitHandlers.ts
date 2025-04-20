@@ -136,12 +136,26 @@ export function setupGitHandlers() {
   });
 
   // プル
-  ipcMain.handle('git:pull', async (event, remoteUrl, token) => {
+  ipcMain.handle('git:pull', async (event) => {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
-    // モック実装 - 実際には isomorphic-git を使用
-    console.log(`Git pull to ${repoPath} from ${remoteUrl}`);
+    const gitSettings = getGitSettings();
+    if (!gitSettings) throw new Error('Gitの設定が設定されていません');
+
+    await git.pull({
+      http,
+      fs: fs,
+      dir: repoPath,
+      gitdir: path.join(repoPath, '.git'),
+      remote: 'origin',
+      ref: 'main',
+      author: {
+        name: gitSettings.author.name,
+        email: gitSettings.author.email,
+      },
+    });
+
     return true;
   });
 }
