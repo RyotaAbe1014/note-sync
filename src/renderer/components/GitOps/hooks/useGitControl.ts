@@ -69,8 +69,8 @@ export const useGitControl = ({ selectedFile }: UseGitControlProps) => {
       return gitStatus;
     } catch (error) {
       console.error('Error fetching git status:', error);
-      setStatusMessage('Gitステータスの取得に失敗しました');
-      throw error;
+      console.log(error);
+      setStatusMessage(error.message);
     }
   };
 
