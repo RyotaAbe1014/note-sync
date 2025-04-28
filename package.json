@@ -85,6 +85,7 @@
     "node-pty": "^1.0.0",
     "prismjs": "^1.30.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "rollup-plugin-visualizer": "^5.14.0"
   }
 }
