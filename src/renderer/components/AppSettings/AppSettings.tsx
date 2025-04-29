@@ -203,7 +203,6 @@ export const AppSettings = () => {
                       apiKeys: { ...prev.apiKeys, openai: e.target.value },
                     }))
                   }
-                  placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
                   className="input input-bordered w-full"
                 />
                 <label className="label">
