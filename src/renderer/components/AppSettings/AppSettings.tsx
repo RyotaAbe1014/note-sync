@@ -17,6 +17,9 @@ export const AppSettings = () => {
         email: '',
       },
     },
+    apiKeys: {
+      openai: '',
+    },
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -179,6 +182,33 @@ export const AppSettings = () => {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* APIキー設定 */}
+          <div className="form-control">
+            <h3 className="mb-4 text-lg font-medium">APIキー設定</h3>
+            <div className="space-y-6">
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text">OpenAI APIキー</span>
+                </label>
+                <input
+                  type="password"
+                  value={settings.apiKeys.openai}
+                  onChange={(e) =>
+                    setSettings((prev: AppSettingsType) => ({
+                      ...prev,
+                      apiKeys: { ...prev.apiKeys, openai: e.target.value },
+                    }))
+                  }
+                  placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx"
+                  className="input input-bordered w-full"
+                />
+                <label className="label">
+                  <span className="label-text-alt">OpenAIのAPIキーを入力してください</span>
+                </label>
               </div>
             </div>
           </div>
