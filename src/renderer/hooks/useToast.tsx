@@ -29,8 +29,10 @@ export const useToast = () => {
   const Toast = () => {
     return (
       toast.message && (
-        <div className="toast toast-end toast-top">
-          <div className={`alert alert-${toast.type} flex justify-between`}>
+        <div className="toast toast-end toast-top z-50 fixed">
+          <div
+            className={`alert ${toast.type === 'success' ? 'alert-success' : 'alert-error'} flex justify-between`}
+          >
             <span>{toast.message}</span>
             <button className="btn btn-sm btn-circle btn-ghost" onClick={clearToast}>
               <X className="h-4 w-4" />
