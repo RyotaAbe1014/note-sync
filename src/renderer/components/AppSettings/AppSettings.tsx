@@ -68,6 +68,7 @@ export const AppSettings = () => {
       }
     } catch (error) {
       console.error('ディレクトリ選択に失敗しました:', error);
+      showToast('ディレクトリ選択に失敗しました', 'error');
     }
   };
 
