@@ -9,4 +9,8 @@ export type AppSettings = {
       email: string;
     };
   };
+  apiKeys: {
+    openai: string;
+    // add other ai providers here
+  };
 };
