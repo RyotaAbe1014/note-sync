@@ -45,6 +45,7 @@ export default function App() {
     } catch (error) {
       console.error('Error checking git settings:', error);
       setHasGitSettings(false);
+      showToast('Gitの設定を確認できませんでした', 'error');
     }
   };
 
