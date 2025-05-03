@@ -97,7 +97,7 @@ export default function InlineGenerativeAIPlugin() {
         top = 20;
       }
 
-      formElement.style.top = `${top + window.pageYOffset}px`;
+      formElement.style.top = `${top + window.scrollY}px`;
       formElement.style.left = `${left}px`;
     } else {
       // アンカー要素が見つからない場合はエディタの中央に表示
@@ -109,7 +109,7 @@ export default function InlineGenerativeAIPlugin() {
         const top = rootRect.top + (rootRect.height - formHeight) / 2;
         const left = rootRect.left + (rootRect.width - formWidth) / 2;
 
-        formElement.style.top = `${top + window.pageYOffset}px`;
+        formElement.style.top = `${top + window.scrollY}px`;
         formElement.style.left = `${left}px`;
       }
     }
