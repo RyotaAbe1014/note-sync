@@ -161,10 +161,10 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
           ) : (
             <ul className="menu h-[calc(100vh-250px)] w-full overflow-y-auto p-0">
               {files.length === 0 ? (
-                <li className="flex flex-col items-center justify-center rounded-md bg-base-200 py-8">
+                <p className="flex flex-col items-center justify-center rounded-md bg-base-200 py-8">
                   <Sparkles className="mb-2 h-10 w-10 text-base-content/50" />
-                  <p className="text-base-content/70">ファイルがありません</p>
-                </li>
+                  <span className="text-base-content/70">ファイルがありません</span>
+                </p>
               ) : (
                 files.map((file) => (
                   <li
