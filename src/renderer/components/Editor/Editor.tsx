@@ -13,6 +13,7 @@ import { TablePlugin } from '@lexical/react/LexicalTablePlugin';
 
 import { nodes } from './nodes';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
+import ComponentPickerMenuPlugin from './plugins/ComponentPickerPlugin';
 import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
 import { TRANSFORMERS } from './plugins/MarkdownTransformers';
 import { SavePlugin } from './plugins/SavePlugin';
@@ -101,6 +102,7 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(
             hasCellBackgroundColor={true}
             hasHorizontalScroll={true}
           />
+          <ComponentPickerMenuPlugin />
         </LexicalComposer>
       </div>
     );
