@@ -33,6 +33,16 @@ import {
   LexicalEditor,
   TextNode,
 } from 'lexical';
+import {
+  Brain,
+  Check,
+  Code,
+  Heading,
+  List,
+  Pilcrow,
+  Quote,
+  SeparatorHorizontal,
+} from 'lucide-react';
 
 // import useModal from '../../hooks/useModal';
 // import catTypingGif from '../../images/cat-typing.gif';
@@ -89,9 +99,9 @@ function ComponentPickerMenuItem({
   onMouseEnter: () => void;
   option: ComponentPickerOption;
 }) {
-  let className = 'item';
+  let className = '';
   if (isSelected) {
-    className += ' selected';
+    className += 'bg-base-200';
   }
   return (
     <li
@@ -105,8 +115,10 @@ function ComponentPickerMenuItem({
       onMouseEnter={onMouseEnter}
       onClick={onClick}
     >
-      {option.icon}
-      <span className="text">{option.title}</span>
+      <div className="flex items-center py-2 px-3 rounded hover:bg-base-200">
+        <span className="mr-2">{option.icon}</span>
+        <span className="text whitespace-nowrap">{option.title}</span>
+      </div>
     </li>
   );
 }
@@ -144,7 +156,7 @@ function getDynamicOptions(editor: LexicalEditor, queryString: string) {
 function getBaseOptions(editor: LexicalEditor) {
   return [
     new ComponentPickerOption('Paragraph', {
-      icon: <i className="icon paragraph" />,
+      icon: <Pilcrow size={20} />,
       keywords: ['normal', 'paragraph', 'p', 'text'],
       onSelect: () =>
         editor.update(() => {
@@ -157,7 +169,7 @@ function getBaseOptions(editor: LexicalEditor) {
     ...([1, 2, 3] as const).map(
       (n) =>
         new ComponentPickerOption(`Heading ${n}`, {
-          icon: <i className={`icon h${n}`} />,
+          icon: <Heading size={20} />,
           keywords: ['heading', 'header', `h${n}`],
           onSelect: () =>
             editor.update(() => {
@@ -169,22 +181,22 @@ function getBaseOptions(editor: LexicalEditor) {
         })
     ),
     new ComponentPickerOption('Numbered List', {
-      icon: <i className="icon number" />,
+      icon: <List size={20} />,
       keywords: ['numbered list', 'ordered list', 'ol'],
       onSelect: () => editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined),
     }),
     new ComponentPickerOption('Bulleted List', {
-      icon: <i className="icon bullet" />,
+      icon: <List size={20} />,
       keywords: ['bulleted list', 'unordered list', 'ul'],
       onSelect: () => editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined),
     }),
     new ComponentPickerOption('Check List', {
-      icon: <i className="icon check" />,
+      icon: <Check size={20} />,
       keywords: ['check list', 'todo list'],
       onSelect: () => editor.dispatchCommand(INSERT_CHECK_LIST_COMMAND, undefined),
     }),
     new ComponentPickerOption('Quote', {
-      icon: <i className="icon quote" />,
+      icon: <Quote size={20} />,
       keywords: ['block quote'],
       onSelect: () =>
         editor.update(() => {
@@ -195,7 +207,7 @@ function getBaseOptions(editor: LexicalEditor) {
         }),
     }),
     new ComponentPickerOption('Code', {
-      icon: <i className="icon code" />,
+      icon: <Code size={20} />,
       keywords: ['javascript', 'python', 'js', 'codeblock'],
       onSelect: () =>
         editor.update(() => {
@@ -215,12 +227,12 @@ function getBaseOptions(editor: LexicalEditor) {
         }),
     }),
     new ComponentPickerOption('Divider', {
-      icon: <i className="icon horizontal-rule" />,
+      icon: <SeparatorHorizontal size={20} />,
       keywords: ['horizontal rule', 'divider', 'hr'],
       onSelect: () => editor.dispatchCommand(INSERT_HORIZONTAL_RULE_COMMAND, undefined),
     }),
     new ComponentPickerOption('AI', {
-      icon: <i className="icon ai" />,
+      icon: <Brain size={20} />,
       keywords: ['ai', 'chat', 'gpt'],
       onSelect: () =>
         // editor.dispatchCommand(INSERT_AI_COMMAND, undefined),
@@ -284,24 +296,26 @@ export default function ComponentPickerMenuPlugin() {
         ) =>
           anchorElementRef.current && options.length
             ? ReactDOM.createPortal(
-                <div className="card bg-base-100 shadow-sm">
-                  <ul className="menu">
-                    {options.map((option, i: number) => (
-                      <ComponentPickerMenuItem
-                        index={i}
-                        isSelected={selectedIndex === i}
-                        onClick={() => {
-                          setHighlightedIndex(i);
-                          selectOptionAndCleanUp(option);
-                        }}
-                        onMouseEnter={() => {
-                          setHighlightedIndex(i);
-                        }}
-                        key={option.key}
-                        option={option}
-                      />
-                    ))}
-                  </ul>
+                <div className="dropdown dropdown-open">
+                  <div className="card bg-base-100 dropdown-content border border-base-300 shadow-sm z-50">
+                    <ul className="menu menu-compact p-3">
+                      {options.map((option, i: number) => (
+                        <ComponentPickerMenuItem
+                          index={i}
+                          isSelected={selectedIndex === i}
+                          onClick={() => {
+                            setHighlightedIndex(i);
+                            selectOptionAndCleanUp(option);
+                          }}
+                          onMouseEnter={() => {
+                            setHighlightedIndex(i);
+                          }}
+                          key={option.key}
+                          option={option}
+                        />
+                      ))}
+                    </ul>
+                  </div>
                 </div>,
                 anchorElementRef.current
               )
