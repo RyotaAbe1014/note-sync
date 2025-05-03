@@ -10,7 +10,13 @@ import { SELECTION_CHANGE_COMMAND } from 'lexical';
 
 import { GenerativeAIForm } from './GenerativeAIForm';
 
-export const GENERATIVE_AI_COMMAND: LexicalCommand<void> = createCommand('GENERATIVE_AI_COMMAND');
+// ペイロードの型を定義
+interface GenerativeAIPayload {
+  anchorKey: string;
+}
+
+export const GENERATIVE_AI_COMMAND: LexicalCommand<GenerativeAIPayload> =
+  createCommand('GENERATIVE_AI_COMMAND');
 
 // AIの応答をモックする関数
 const generateAIResponse = async (prompt: string): Promise<string> => {
@@ -21,71 +27,10 @@ const generateAIResponse = async (prompt: string): Promise<string> => {
   return `${prompt}についての考察：\n\n要点1: これはAIによって生成されたコンテンツです。\n要点2: 実際のAPIを使用する場合は、このモック関数を置き換えてください。\n要点3: 長文生成や特殊フォーマットの処理も実装できます。`;
 };
 
-// カーソル位置のエレメントを配置する関数
-function positionElement(element: HTMLElement, rect: DOMRect | null) {
-  // フォームの幅と高さを取得
-  const elementRect = element.getBoundingClientRect();
-  const elementWidth = elementRect.width || 400; // フォールバック幅
-  const elementHeight = elementRect.height || 300; // フォールバック高さ
-
-  // 画面の幅と高さを取得
-  const viewportWidth = window.innerWidth;
-  const viewportHeight = window.innerHeight;
-
-  if (rect === null) {
-    // 選択範囲がない場合はエディタの中央付近に表示
-    element.style.opacity = '1';
-    const editorElement = document.getElementById('editor');
-
-    if (editorElement) {
-      const editorRect = editorElement.getBoundingClientRect();
-      const top = editorRect.top + editorRect.height / 3 + window.pageYOffset;
-      const left = editorRect.left + (editorRect.width - elementWidth) / 2 + window.pageXOffset;
-
-      element.style.top = `${top}px`;
-      element.style.left = `${left}px`;
-    } else {
-      // エディタ要素が見つからない場合は画面中央に表示
-      element.style.top = `${(viewportHeight - elementHeight) / 2 + window.pageYOffset}px`;
-      element.style.left = `${(viewportWidth - elementWidth) / 2}px`;
-    }
-    return;
-  }
-
-  element.style.opacity = '1';
-
-  // 基本位置を計算（カーソル位置の下）
-  let top = rect.top + rect.height + window.pageYOffset + 10;
-  let left = rect.left + window.pageXOffset - elementWidth / 2 + rect.width / 2;
-
-  // 右端のはみ出しをチェック
-  if (left + elementWidth > viewportWidth - 20) {
-    left = viewportWidth - elementWidth - 20;
-  }
-
-  // 左端のはみ出しをチェック
-  if (left < 20) {
-    left = 20;
-  }
-
-  // 下端のはみ出しをチェック
-  if (top + elementHeight > viewportHeight - 20) {
-    // 上に表示する（カーソル位置の上）
-    top = rect.top + window.pageYOffset - elementHeight - 10;
-
-    // それでも画面外の場合は最上部に固定
-    if (top < 20) {
-      top = 20;
-    }
-  }
-
-  element.style.top = `${top}px`;
-  element.style.left = `${left}px`;
-}
-
 export default function InlineGenerativeAIPlugin() {
   const [editor] = useLexicalComposerContext();
   const [showAIForm, setShowAIForm] = useState(false);
+  const [anchorKey, setAnchorKey] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   // 選択範囲の位置を取得してフォームを配置する
@@ -95,22 +40,80 @@ export default function InlineGenerativeAIPlugin() {
       return;
     }
 
-    const selection = window.getSelection();
     const rootElement = editor.getRootElement();
+    const anchorElement = editor.getElementByKey(anchorKey);
 
-    if (
-      selection !== null &&
-      selection.rangeCount > 0 &&
-      rootElement !== null &&
-      rootElement.contains(selection.anchorNode)
-    ) {
-      const domRange = selection.getRangeAt(0);
-      const rect = domRange.getBoundingClientRect();
-      positionElement(formElement, rect);
+    if (formElement !== null && rootElement !== null && anchorElement !== null) {
+      const rootRect = rootElement.getBoundingClientRect();
+      const anchorRect = anchorElement.getBoundingClientRect();
+      const formRect = formElement.getBoundingClientRect();
+
+      // 画面の幅と高さを取得
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // フォームをアンカー要素の上に配置するのに十分なスペースがあるか確認
+      const spaceAbove = anchorRect.top - formRect.height - 10;
+      const hasSpaceAbove = spaceAbove > 20;
+
+      // フォームをアンカー要素の右に配置するのに十分なスペースがあるか確認
+      const rightEdge = anchorRect.right + formRect.width + 10;
+      const hasSpaceRight = rightEdge < viewportWidth - 20;
+
+      // 位置の計算
+      let top, left;
+
+      if (hasSpaceAbove) {
+        // アンカー要素の上に表示
+        top = anchorRect.top - formRect.height - 10;
+        left = anchorRect.left;
+      } else if (hasSpaceRight) {
+        // アンカー要素の右に表示
+        top = anchorRect.top;
+        left = anchorRect.right + 10;
+      } else {
+        // デフォルト：アンカー要素の下に表示
+        top = anchorRect.bottom + 10;
+        left = anchorRect.left;
+      }
+
+      // 左端のはみ出しをチェック
+      if (left < 20) {
+        left = 20;
+      }
+
+      // 右端のはみ出しをチェック
+      if (left + formRect.width > viewportWidth - 20) {
+        left = viewportWidth - formRect.width - 20;
+      }
+
+      // 下端のはみ出しをチェック
+      if (top + formRect.height > viewportHeight - 20) {
+        top = viewportHeight - formRect.height - 20;
+      }
+
+      // 上端のはみ出しをチェック
+      if (top < 20) {
+        top = 20;
+      }
+
+      formElement.style.top = `${top + window.pageYOffset}px`;
+      formElement.style.left = `${left}px`;
     } else {
-      positionElement(formElement, null);
+      // アンカー要素が見つからない場合はエディタの中央に表示
+      if (rootElement) {
+        const rootRect = rootElement.getBoundingClientRect();
+        const formWidth = formElement.offsetWidth || 400;
+        const formHeight = formElement.offsetHeight || 300;
+
+        const top = rootRect.top + (rootRect.height - formHeight) / 2;
+        const left = rootRect.left + (rootRect.width - formWidth) / 2;
+
+        formElement.style.top = `${top + window.pageYOffset}px`;
+        formElement.style.left = `${left}px`;
+      }
     }
-  }, [editor, showAIForm]);
+  }, [editor, showAIForm, anchorKey]);
 
   // フォームが表示されている間、リサイズと選択範囲の変更を監視
   useEffect(() => {
@@ -149,8 +152,9 @@ export default function InlineGenerativeAIPlugin() {
   useEffect(() => {
     return editor.registerCommand(
       GENERATIVE_AI_COMMAND,
-      () => {
+      (payload: GenerativeAIPayload) => {
         setShowAIForm(true);
+        setAnchorKey(payload.anchorKey);
         return true;
       },
       COMMAND_PRIORITY_LOW

@@ -236,7 +236,16 @@ function getBaseOptions(editor: LexicalEditor) {
     new ComponentPickerOption('AI', {
       icon: <Brain size={20} />,
       keywords: ['ai', 'chat', 'gpt'],
-      onSelect: () => editor.dispatchCommand(GENERATIVE_AI_COMMAND, undefined),
+      onSelect: () =>
+        editor.update(() => {
+          const selection = $getSelection();
+          if ($isRangeSelection(selection)) {
+            const anchorNode = selection.anchor.getNode();
+            editor.dispatchCommand(GENERATIVE_AI_COMMAND, {
+              anchorKey: anchorNode.getKey(),
+            });
+          }
+        }),
     }),
   ];
 }
