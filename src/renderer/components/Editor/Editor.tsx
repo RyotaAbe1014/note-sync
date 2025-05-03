@@ -15,6 +15,7 @@ import { nodes } from './nodes';
 import { CodeHighlightPlugin } from './plugins/CodeHighlightPlugin';
 import ComponentPickerMenuPlugin from './plugins/ComponentPickerPlugin';
 import { FileChangeUpdateStatePlugin } from './plugins/FileChangeUpdateStatePlugin';
+import InlineGenerativeAIPlugin from './plugins/InlineGenerativeAIPlugin';
 import { TRANSFORMERS } from './plugins/MarkdownTransformers';
 import { SavePlugin } from './plugins/SavePlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
@@ -103,6 +104,7 @@ export const Editor = forwardRef<EditorRefType, EditorProps>(
             hasHorizontalScroll={true}
           />
           <ComponentPickerMenuPlugin />
+          <InlineGenerativeAIPlugin />
         </LexicalComposer>
       </div>
     );

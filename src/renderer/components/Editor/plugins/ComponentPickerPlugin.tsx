@@ -44,6 +44,8 @@ import {
   SeparatorHorizontal,
 } from 'lucide-react';
 
+import { GENERATIVE_AI_COMMAND } from './InlineGenerativeAIPlugin';
+
 // import useModal from '../../hooks/useModal';
 // import catTypingGif from '../../images/cat-typing.gif';
 // import {EmbedConfigs} from '../AutoEmbedPlugin';
@@ -234,9 +236,7 @@ function getBaseOptions(editor: LexicalEditor) {
     new ComponentPickerOption('AI', {
       icon: <Brain size={20} />,
       keywords: ['ai', 'chat', 'gpt'],
-      onSelect: () =>
-        // editor.dispatchCommand(INSERT_AI_COMMAND, undefined),
-        console.log('AI'),
+      onSelect: () => editor.dispatchCommand(GENERATIVE_AI_COMMAND, undefined),
     }),
   ];
 }
