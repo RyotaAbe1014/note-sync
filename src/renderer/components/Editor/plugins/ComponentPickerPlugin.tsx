@@ -284,44 +284,42 @@ export default function ComponentPickerMenuPlugin() {
   );
 
   return (
-    <>
-      <LexicalTypeaheadMenuPlugin<ComponentPickerOption>
-        onQueryChange={setQueryString}
-        onSelectOption={onSelectOption}
-        triggerFn={checkForTriggerMatch}
-        options={options}
-        menuRenderFn={(
-          anchorElementRef,
-          { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
-        ) =>
-          anchorElementRef.current && options.length
-            ? ReactDOM.createPortal(
-                <div className="dropdown dropdown-open">
-                  <div className="card bg-base-100 dropdown-content border border-base-300 shadow-sm z-50">
-                    <ul className="menu menu-compact p-3">
-                      {options.map((option, i: number) => (
-                        <ComponentPickerMenuItem
-                          index={i}
-                          isSelected={selectedIndex === i}
-                          onClick={() => {
-                            setHighlightedIndex(i);
-                            selectOptionAndCleanUp(option);
-                          }}
-                          onMouseEnter={() => {
-                            setHighlightedIndex(i);
-                          }}
-                          key={option.key}
-                          option={option}
-                        />
-                      ))}
-                    </ul>
-                  </div>
-                </div>,
-                anchorElementRef.current
-              )
-            : null
-        }
-      />
-    </>
+    <LexicalTypeaheadMenuPlugin<ComponentPickerOption>
+      onQueryChange={setQueryString}
+      onSelectOption={onSelectOption}
+      triggerFn={checkForTriggerMatch}
+      options={options}
+      menuRenderFn={(
+        anchorElementRef,
+        { selectedIndex, selectOptionAndCleanUp, setHighlightedIndex }
+      ) =>
+        anchorElementRef.current && options.length
+          ? ReactDOM.createPortal(
+              <div className="dropdown dropdown-open">
+                <div className="card bg-base-100 dropdown-content border border-base-300 shadow-sm z-50">
+                  <ul className="menu menu-compact p-3">
+                    {options.map((option, i: number) => (
+                      <ComponentPickerMenuItem
+                        index={i}
+                        isSelected={selectedIndex === i}
+                        onClick={() => {
+                          setHighlightedIndex(i);
+                          selectOptionAndCleanUp(option);
+                        }}
+                        onMouseEnter={() => {
+                          setHighlightedIndex(i);
+                        }}
+                        key={option.key}
+                        option={option}
+                      />
+                    ))}
+                  </ul>
+                </div>
+              </div>,
+              anchorElementRef.current
+            )
+          : null
+      }
+    />
   );
 }
