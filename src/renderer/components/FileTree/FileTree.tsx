@@ -172,8 +172,9 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
                     onContextMenu={(e) => handleRightClick(e, file)}
                     className="w-full"
                   >
-                    <a
-                      className={`${isDisabled(file) ? 'btn-disabled' : ''} ${
+                    <button
+                      type="button"
+                      className={`flex w-full items-center px-4 py-2 ${isDisabled(file) ? 'btn-disabled' : ''} ${
                         selectedFile?.path === file.path ? 'active' : ''
                       }`}
                       onClick={() =>
@@ -189,7 +190,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
                         <FileIcon className="h-5 w-5 text-base-content/70" />
                       )}
                       <span className="truncate">{file.name}</span>
-                    </a>
+                    </button>
                   </li>
                 ))
               )}
