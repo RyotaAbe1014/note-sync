@@ -55,4 +55,9 @@ contextBridge.exposeInMainWorld('api', {
     pull: () => ipcRenderer.invoke('git:pull'),
     status: () => ipcRenderer.invoke('git:status'),
   },
+
+  // AI操作
+  ai: {
+    getInlineResponse: (prompt: string) => ipcRenderer.invoke('ai:get-inline-response', prompt),
+  },
 });

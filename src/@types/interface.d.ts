@@ -53,6 +53,9 @@ declare global {
         pull: () => Promise<boolean>;
         status: () => Promise<StatusMatrix>;
       };
+      ai: {
+        getInlineResponse: (prompt: string) => Promise<string>;
+      };
     };
   }
 }

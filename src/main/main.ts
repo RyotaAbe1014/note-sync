@@ -3,6 +3,7 @@ import { BrowserWindow, app } from 'electron';
 import started from 'electron-squirrel-startup';
 import path from 'node:path';
 
+import { setupGenerativeAiHandlers } from './ai/generativeAiHandler';
 import { setupDialogHandlers } from './dialog/dialogHandlers';
 import { setupExportHandlers } from './export/exportHandler';
 import { setupFileSystemHandlers } from './fileSystem/fileSystemHandlers';
@@ -49,6 +50,7 @@ app.on('ready', () => {
   setupFileSystemHandlers();
   setupGitHandlers();
   setupExportHandlers();
+  setupGenerativeAiHandlers();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
