@@ -15,7 +15,7 @@ const getOpenAIKey = () => {
 };
 
 export function setupGenerativeAiHandlers() {
-  ipcMain.handle('generative-ai:get-inline-response', async (event, prompt: string) => {
+  ipcMain.handle('ai:get-inline-response', async (event, prompt: string) => {
     const openaiKey = getOpenAIKey();
     if (!openaiKey) {
       throw new Error('OpenAI API key is not set');

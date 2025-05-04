@@ -7,15 +7,6 @@ interface GenerativeAIFormProps {
   onClose: () => void;
 }
 
-// AIの応答をモックする関数
-const generateAIResponse = async (prompt: string): Promise<string> => {
-  // 実際のAPIホストへのリクエストはここに実装します
-  // 今はモック応答を返します
-  await new Promise((resolve) => setTimeout(resolve, 800)); // APIレイテンシーの模擬
-
-  return `${prompt}についての考察：\n\n要点1: これはAIによって生成されたコンテンツです。\n要点2: 実際のAPIを使用する場合は、このモック関数を置き換えてください。\n要点3: 長文生成や特殊フォーマットの処理も実装できます。`;
-};
-
 export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +19,7 @@ export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
         setIsLoading(true);
         try {
           // AIからの応答を取得
-          const response = await generateAIResponse(prompt);
+          const response = await window.api.ai.getInlineResponse(prompt);
           setGeneratedResponse(response);
         } catch (error) {
           console.error('AIコンテンツの生成中にエラーが発生しました:', error);
