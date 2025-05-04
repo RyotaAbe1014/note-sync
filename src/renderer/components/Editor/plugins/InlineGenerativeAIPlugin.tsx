@@ -4,10 +4,17 @@ import * as ReactDOM from 'react-dom';
 import { $convertFromMarkdownString, $convertToMarkdownString } from '@lexical/markdown';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
-import { COMMAND_PRIORITY_LOW, LexicalCommand, createCommand } from 'lexical';
-import { $createParagraphNode, $createTextNode, $insertNodes } from 'lexical';
-import { $getSelection, $isRangeSelection } from 'lexical';
-import { SELECTION_CHANGE_COMMAND } from 'lexical';
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getSelection,
+  $insertNodes,
+  $isRangeSelection,
+  COMMAND_PRIORITY_LOW,
+  LexicalCommand,
+  SELECTION_CHANGE_COMMAND,
+  createCommand,
+} from 'lexical';
 
 import { GenerativeAIForm } from './GenerativeAIForm';
 import { TRANSFORMERS } from './MarkdownTransformers';
