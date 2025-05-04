@@ -10,7 +10,6 @@ import { SELECTION_CHANGE_COMMAND } from 'lexical';
 
 import { GenerativeAIForm } from './GenerativeAIForm';
 
-// ペイロードの型を定義
 interface GenerativeAIPayload {
   anchorKey: string;
 }
@@ -35,7 +34,6 @@ export default function InlineGenerativeAIPlugin() {
     const anchorElement = editor.getElementByKey(anchorKey);
 
     if (formElement !== null && rootElement !== null && anchorElement !== null) {
-      const rootRect = rootElement.getBoundingClientRect();
       const anchorRect = anchorElement.getBoundingClientRect();
       const formRect = formElement.getBoundingClientRect();
 
