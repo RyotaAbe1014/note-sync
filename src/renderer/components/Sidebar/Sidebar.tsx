@@ -1,5 +1,6 @@
 import React from 'react';
 
+import clsx from 'clsx';
 import { ChevronLeft, ChevronRight, Folder, GitBranch } from 'lucide-react';
 
 import { FileTree } from '../FileTree/FileTree';
@@ -37,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </button>
 
       {/* タブ */}
-      <div className="tabs tabs-lift h-[calc(100vh-100px)]">
+      <div className={clsx({ hidden: !isOpen, 'tabs tabs-lift h-[calc(100vh-100px)]': isOpen })}>
         {/* ファイルタブ */}
         <label className="tab">
           <input type="radio" name="my_tabs_4" defaultChecked />
