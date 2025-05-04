@@ -8,7 +8,6 @@ import {
   $createParagraphNode,
   $createTextNode,
   $getSelection,
-  $insertNodes,
   $isRangeSelection,
   COMMAND_PRIORITY_LOW,
   LexicalCommand,
