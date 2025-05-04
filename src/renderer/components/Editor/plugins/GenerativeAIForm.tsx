@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { ArrowRight, Check, Loader2, RefreshCw } from 'lucide-react';
+import { AlertCircle, ArrowRight, Check, Loader2, RefreshCw } from 'lucide-react';
 
 interface GenerativeAIFormProps {
   onSubmit: (prompt: string) => void;
@@ -11,18 +11,23 @@ export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [generatedResponse, setGeneratedResponse] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       if (prompt.trim()) {
         setIsLoading(true);
+        setError(null);
         try {
           // AIからの応答を取得
           const response = await window.api.ai.getInlineResponse(prompt);
           setGeneratedResponse(response);
         } catch (error) {
           console.error('AIコンテンツの生成中にエラーが発生しました:', error);
+          setError(
+            error instanceof Error ? error.message : 'AIコンテンツの生成中にエラーが発生しました'
+          );
         } finally {
           setIsLoading(false);
         }
@@ -39,6 +44,7 @@ export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
 
   const handleRetry = useCallback(() => {
     setGeneratedResponse(null);
+    setError(null);
   }, []);
 
   return (
@@ -53,6 +59,13 @@ export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
             ✕
           </button>
         </h2>
+
+        {error && (
+          <div className="alert alert-error shadow-sm text-xs mb-2">
+            <AlertCircle size={16} />
+            <span>{error}</span>
+          </div>
+        )}
 
         {!generatedResponse ? (
           // 生成フォーム

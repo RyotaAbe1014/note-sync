@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import * as ReactDOM from 'react-dom';
 
+import { $convertFromMarkdownString, $convertToMarkdownString } from '@lexical/markdown';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { mergeRegister } from '@lexical/utils';
 import { COMMAND_PRIORITY_LOW, LexicalCommand, createCommand } from 'lexical';
@@ -9,6 +10,7 @@ import { $getSelection, $isRangeSelection } from 'lexical';
 import { SELECTION_CHANGE_COMMAND } from 'lexical';
 
 import { GenerativeAIForm } from './GenerativeAIForm';
+import { TRANSFORMERS } from './MarkdownTransformers';
 
 interface GenerativeAIPayload {
   anchorKey: string;
@@ -161,8 +163,10 @@ export default function InlineGenerativeAIPlugin() {
           const paragraphNode = $createParagraphNode();
           const textNode = $createTextNode(text);
           paragraphNode.append(textNode);
-
           selection.insertNodes([paragraphNode]);
+
+          const markdown = $convertToMarkdownString(TRANSFORMERS);
+          $convertFromMarkdownString(markdown, TRANSFORMERS);
         }
       });
     },
