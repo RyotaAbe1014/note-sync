@@ -1,33 +1,54 @@
 import { useCallback, useState } from 'react';
 
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight, Check, Loader2, RefreshCw } from 'lucide-react';
 
 interface GenerativeAIFormProps {
   onSubmit: (prompt: string) => void;
   onClose: () => void;
 }
 
+// AIの応答をモックする関数
+const generateAIResponse = async (prompt: string): Promise<string> => {
+  // 実際のAPIホストへのリクエストはここに実装します
+  // 今はモック応答を返します
+  await new Promise((resolve) => setTimeout(resolve, 800)); // APIレイテンシーの模擬
+
+  return `${prompt}についての考察：\n\n要点1: これはAIによって生成されたコンテンツです。\n要点2: 実際のAPIを使用する場合は、このモック関数を置き換えてください。\n要点3: 長文生成や特殊フォーマットの処理も実装できます。`;
+};
+
 export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [generatedResponse, setGeneratedResponse] = useState<string | null>(null);
 
-  const handleSubmit = useCallback(
+  const handleGenerate = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       if (prompt.trim()) {
         setIsLoading(true);
         try {
-          // AI呼び出しを模擬するための遅延
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          onSubmit(prompt);
-          setPrompt('');
+          // AIからの応答を取得
+          const response = await generateAIResponse(prompt);
+          setGeneratedResponse(response);
+        } catch (error) {
+          console.error('AIコンテンツの生成中にエラーが発生しました:', error);
         } finally {
           setIsLoading(false);
         }
       }
     },
-    [prompt, onSubmit]
+    [prompt]
   );
+
+  const handleApply = useCallback(() => {
+    if (generatedResponse) {
+      onSubmit(generatedResponse);
+    }
+  }, [generatedResponse, onSubmit]);
+
+  const handleRetry = useCallback(() => {
+    setGeneratedResponse(null);
+  }, []);
 
   return (
     <div className="card bg-base-100 shadow-xl w-full max-w-md border border-base-300">
@@ -41,52 +62,83 @@ export function GenerativeAIForm({ onSubmit, onClose }: GenerativeAIFormProps) {
             ✕
           </button>
         </h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-control">
-            <label className="label py-1">
-              <span className="label-text text-xs">AIに指示を出す</span>
-            </label>
-            <textarea
-              className="textarea textarea-bordered w-full h-24 focus:textarea-primary text-sm"
-              placeholder="何を生成しますか？例：「ReactコンポーネントについてのTipsを3つ書いてください」"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              autoFocus
-              disabled={isLoading}
-            />
-            <label className="label py-1">
-              <span className="label-text-alt text-xs text-base-content/70">
-                AIが生成したテキストがカーソル位置に挿入されます
-              </span>
-            </label>
+
+        {!generatedResponse ? (
+          // 生成フォーム
+          <form onSubmit={handleGenerate}>
+            <div className="form-control">
+              <label className="label py-1">
+                <span className="label-text text-xs">AIに指示を出す</span>
+              </label>
+              <textarea
+                className="textarea textarea-bordered w-full h-24 focus:textarea-primary text-sm"
+                placeholder="何を生成しますか？例：「ReactコンポーネントについてのTipsを3つ書いてください」"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                autoFocus
+                disabled={isLoading}
+              />
+              <label className="label py-1">
+                <span className="label-text-alt text-xs text-base-content/70">
+                  AIが生成したテキストがカーソル位置に挿入されます
+                </span>
+              </label>
+            </div>
+            <div className="card-actions justify-end mt-2">
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={onClose}
+                disabled={isLoading}
+              >
+                キャンセル
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary btn-sm"
+                disabled={!prompt.trim() || isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 size={16} className="mr-2 animate-spin" />
+                    生成中...
+                  </>
+                ) : (
+                  <>
+                    生成 <ArrowRight size={16} className="ml-1" />
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+        ) : (
+          // 生成結果プレビュー
+          <div>
+            <div className="form-control">
+              <label className="label py-1">
+                <span className="label-text text-xs">生成結果</span>
+              </label>
+              <div className="bg-base-200 p-3 rounded-md text-sm whitespace-pre-wrap overflow-auto max-h-48">
+                {generatedResponse}
+              </div>
+              <label className="label py-1">
+                <span className="label-text-alt text-xs text-base-content/70">
+                  この内容でよろしければ「適用」をクリックしてください
+                </span>
+              </label>
+            </div>
+            <div className="card-actions justify-end mt-2">
+              <button type="button" className="btn btn-ghost btn-sm" onClick={handleRetry}>
+                <RefreshCw size={16} className="mr-1" />
+                やり直す
+              </button>
+              <button type="button" className="btn btn-primary btn-sm" onClick={handleApply}>
+                <Check size={16} className="mr-1" />
+                適用
+              </button>
+            </div>
           </div>
-          <div className="card-actions justify-end mt-2">
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              onClick={onClose}
-              disabled={isLoading}
-            >
-              キャンセル
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary btn-sm"
-              disabled={!prompt.trim() || isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 size={16} className="mr-2 animate-spin" />
-                  生成中...
-                </>
-              ) : (
-                <>
-                  生成 <ArrowRight size={16} className="ml-1" />
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+        )}
       </div>
     </div>
   );

@@ -18,15 +18,6 @@ interface GenerativeAIPayload {
 export const GENERATIVE_AI_COMMAND: LexicalCommand<GenerativeAIPayload> =
   createCommand('GENERATIVE_AI_COMMAND');
 
-// AIの応答をモックする関数
-const generateAIResponse = async (prompt: string): Promise<string> => {
-  // 実際のAPIホストへのリクエストはここに実装します
-  // 今はモック応答を返します
-  await new Promise((resolve) => setTimeout(resolve, 800)); // APIレイテンシーの模擬
-
-  return `${prompt}についての考察：\n\n要点1: これはAIによって生成されたコンテンツです。\n要点2: 実際のAPIを使用する場合は、このモック関数を置き換えてください。\n要点3: 長文生成や特殊フォーマットの処理も実装できます。`;
-};
-
 export default function InlineGenerativeAIPlugin() {
   const [editor] = useLexicalComposerContext();
   const [showAIForm, setShowAIForm] = useState(false);
@@ -161,41 +152,21 @@ export default function InlineGenerativeAIPlugin() {
     );
   }, [editor]);
 
-  const handleSubmitPrompt = useCallback(
-    async (prompt: string) => {
+  const handleInsertText = useCallback(
+    (text: string) => {
       setShowAIForm(false);
 
-      try {
-        // AIからの応答を取得
-        const response = await generateAIResponse(prompt);
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          // 段落ノードを作成してテキストを挿入
+          const paragraphNode = $createParagraphNode();
+          const textNode = $createTextNode(text);
+          paragraphNode.append(textNode);
 
-        editor.update(() => {
-          const selection = $getSelection();
-          if ($isRangeSelection(selection)) {
-            // 段落ノードを作成してテキストを挿入
-            const paragraphNode = $createParagraphNode();
-            const textNode = $createTextNode(response);
-            paragraphNode.append(textNode);
-
-            selection.insertNodes([paragraphNode]);
-          }
-        });
-      } catch (error) {
-        console.error('AIコンテンツの生成中にエラーが発生しました:', error);
-
-        // エラーメッセージを表示
-        editor.update(() => {
-          const selection = $getSelection();
-          if ($isRangeSelection(selection)) {
-            const errorParagraph = $createParagraphNode();
-            const errorText = $createTextNode(
-              'AIコンテンツの生成中にエラーが発生しました。もう一度お試しください。'
-            );
-            errorParagraph.append(errorText);
-            selection.insertNodes([errorParagraph]);
-          }
-        });
-      }
+          selection.insertNodes([paragraphNode]);
+        }
+      });
     },
     [editor]
   );
@@ -207,7 +178,7 @@ export default function InlineGenerativeAIPlugin() {
   return showAIForm
     ? ReactDOM.createPortal(
         <div ref={formRef} className="fixed z-50" style={{ position: 'absolute' }}>
-          <GenerativeAIForm onSubmit={handleSubmitPrompt} onClose={handleCloseForm} />
+          <GenerativeAIForm onSubmit={handleInsertText} onClose={handleCloseForm} />
         </div>,
         document.body
       )
