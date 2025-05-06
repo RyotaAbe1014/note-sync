@@ -35,7 +35,7 @@ CommitNotesは、GitHubをデータベース代わりに活用し、Markdown形�
 
 ### 2.5 追加機能技術
 
-- **OpenAI API / Anthropic Claude API**: AIチャット機能
+- **OpenAI API**: AIチャット機能（実装済み）
 - **Pandoc**: ドキュメント変換（PDF/EPUB）（実装済み）
 
 ## 3. コーディング規約
