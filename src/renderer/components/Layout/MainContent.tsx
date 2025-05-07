@@ -62,16 +62,12 @@ export function MainContent({
         <div className="card bg-base-100 flex-1 shadow-xl">
           <div className="card-body">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <h2 className="card-title">
+              <div className="flex">
+                <span>
                   {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
-                </h2>
+                </span>
               </div>
-              <button
-                onClick={handleSave}
-                disabled={!selectedFile}
-                className="btn btn-primary gap-2"
-              >
+              <button onClick={handleSave} disabled={!selectedFile} className="btn btn-primary">
                 <Save className="h-4 w-4" />
                 保存
               </button>
