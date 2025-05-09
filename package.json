@@ -66,7 +66,7 @@
     "@lexical/mark": "0.27.1",
     "@lexical/overflow": "0.27.1",
     "@lexical/plain-text": "0.27.1",
-    "@lexical/react": "0.27.1",
+    "@lexical/react": "0.31.0",
     "@lexical/rich-text": "0.27.1",
     "@lexical/selection": "0.27.1",
     "@lexical/table": "0.27.1",
