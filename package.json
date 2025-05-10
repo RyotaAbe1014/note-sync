@@ -72,7 +72,7 @@
     "@lexical/table": "0.31.0",
     "@lexical/utils": "0.31.0",
     "@octokit/rest": "^21.1.1",
-    "@tailwindcss/postcss": "^4.0.9",
+    "@tailwindcss/postcss": "^4.1.6",
     "@tailwindcss/vite": "^4.1.6",
     "@xterm/xterm": "^5.5.0",
     "clsx": "^2.1.1",
