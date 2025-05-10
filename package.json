@@ -83,7 +83,7 @@
     "lexical": "0.27.1",
     "lucide-react": "^0.509.0",
     "node-pty": "^1.0.0",
-    "openai": "^4.97.0",
+    "openai": "^4.98.0",
     "prismjs": "^1.30.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
