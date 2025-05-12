@@ -80,7 +80,7 @@
     "electron-store": "^10.0.1",
     "isomorphic-git": "^1.29.0",
     "jotai": "^2.12.2",
-    "lexical": "0.27.1",
+    "lexical": "0.31.0",
     "lucide-react": "^0.509.0",
     "node-pty": "^1.0.0",
     "openai": "^4.98.0",
