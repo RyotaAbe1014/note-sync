@@ -185,11 +185,11 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
                       onContextMenu={(e) => handleRightClick(e, file)}
                     >
                       {file.isDirectory ? (
-                        <FolderIcon className="h-5 w-5 text-primary" />
+                        <FolderIcon className="h-5 w-5 min-w-5 text-primary" />
                       ) : (
-                        <FileIcon className="h-5 w-5 text-base-content/70" />
+                        <FileIcon className="h-5 w-5 min-w-5 text-base-content/70" />
                       )}
-                      <span className="truncate">{file.name}</span>
+                      <span className="truncate ml-2">{file.name}</span>
                     </button>
                   </li>
                 ))
