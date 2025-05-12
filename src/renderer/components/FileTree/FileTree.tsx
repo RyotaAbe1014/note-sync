@@ -189,7 +189,9 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
                       ) : (
                         <FileIcon className="h-5 w-5 min-w-5 text-base-content/70" />
                       )}
-                      <span className="truncate ml-2">{file.name}</span>
+                      <span className="truncate ml-2" title={file.name}>
+                        {file.name}
+                      </span>
                     </button>
                   </li>
                 ))
