@@ -45,7 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "autoprefixer": "^10.4.20",
-    "daisyui": "^5.0.4",
+    "daisyui": "^5.0.35",
     "electron": "34.5.6",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.31.0",
