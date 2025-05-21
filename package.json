@@ -84,7 +84,7 @@
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^10.0.1",
     "isomorphic-git": "^1.29.0",
-    "jotai": "^2.12.2",
+    "jotai": "^2.12.4",
     "lexical": "0.31.1",
     "lucide-react": "^0.509.0",
     "node-pty": "^1.0.0",
