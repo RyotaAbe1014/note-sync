@@ -69,7 +69,7 @@
     "@lexical/link": "0.31.1",
     "@lexical/list": "0.31.1",
     "@lexical/mark": "0.31.1",
-    "@lexical/overflow": "0.31.1",
+    "@lexical/overflow": "0.31.2",
     "@lexical/plain-text": "0.31.1",
     "@lexical/react": "0.31.1",
     "@lexical/rich-text": "0.31.1",
