@@ -117,10 +117,11 @@ export const AppSettings = () => {
             <h3 className="mb-4 text-lg font-medium">Git設定</h3>
             <div className="space-y-6">
               <div className="form-control">
-                <label className="label">
+                <label htmlFor="git-token" className="label">
                   <span className="label-text">アクセストークン</span>
                 </label>
                 <input
+                  id="git-token"
                   type="password"
                   value={settings.git.token}
                   onChange={(e) =>
@@ -143,11 +144,12 @@ export const AppSettings = () => {
                 <h4 className="text-md mb-4 font-medium">コミットの作成者情報</h4>
                 <div className="space-y-4">
                   <div className="form-control">
-                    <label className="label">
+                    <label htmlFor="git-name" className="label">
                       <span className="label-text">作者名</span>
                     </label>
                     <input
                       type="text"
+                      id="git-name"
                       value={settings.git.author.name}
                       onChange={(e) =>
                         setSettings((prev: AppSettingsType) => ({
@@ -163,10 +165,11 @@ export const AppSettings = () => {
                     />
                   </div>
                   <div className="form-control">
-                    <label className="label">
+                    <label htmlFor="git-email" className="label">
                       <span className="label-text">メールアドレス</span>
                     </label>
                     <input
+                      id="git-email"
                       type="email"
                       value={settings.git.author.email}
                       onChange={(e) =>
@@ -192,10 +195,11 @@ export const AppSettings = () => {
             <h3 className="mb-4 text-lg font-medium">APIキー設定</h3>
             <div className="space-y-6">
               <div className="form-control">
-                <label className="label">
+                <label htmlFor="openai-api-key" className="label">
                   <span className="label-text">OpenAI APIキー</span>
                 </label>
                 <input
+                  id="openai-api-key"
                   type="password"
                   value={settings.apiKeys.openai}
                   onChange={(e) =>
