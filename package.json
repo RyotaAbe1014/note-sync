@@ -86,7 +86,7 @@
     "isomorphic-git": "^1.29.0",
     "jotai": "^2.12.4",
     "lexical": "0.31.1",
-    "lucide-react": "^0.509.0",
+    "lucide-react": "^0.511.0",
     "node-pty": "^1.0.0",
     "openai": "^4.98.0",
     "prismjs": "^1.30.0",
