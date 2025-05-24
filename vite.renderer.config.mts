@@ -13,6 +13,13 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      external: (id) => {
+        // プロダクションビルドでstagewiseパッケージを除外
+        if (process.env.NODE_ENV === 'production' && id.includes('@stagewise/')) {
+          return true;
+        }
+        return false;
+      },
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-dom/client'],
