@@ -11,6 +11,37 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "*"
-        update-types: [ "version-update:semver-major" ]
+        update-types: ["version-update:semver-major"]
+    groups:
+      lexical-dependencies:
+        patterns:
+          - "lexical"
+          - "@lexical/clipboard"
+          - "@lexical/code"
+          - "@lexical/file"
+          - "@lexical/hashtag"
+          - "@lexical/link"
+          - "@lexical/list"
+          - "@lexical/mark"
+          - "@lexical/overflow"
+          - "@lexical/plain-text"
+          - "@lexical/react"
+          - "@lexical/rich-text"
+          - "@lexical/selection"
+          - "@lexical/table"
+          - "@lexical/utils"
+      electron-forge-dependencies:
+        patterns:
+          - "@electron-forge/cli"
+          - "@electron-forge/maker-deb"
+          - "@electron-forge/maker-dmg"
+          - "@electron-forge/maker-rpm"
+          - "@electron-forge/maker-squirrel"
+          - "@electron-forge/maker-zip"
+          - "@electron-forge/plugin-auto-unpack-natives"
+          - "@electron-forge/plugin-fuses"
+          - "@electron-forge/plugin-vite"
+        exclude-patterns:
+          - "@electron/fuses"
     reviewers:
       - RyotaAbe1014
