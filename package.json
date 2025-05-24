@@ -85,7 +85,7 @@
     "clsx": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^10.0.1",
-    "isomorphic-git": "^1.29.0",
+    "isomorphic-git": "^1.30.2",
     "jotai": "^2.12.4",
     "lexical": "0.31.1",
     "lucide-react": "^0.511.0",
