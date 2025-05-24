@@ -79,7 +79,7 @@
     "@lexical/utils": "0.31.1",
     "@octokit/rest": "^21.1.1",
     "@tailwindcss/postcss": "^4.1.7",
-    "@tailwindcss/vite": "^4.1.6",
+    "@tailwindcss/vite": "^4.1.7",
     "@testing-library/user-event": "^14.6.1",
     "@xterm/xterm": "^5.5.0",
     "clsx": "^2.1.1",
