@@ -14,7 +14,6 @@ import {
   INSERT_ORDERED_LIST_COMMAND,
   INSERT_UNORDERED_LIST_COMMAND,
 } from '@lexical/list';
-import { INSERT_EMBED_COMMAND } from '@lexical/react/LexicalAutoEmbedPlugin';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { INSERT_HORIZONTAL_RULE_COMMAND } from '@lexical/react/LexicalHorizontalRuleNode';
 import {
@@ -29,7 +28,6 @@ import {
   $createParagraphNode,
   $getSelection,
   $isRangeSelection,
-  FORMAT_ELEMENT_COMMAND,
   LexicalEditor,
   TextNode,
 } from 'lexical';
@@ -45,18 +43,6 @@ import {
 } from 'lucide-react';
 
 import { GENERATIVE_AI_COMMAND } from './InlineGenerativeAIPlugin';
-
-// import useModal from '../../hooks/useModal';
-// import catTypingGif from '../../images/cat-typing.gif';
-// import {EmbedConfigs} from '../AutoEmbedPlugin';
-// import {INSERT_COLLAPSIBLE_COMMAND} from '../CollapsiblePlugin';
-// import {InsertEquationDialog} from '../EquationsPlugin';
-// import {INSERT_EXCALIDRAW_COMMAND} from '../ExcalidrawPlugin';
-// import {INSERT_IMAGE_COMMAND, InsertImageDialog} from '../ImagesPlugin';
-// import InsertLayoutDialog from '../LayoutPlugin/InsertLayoutDialog';
-// import {INSERT_PAGE_BREAK} from '../PageBreakPlugin';
-// import {InsertPollDialog} from '../PollPlugin';
-// import {InsertTableDialog} from '../TablePlugin';
 
 class ComponentPickerOption extends MenuOption {
   // What shows up in the editor
@@ -117,9 +103,11 @@ function ComponentPickerMenuItem({
       onMouseEnter={onMouseEnter}
       onClick={onClick}
     >
-      <div className="flex items-center py-2 px-3 rounded hover:bg-base-200">
-        <span className="mr-2">{option.icon}</span>
-        <span className="text whitespace-nowrap">{option.title}</span>
+      <div
+        className="flex items-center justify-center py-2 px-3 rounded hover:bg-base-200 tooltip"
+        data-tip={option.title}
+      >
+        <span>{option.icon}</span>
       </div>
     </li>
   );
@@ -304,9 +292,9 @@ export default function ComponentPickerMenuPlugin() {
       ) =>
         anchorElementRef.current && options.length
           ? ReactDOM.createPortal(
-              <div className="dropdown dropdown-open">
+              <div className="dropdown dropdown-open dropdown-top">
                 <div className="card bg-base-100 dropdown-content border border-base-300 shadow-sm z-50">
-                  <ul className="menu menu-compact p-3">
+                  <ul className="menu menu-compact p-1 flex flex-row flex-nowrap gap-1">
                     {options.map((option, i: number) => (
                       <ComponentPickerMenuItem
                         index={i}
