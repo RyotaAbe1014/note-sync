@@ -2,25 +2,25 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Edit, FileIcon, FolderIcon, Trash2, X } from 'lucide-react';
 
-export interface FileTreeItem {
+export type FileTreeItem = {
   name: string;
   isDirectory: boolean;
   path: string;
-}
+};
 
-interface ExportResult {
+type ExportResult = {
   success: boolean;
   outputPath: string;
-}
+};
 
-interface FileMenuProps {
+type FileMenuProps = {
   file: FileTreeItem;
   position: { x: number; y: number };
   handleClose: () => void;
   handleRename: (file: FileTreeItem, newName: string) => void;
   handleDeleteClick: (file: FileTreeItem) => void;
   showToast: (message: string, type: 'success' | 'error') => void;
-}
+};
 
 export const FileMenu = ({
   file,
@@ -108,6 +108,7 @@ export const FileMenu = ({
         <button
           className="rounded-full p-1 text-gray-400 transition-colors duration-150 hover:bg-gray-100 hover:text-gray-600"
           onClick={handleClose}
+          aria-label="閉じる"
         >
           <X className="h-4 w-4" />
         </button>
