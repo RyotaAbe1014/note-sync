@@ -6,7 +6,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { TRANSFORMERS as MARKDOWN_TRANSFORMERS } from './MarkdownTransformers';
 
 interface SavePluginProps {
-  ref: React.RefObject<{ getMarkdown: () => string }>;
+  ref?: React.Ref<{ getMarkdown: () => string }>;
 }
 
 export const SavePlugin = ({ ref }: SavePluginProps) => {
