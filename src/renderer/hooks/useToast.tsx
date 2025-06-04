@@ -5,6 +5,8 @@ import { X } from 'lucide-react';
 
 import { toastAtom } from '../stores/toastAtom';
 
+const TOAST_TIMEOUT_MS = 3000;
+
 export const useToast = () => {
   const [toast, setToast] = useAtom(toastAtom);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
