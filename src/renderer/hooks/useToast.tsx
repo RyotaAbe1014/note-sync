@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useAtom } from 'jotai';
 import { X } from 'lucide-react';
 
 import { toastAtom } from '../stores/toastAtom';
 
+const TOAST_TIMEOUT_MS = 3000;
+
 export const useToast = () => {
   const [toast, setToast] = useAtom(toastAtom);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
-    setTimeoutId(setTimeout(() => clearToast(), 3000));
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = setTimeout(() => clearToast(), TOAST_TIMEOUT_MS);
   };
 
   const clearToast = () => {
@@ -20,11 +25,11 @@ export const useToast = () => {
 
   useEffect(() => {
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
-  }, [timeoutId]);
+  }, []);
 
   const Toast = () => {
     return (
