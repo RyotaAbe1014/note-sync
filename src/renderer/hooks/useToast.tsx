@@ -14,7 +14,7 @@ export const useToast = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    timeoutRef.current = setTimeout(() => clearToast(), 3000);
+    timeoutRef.current = setTimeout(() => clearToast(), TOAST_TIMEOUT_MS);
   };
 
   const clearToast = () => {
