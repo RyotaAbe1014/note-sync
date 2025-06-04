@@ -49,8 +49,7 @@ contextBridge.exposeInMainWorld('api', {
   git: {
     add: (filepath: string) => ipcRenderer.invoke('git:add', filepath),
     unstage: (filepath: string) => ipcRenderer.invoke('git:unstage', filepath),
-    commit: (message: string, author: { name: string; email: string }) =>
-      ipcRenderer.invoke('git:commit', message, author),
+    commit: (message: string) => ipcRenderer.invoke('git:commit', message),
     push: () => ipcRenderer.invoke('git:push'),
     pull: () => ipcRenderer.invoke('git:pull'),
     status: () => ipcRenderer.invoke('git:status'),
