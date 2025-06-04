@@ -175,7 +175,7 @@ export function setupFileSystemHandlers() {
   // ディレクトリの削除
   ipcMain.handle('fs:remove-directory', async (event, dirPath) => {
     try {
-      await fs.rmdir(dirPath, { recursive: true });
+      await fs.rm(dirPath, { recursive: true, force: true });
       return true;
     } catch (error) {
       console.error('Error deleting directory:', error);
