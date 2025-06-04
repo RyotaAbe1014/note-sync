@@ -207,6 +207,7 @@ export const FileTree: React.FC<FileTreeProps> = ({ onFileSelect, onSettingsClic
               handleRename={handleRename}
               handleDeleteClick={handleDeleteClick}
               showToast={showToast}
+              refreshDirectory={() => loadDirectory(currentDir)}
             />
           )}
         </div>

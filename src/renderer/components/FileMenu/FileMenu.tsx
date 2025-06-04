@@ -20,6 +20,7 @@ type FileMenuProps = {
   handleRename: (file: FileTreeItem, newName: string) => void;
   handleDeleteClick: (file: FileTreeItem) => void;
   showToast: (message: string, type: 'success' | 'error') => void;
+  refreshDirectory: () => void;
 };
 
 export const FileMenu = ({
@@ -29,6 +30,7 @@ export const FileMenu = ({
   handleRename,
   handleDeleteClick,
   showToast,
+  refreshDirectory,
 }: FileMenuProps) => {
   const [isRenaming, setIsRenaming] = useState<boolean>(false);
   const [newName, setNewName] = useState(file.name);
@@ -78,8 +80,8 @@ export const FileMenu = ({
         await window.api.fs.createDirectory(`${file.path}/${newItemName}`);
         showToast(`フォルダ "${newItemName}" を作成しました`, 'success');
       }
-      // 親コンポーネントのloadDirectoryを呼び出す
-      window.api.fs.listFiles(file.path);
+      // 親コンポーネントにディレクトリ再読み込みを依頼
+      refreshDirectory();
       setIsCreatingNew(false);
       setNewItemName('');
       setNewItemType(null);
