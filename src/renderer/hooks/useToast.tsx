@@ -11,6 +11,9 @@ export const useToast = () => {
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
     setTimeoutId(setTimeout(() => clearToast(), 3000));
   };
 
