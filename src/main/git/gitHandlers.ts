@@ -2,7 +2,6 @@ import { ipcMain } from 'electron';
 // @ts-ignore
 import Store from 'electron-store';
 import fs from 'fs';
-import ignore from 'ignore';
 // @ts-ignore
 import git from 'isomorphic-git';
 // @ts-ignore
@@ -41,9 +40,11 @@ export function setupGitHandlers() {
       // gitignoreファイルが存在しない場合は空文字列のまま
     }
 
-    // ignoreライブラリでフィルタリングを設定
-    const ig = ignore();
-    ig.add(gitignoreContent);
+    // gitignoreのパターンを配列に変換
+    const ignorePatterns = gitignoreContent
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith('#'));
 
     const status = await git.statusMatrix({
       fs: fs,
@@ -53,7 +54,13 @@ export function setupGitHandlers() {
       filter: (filepath) => {
         // gitignoreのパターンに一致するファイルを除外
         return (
-          !ig.ignores(filepath) && !filepath.startsWith('.git') && !filepath.startsWith('.cursor')
+          !ignorePatterns.some((pattern) => {
+            // シンプルなワイルドカードマッチング
+            const regex = new RegExp(pattern.replace(/\*/g, '.*'));
+            return regex.test(filepath);
+          }) &&
+          !filepath.startsWith('.git') &&
+          !filepath.startsWith('.cursor')
         );
       },
     });
