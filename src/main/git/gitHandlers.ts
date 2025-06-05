@@ -31,10 +31,10 @@ export function setupGitHandlers() {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
-    // ignoredがデフォルトでfalseで、trueにすると無視されるファイルも取得されてしまうので、falseにしている
     const status = await git.statusMatrix({
       fs: fs,
       dir: repoPath,
+      ignored: false,
       gitdir: path.join(repoPath, '.git'),
     });
     return status;
