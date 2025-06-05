@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 
-async function writeFileWithDir(filePath: string, content: string) {
+async function writeFileWithDir(filePath: string, content: string): Promise<void> {
   const dirPath = path.dirname(filePath);
   await fs.mkdir(dirPath, { recursive: true });
   await fs.writeFile(filePath, content, 'utf-8');
