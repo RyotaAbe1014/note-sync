@@ -16,9 +16,15 @@ const store = new Store<AppSettings>({
 });
 
 // リポジトリのパスを取得する関数
-const getRepoPath = () => {
+export const getRepoPath = () => {
   const settings: AppSettings | undefined = store.get('settings');
-  return settings?.rootDirectory?.path;
+  const repoPath = settings?.rootDirectory?.path;
+
+  if (!repoPath || repoPath.trim() === '') {
+    throw new Error('リポジトリのパスが設定されていません');
+  }
+
+  return path.resolve(repoPath);
 };
 
 const getGitSettings = () => {
