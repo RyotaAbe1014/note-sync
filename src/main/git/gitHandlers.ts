@@ -31,38 +31,11 @@ export function setupGitHandlers() {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
-    // gitignoreの内容を取得
-    const gitignorePath = path.join(repoPath, '.gitignore');
-    let gitignoreContent = '';
-    try {
-      gitignoreContent = await fs.promises.readFile(gitignorePath, 'utf-8');
-    } catch (error) {
-      // gitignoreファイルが存在しない場合は空文字列のまま
-    }
-
-    // gitignoreのパターンを配列に変換
-    const ignorePatterns = gitignoreContent
-      .split('\n')
-      .map((line) => line.trim())
-      .filter((line) => line && !line.startsWith('#'));
-
     const status = await git.statusMatrix({
       fs: fs,
       dir: repoPath,
+      ignored: false,
       gitdir: path.join(repoPath, '.git'),
-      ignored: true,
-      filter: (filepath) => {
-        // gitignoreのパターンに一致するファイルを除外
-        return (
-          !ignorePatterns.some((pattern) => {
-            // シンプルなワイルドカードマッチング
-            const regex = new RegExp(pattern.replace(/\*/g, '.*'));
-            return regex.test(filepath);
-          }) &&
-          !filepath.startsWith('.git') &&
-          !filepath.startsWith('.cursor')
-        );
-      },
     });
     return status;
   });
