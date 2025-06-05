@@ -4,6 +4,12 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 
+async function writeFileWithDir(filePath: string, content: string) {
+  const dirPath = path.dirname(filePath);
+  await fs.mkdir(dirPath, { recursive: true });
+  await fs.writeFile(filePath, content, 'utf-8');
+}
+
 export function setupFileSystemHandlers() {
   // ディレクトリ内のファイル一覧を取得
   ipcMain.handle('fs:list-files', async (event, dirPath) => {
@@ -105,9 +111,7 @@ export function setupFileSystemHandlers() {
   // ファイルの書き込み
   ipcMain.handle('fs:write-file', async (event, filePath, content) => {
     try {
-      const dirPath = path.dirname(filePath);
-      await fs.mkdir(dirPath, { recursive: true });
-      await fs.writeFile(filePath, content, 'utf-8');
+      await writeFileWithDir(filePath, content);
       return true;
     } catch (error) {
       console.error('Error writing file:', error);
@@ -118,9 +122,7 @@ export function setupFileSystemHandlers() {
   // ファイルの追加
   ipcMain.handle('fs:add-file', async (event, filePath, content) => {
     try {
-      const dirPath = path.dirname(filePath);
-      await fs.mkdir(dirPath, { recursive: true });
-      await fs.writeFile(filePath, content, 'utf-8');
+      await writeFileWithDir(filePath, content);
       return true;
     } catch (error) {
       console.error('Error adding file:', error);
