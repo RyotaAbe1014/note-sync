@@ -164,7 +164,7 @@ export function setupFileSystemHandlers() {
   // ディレクトリのリネーム
   ipcMain.handle('fs:rename-directory', async (event, dirPath, newName) => {
     try {
-      await fs.rename(dirPath, newName);
+      await fs.rename(dirPath, path.join(path.dirname(dirPath), newName));
       return true;
     } catch (error) {
       console.error('Error renaming directory:', error);
