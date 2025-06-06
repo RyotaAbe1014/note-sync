@@ -30,7 +30,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   } = useGitControl({ selectedFile });
 
   return (
-    <div className="card bg-base-100 shadow-xl">
+    <div className="card">
       <div className="card-body">
         <div className="flex cursor-pointer items-center justify-between" onClick={() => {}}>
           <h3 className="card-title text-lg">Git操作</h3>
