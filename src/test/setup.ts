@@ -38,7 +38,6 @@ window.api = {
     removeDirectory: vi.fn().mockResolvedValue(true),
   },
   git: {
-    init: vi.fn().mockResolvedValue(undefined),
     commit: vi.fn().mockResolvedValue(undefined),
     push: vi.fn().mockResolvedValue(undefined),
     pull: vi.fn().mockResolvedValue(undefined),
@@ -53,4 +52,4 @@ window.api = {
   ai: {
     getInlineResponse: vi.fn().mockResolvedValue('AI response'),
   },
-} as any;
+};

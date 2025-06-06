@@ -88,7 +88,7 @@ export function setupGitHandlers() {
   });
 
   // プッシュ
-  ipcMain.handle('git:push', async (event) => {
+  ipcMain.handle('git:push', async (_) => {
     const repoPath = getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
     const gitSettings = getGitSettings();

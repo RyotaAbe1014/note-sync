@@ -53,11 +53,11 @@ const appSettingsStore = new Store<AppSettings>({
 });
 
 export function setupAppSettingsHandlers() {
-  ipcMain.handle('app:get-settings', async (event) => {
+  ipcMain.handle('app:get-settings', async (_) => {
     return appSettingsStore.get('settings');
   });
 
-  ipcMain.handle('app:set-settings', async (event, settings) => {
+  ipcMain.handle('app:set-settings', async (_, settings) => {
     appSettingsStore.set('settings', settings);
   });
 }
