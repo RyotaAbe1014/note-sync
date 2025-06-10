@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { useFileLoader } from '../../hooks/useFileLoader';
 import { MainContent } from './MainContent';
 
+let mockDirtyState: boolean | undefined;
+
 vi.mock('../../hooks/useFileLoader', () => ({
   useFileLoader: vi.fn(),
 }));
@@ -16,7 +18,12 @@ vi.mock('../../hooks/useFileSave', () => ({
 }));
 
 vi.mock('../Editor/Editor', () => ({
-  Editor: () => <div data-testid="editor" />,
+  Editor: ({ onDirtyChange }: { onDirtyChange: (d: boolean) => void }) => {
+    if (typeof mockDirtyState === 'boolean') {
+      onDirtyChange(mockDirtyState);
+    }
+    return <div data-testid="editor" />;
+  },
 }));
 
 vi.mock('../Sidebar/Sidebar', () => ({
@@ -25,8 +32,10 @@ vi.mock('../Sidebar/Sidebar', () => ({
 
 const renderMainContent = (
   props?: Partial<React.ComponentProps<typeof MainContent>>,
-  loaderReturn?: any
+  loaderReturn?: any,
+  dirtyState?: boolean
 ) => {
+  mockDirtyState = dirtyState;
   vi.mocked(useFileLoader).mockReturnValue({
     content: '',
     isLoading: false,
@@ -88,5 +97,23 @@ describe('MainContent', () => {
   test('selectedFileが存在しない場合、ファイル名は表示されない', () => {
     renderMainContent({ selectedFile: null });
     expect(screen.getByText('ファイルを選択してください')).toBeInTheDocument();
+  });
+
+  test('isDirtyがtrueのとき未保存マークが表示される', () => {
+    renderMainContent(
+      { selectedFile: '/path/to/test.md' },
+      { content: 'dummy', isLoading: false },
+      true
+    );
+    expect(screen.getByTestId('dirty-indicator')).toBeInTheDocument();
+  });
+
+  test('isDirtyがfalseのとき未保存マークが表示されない', () => {
+    renderMainContent(
+      { selectedFile: '/path/to/test.md' },
+      { content: 'dummy', isLoading: false },
+      false
+    );
+    expect(screen.queryByTestId('dirty-indicator')).not.toBeInTheDocument();
   });
 });

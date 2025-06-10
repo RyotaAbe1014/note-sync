@@ -17,7 +17,10 @@ describe('useFileSave', () => {
 
   describe('saveFile', () => {
     it('ファイルパスが空の場合は何もしない', async () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const setDirty = vi.fn();
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: setDirty })
+      );
 
       const saveResult = await result.current.saveFile('', 'test content');
 
@@ -27,7 +30,10 @@ describe('useFileSave', () => {
     });
 
     it('エディターrefがない場合、currentContentを使用してファイルを保存する', async () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const setDirty = vi.fn();
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: setDirty })
+      );
       const filePath = '/test/path/test.md';
       const content = 'test markdown content';
 
@@ -35,11 +41,15 @@ describe('useFileSave', () => {
 
       expect(window.api.fs.writeFile).toHaveBeenCalledWith(filePath, content);
       expect(mockShowToast).toHaveBeenCalledWith('ファイルを保存しました', 'success');
+      expect(setDirty).toHaveBeenCalledWith(false);
       expect(saveResult).toBe(true);
     });
 
     it('エディターrefがある場合、エディターからマークダウンを取得してファイルを保存する', async () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const setDirty = vi.fn();
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: setDirty })
+      );
       const filePath = '/test/path/test.md';
       const currentContent = 'current content';
       const editorContent = 'editor markdown content';
@@ -53,11 +63,14 @@ describe('useFileSave', () => {
       expect(mockEditorRef.getMarkdown).toHaveBeenCalled();
       expect(window.api.fs.writeFile).toHaveBeenCalledWith(filePath, editorContent);
       expect(mockShowToast).toHaveBeenCalledWith('ファイルを保存しました', 'success');
+      expect(setDirty).toHaveBeenCalledWith(false);
       expect(saveResult).toBe(true);
     });
 
     it('ファイル保存でエラーが発生した場合、エラートーストを表示する', async () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: vi.fn() })
+      );
       const filePath = '/test/path/test.md';
       const content = 'test content';
       const error = new Error('File write error');
@@ -73,7 +86,9 @@ describe('useFileSave', () => {
     });
 
     it('エディターrefがnullの場合でもcurrentContentを使用して正常に保存する', async () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: vi.fn() })
+      );
       const filePath = '/test/path/test.md';
       const content = 'fallback content';
 
@@ -90,7 +105,9 @@ describe('useFileSave', () => {
 
   describe('editorRef', () => {
     it('editorRefが正しく初期化される', () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: vi.fn() })
+      );
 
       expect(result.current.editorRef).toBeDefined();
       expect(result.current.editorRef.current).toBeNull();
@@ -99,7 +116,9 @@ describe('useFileSave', () => {
 
   describe('返り値', () => {
     it('editorRefとsaveFile関数を返す', () => {
-      const { result } = renderHook(() => useFileSave({ showToast: mockShowToast }));
+      const { result } = renderHook(() =>
+        useFileSave({ showToast: mockShowToast, setIsDirty: vi.fn() })
+      );
 
       expect(result.current).toHaveProperty('editorRef');
       expect(result.current).toHaveProperty('saveFile');

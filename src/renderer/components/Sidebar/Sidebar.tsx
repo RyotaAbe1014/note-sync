@@ -11,6 +11,7 @@ interface SidebarProps {
   onToggle: () => void;
   hasGitSettings: boolean;
   selectedFile: string | null;
+  isDirty: boolean;
   onFileSelect: (filePath: string) => void;
   onSettingsClick: () => void;
 }
@@ -20,6 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggle,
   hasGitSettings,
   selectedFile,
+  isDirty,
   onFileSelect,
   onSettingsClick,
 }) => {
@@ -46,7 +48,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </label>
         {/* ファイルタブ内容 */}
         <div className="tab-content bg-base-100 border-base-300">
-          <FileTree onFileSelect={onFileSelect} onSettingsClick={onSettingsClick} />
+          <FileTree
+            onFileSelect={onFileSelect}
+            onSettingsClick={onSettingsClick}
+            currentFile={selectedFile}
+            isDirty={isDirty}
+          />
         </div>
         {hasGitSettings && (
           <>

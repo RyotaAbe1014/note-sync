@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // 大きなファイルを効率的に読み込むためのカスタムフック
-export function useFileLoader(filePath: string | null) {
+export function useFileLoader(filePath: string | null, onLoadComplete?: (content: string) => void) {
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -30,12 +30,14 @@ export function useFileLoader(filePath: string | null) {
 
         if (info.isLargeFile) {
           // 大きなファイルの場合は段階的に読み込む
-          await loadLargeFile(filePath, info.size);
+          const loaded = await loadLargeFile(filePath, info.size);
+          onLoadComplete?.(loaded);
         } else {
           // 小さなファイルの場合は一度に読み込む
           const fileContent = await window.api.fs.readFile(filePath);
           setContent(fileContent);
           setLoadProgress(100);
+          onLoadComplete?.(fileContent);
         }
       } catch (err) {
         console.error('Error loading file:', err);
@@ -86,6 +88,7 @@ export function useFileLoader(filePath: string | null) {
       }
 
       setLoadProgress(100);
+      return loadedContent;
     } catch (err) {
       console.error('Error loading large file:', err);
       throw err;
