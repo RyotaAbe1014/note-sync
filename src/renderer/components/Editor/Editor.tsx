@@ -19,6 +19,7 @@ import InlineGenerativeAIPlugin from './plugins/InlineGenerativeAIPlugin';
 import { TRANSFORMERS } from './plugins/MarkdownTransformers';
 import { SavePlugin } from './plugins/SavePlugin';
 import { ToolbarPlugin } from './plugins/ToolbarPlugin';
+import { UnsavedChangesPlugin } from './plugins/UnsavedChangesPlugin';
 import { theme } from './theme/theme';
 
 function onError(error: Error) {
@@ -29,13 +30,14 @@ interface EditorProps {
   initialContent: string;
   className?: string;
   ref?: React.Ref<EditorRefType>;
+  onDirtyChange: (dirty: boolean) => void;
 }
 
 export interface EditorRefType {
   getMarkdown: () => string;
 }
 
-export const Editor = ({ initialContent, className, ref }: EditorProps) => {
+export const Editor = ({ initialContent, className, ref, onDirtyChange }: EditorProps) => {
   const [_, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const savePluginRef = useRef<{ getMarkdown: () => string }>(null);
 
@@ -93,6 +95,7 @@ export const Editor = ({ initialContent, className, ref }: EditorProps) => {
         <ListPlugin />
         <CheckListPlugin />
         <FileChangeUpdateStatePlugin initialContent={initialContent} />
+        <UnsavedChangesPlugin initialContent={initialContent} setIsDirty={onDirtyChange} />
         <SavePlugin ref={savePluginRef} />
         <TablePlugin hasCellMerge={true} hasCellBackgroundColor={true} hasHorizontalScroll={true} />
         <ComponentPickerMenuPlugin />

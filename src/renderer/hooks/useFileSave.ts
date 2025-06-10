@@ -6,9 +6,10 @@ type ToastType = 'info' | 'success' | 'warning' | 'error';
 
 interface UseFileSaveProps {
   showToast: (message: string, type: ToastType) => void;
+  setIsDirty: (dirty: boolean) => void;
 }
 
-export function useFileSave({ showToast }: UseFileSaveProps) {
+export function useFileSave({ showToast, setIsDirty }: UseFileSaveProps) {
   const editorRef = useRef<EditorRefType>(null);
 
   const saveFile = async (filePath: string, currentContent: string) => {
@@ -23,6 +24,7 @@ export function useFileSave({ showToast }: UseFileSaveProps) {
 
       await window.api.fs.writeFile(filePath, contentToSave);
       showToast('ファイルを保存しました', 'success');
+      setIsDirty(false);
       return true;
     } catch (error) {
       console.error('Error saving file:', error);

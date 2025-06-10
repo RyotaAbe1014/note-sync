@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Save } from 'lucide-react';
 
 import { useFileLoader } from '../../hooks/useFileLoader';
@@ -27,6 +29,7 @@ export function MainContent({
   onSettingsClick,
   showToast,
 }: MainContentProps) {
+  const [isDirty, setIsDirty] = useState(false);
   // ファイルローダーフック
   const {
     content: fileContent,
@@ -34,10 +37,10 @@ export function MainContent({
     error,
     fileInfo,
     loadProgress,
-  } = useFileLoader(selectedFile);
+  } = useFileLoader(selectedFile, () => setIsDirty(false));
 
   // ファイル保存フック
-  const { editorRef, saveFile } = useFileSave({ showToast });
+  const { editorRef, saveFile } = useFileSave({ showToast, setIsDirty });
 
   // ファイル保存処理
   const handleSave = () => {
@@ -56,6 +59,7 @@ export function MainContent({
         onToggle={onToggleSidebar}
         hasGitSettings={hasGitSettings}
         selectedFile={selectedFile}
+        isDirty={isDirty}
         onFileSelect={onFileSelect}
         onSettingsClick={onSettingsClick}
       />
@@ -65,10 +69,16 @@ export function MainContent({
         <div className="card bg-base-100 flex-1 shadow-xl">
           <div className="card-body">
             <div className="flex items-center justify-between">
-              <div className="flex">
+              <div className="flex items-center">
                 <span>
                   {selectedFile ? selectedFile.split('/').pop() : 'ファイルを選択してください'}
                 </span>
+                {isDirty && (
+                  <span
+                    data-testid="dirty-indicator"
+                    className="ml-1 inline-block w-2 h-2 rounded-full bg-error"
+                  />
+                )}
               </div>
               <button onClick={handleSave} disabled={!selectedFile} className="btn btn-primary">
                 <Save className="h-4 w-4" />
@@ -97,7 +107,12 @@ export function MainContent({
             )}
 
             {!isLoading && fileContent && (
-              <Editor initialContent={fileContent} ref={editorRef} className="flex-1" />
+              <Editor
+                initialContent={fileContent}
+                ref={editorRef}
+                className="flex-1"
+                onDirtyChange={setIsDirty}
+              />
             )}
           </div>
         </div>
