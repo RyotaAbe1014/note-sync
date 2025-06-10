@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { useFileLoader } from '../../hooks/useFileLoader';
@@ -10,10 +10,11 @@ vi.mock('../../hooks/useFileLoader', () => ({
   useFileLoader: vi.fn(),
 }));
 
+const mockSaveFile = vi.fn();
 vi.mock('../../hooks/useFileSave', () => ({
   useFileSave: () => ({
     editorRef: { current: null },
-    saveFile: vi.fn(),
+    saveFile: mockSaveFile,
   }),
 }));
 
@@ -98,7 +99,6 @@ describe('MainContent', () => {
     renderMainContent({ selectedFile: null });
     expect(screen.getByText('ファイルを選択してください')).toBeInTheDocument();
   });
-
   test('isDirtyがtrueのとき未保存マークが表示される', () => {
     renderMainContent(
       { selectedFile: '/path/to/test.md' },
@@ -115,5 +115,14 @@ describe('MainContent', () => {
       false
     );
     expect(screen.queryByTestId('dirty-indicator')).not.toBeInTheDocument();
+  test('Cmd/Ctrl+S で saveFile が呼ばれる', () => {
+    renderMainContent({ selectedFile: 'test.md' }, { content: 'test' });
+
+    const event = new KeyboardEvent('keydown', { key: 's', metaKey: true });
+    act(() => {
+      window.dispatchEvent(event);
+    });
+
+    expect(mockSaveFile).toHaveBeenCalled();
   });
 });
