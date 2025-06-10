@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { useFileLoader } from '../../hooks/useFileLoader';
@@ -8,10 +8,11 @@ vi.mock('../../hooks/useFileLoader', () => ({
   useFileLoader: vi.fn(),
 }));
 
+const mockSaveFile = vi.fn();
 vi.mock('../../hooks/useFileSave', () => ({
   useFileSave: () => ({
     editorRef: { current: null },
-    saveFile: vi.fn(),
+    saveFile: mockSaveFile,
   }),
 }));
 
@@ -88,5 +89,16 @@ describe('MainContent', () => {
   test('selectedFileが存在しない場合、ファイル名は表示されない', () => {
     renderMainContent({ selectedFile: null });
     expect(screen.getByText('ファイルを選択してください')).toBeInTheDocument();
+  });
+
+  test('Cmd/Ctrl+S で saveFile が呼ばれる', () => {
+    renderMainContent({ selectedFile: 'test.md' }, { content: 'test' });
+
+    const event = new KeyboardEvent('keydown', { key: 's', metaKey: true });
+    act(() => {
+      window.dispatchEvent(event);
+    });
+
+    expect(mockSaveFile).toHaveBeenCalled();
   });
 });

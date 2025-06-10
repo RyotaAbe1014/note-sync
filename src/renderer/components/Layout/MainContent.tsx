@@ -2,6 +2,7 @@ import { Save } from 'lucide-react';
 
 import { useFileLoader } from '../../hooks/useFileLoader';
 import { useFileSave } from '../../hooks/useFileSave';
+import { useSaveShortcut } from '../../hooks/useSaveShortcut';
 import { Editor } from '../Editor/Editor';
 import { Sidebar } from '../Sidebar/Sidebar';
 
@@ -44,6 +45,8 @@ export function MainContent({
       saveFile(selectedFile, fileContent);
     }
   };
+
+  useSaveShortcut(handleSave);
 
   return (
     <>
