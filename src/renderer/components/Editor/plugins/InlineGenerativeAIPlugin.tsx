@@ -186,7 +186,11 @@ export default function InlineGenerativeAIPlugin() {
   return showAIForm
     ? ReactDOM.createPortal(
         <div ref={formRef} className="fixed z-50" style={{ position: 'absolute' }}>
-          <GenerativeAIForm onSubmit={handleInsertText} onClose={handleCloseForm} />
+          <GenerativeAIForm
+            onSubmit={handleInsertText}
+            onClose={handleCloseForm}
+            enableStreaming={true}
+          />
         </div>,
         document.body
       )

@@ -208,7 +208,6 @@ export const FileTree: React.FC<FileTreeProps> = ({
                           />
                         )}
                       </span>
-
                     </button>
                   </li>
                 ))

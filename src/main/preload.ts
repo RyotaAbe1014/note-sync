@@ -59,4 +59,17 @@ contextBridge.exposeInMainWorld('api', {
   ai: {
     getInlineResponse: (prompt: string) => ipcRenderer.invoke('ai:get-inline-response', prompt),
   },
+
+  // 直接ipcRendererにアクセス（ストリーミング用）
+  electron: {
+    ipcRenderer: {
+      send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
+      on: (channel: string, listener: (...args: any[]) => void) => {
+        ipcRenderer.on(channel, listener);
+      },
+      removeListener: (channel: string, listener: (...args: any[]) => void) => {
+        ipcRenderer.removeListener(channel, listener);
+      },
+    },
+  },
 });

@@ -2,6 +2,7 @@ import { BrowserWindow, app } from 'electron';
 import path from 'node:path';
 
 import { setupGenerativeAiHandlers } from './ai/generativeAiHandler';
+import { setupStreamHandlers } from './ai/streamHandler';
 import { setupDialogHandlers } from './dialog/dialogHandlers';
 import { setupExportHandlers } from './export/exportHandler';
 import { setupFileSystemHandlers } from './fileSystem/fileSystemHandlers';
@@ -57,6 +58,7 @@ app.on('ready', async () => {
   setupGitHandlers();
   setupExportHandlers();
   setupGenerativeAiHandlers();
+  setupStreamHandlers();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
