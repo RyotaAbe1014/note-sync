@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setupGenerativeAiHandlers } from './generativeAiHandler';
 
-var handleMock: ReturnType<typeof vi.fn>;
-var storeGetMock: ReturnType<typeof vi.fn>;
-var openAiCreateMock: ReturnType<typeof vi.fn>;
+let handleMock: ReturnType<typeof vi.fn>;
+let storeGetMock: ReturnType<typeof vi.fn>;
+let openAiCreateMock: ReturnType<typeof vi.fn>;
 
 vi.mock('electron', () => {
   handleMock = vi.fn();
