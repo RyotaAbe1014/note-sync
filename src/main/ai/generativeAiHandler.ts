@@ -1,5 +1,6 @@
+import { createOpenAI } from '@ai-sdk/openai';
+import { generateText } from 'ai';
 import { ipcMain } from 'electron';
-import OpenAI from 'openai';
 
 import { AppSettings } from '../../types/appSettings';
 
@@ -22,22 +23,23 @@ const getOpenAIKey = async () => {
 };
 
 export function setupGenerativeAiHandlers() {
-  ipcMain.handle('ai:get-inline-response', async (event, prompt: string) => {
+  ipcMain.handle('ai:get-inline-response', async (_, prompt: string) => {
     const openaiKey = await getOpenAIKey();
     if (!openaiKey) {
       throw new Error('OpenAI API key is not set');
     }
-    const client = new OpenAI({
+    const openaiClient = createOpenAI({
       apiKey: openaiKey,
     });
 
-    const response = await client.responses.create({
-      model: 'gpt-4o',
-      instructions: `あなたは優れたエンジニアです。日本語で返答してください。言われたことに対してのみ返信をしてください。`,
-      input: prompt,
+    const { text } = await generateText({
+      model: openaiClient('gpt-4o'),
+      system:
+        'あなたは優れたエンジニアです。日本語で返答してください。言われたことに対してのみ返信をしてください。',
+      prompt: prompt,
     });
 
-    console.log(response.output_text);
-    return response.output_text;
+    console.log(text);
+    return text;
   });
 }
