@@ -1,6 +1,4 @@
 import { BrowserWindow, app } from 'electron';
-// @ts-ignore
-import started from 'electron-squirrel-startup';
 import path from 'node:path';
 
 import { setupGenerativeAiHandlers } from './ai/generativeAiHandler';
@@ -11,9 +9,14 @@ import { setupGitHandlers } from './git/gitHandlers';
 import { setupAppSettingsHandlers } from './settings/settingsHandlers';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (started) {
-  app.quit();
-}
+const checkSquirrelStartup = async () => {
+  const started = (await import('electron-squirrel-startup')).default;
+  if (started) {
+    app.quit();
+    return true;
+  }
+  return false;
+};
 
 const createWindow = () => {
   // Create the browser window.
@@ -43,7 +46,10 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', () => {
+app.on('ready', async () => {
+  const shouldQuit = await checkSquirrelStartup();
+  if (shouldQuit) return;
+
   createWindow();
   setupAppSettingsHandlers();
   setupDialogHandlers();

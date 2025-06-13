@@ -1,22 +1,29 @@
 import { ipcMain } from 'electron';
-// @ts-ignore
-import Store from 'electron-store';
 import OpenAI from 'openai';
 
 import { AppSettings } from '../../types/appSettings';
 
-const store = new Store<AppSettings>({
-  name: 'app-settings',
-});
+let store: any;
 
-const getOpenAIKey = () => {
-  const settings: AppSettings | undefined = store.get('settings');
+const initStore = async () => {
+  if (!store) {
+    const Store = (await import('electron-store')).default;
+    store = new Store<AppSettings>({
+      name: 'app-settings',
+    });
+  }
+  return store;
+};
+
+const getOpenAIKey = async () => {
+  const storeInstance = await initStore();
+  const settings: AppSettings | undefined = storeInstance.get('settings');
   return settings?.apiKeys?.openai;
 };
 
 export function setupGenerativeAiHandlers() {
   ipcMain.handle('ai:get-inline-response', async (event, prompt: string) => {
-    const openaiKey = getOpenAIKey();
+    const openaiKey = await getOpenAIKey();
     if (!openaiKey) {
       throw new Error('OpenAI API key is not set');
     }

@@ -1,26 +1,38 @@
 import { ipcMain } from 'electron';
-// @ts-ignore
-import Store from 'electron-store';
 import fs from 'fs';
-// @ts-ignore
-import git from 'isomorphic-git';
-// @ts-ignore
-import http from 'isomorphic-git/http/node';
 import path from 'path';
 
 import { AppSettings } from '../../types/appSettings';
 
-const store = new Store<AppSettings>({
-  name: 'app-settings',
-});
+let store: any;
+let git: any;
+let http: any;
+
+const initModules = async () => {
+  if (!store) {
+    const Store = (await import('electron-store')).default;
+    store = new Store<AppSettings>({
+      name: 'app-settings',
+    });
+  }
+  if (!git) {
+    git = (await import('isomorphic-git')).default;
+  }
+  if (!http) {
+    http = (await import('isomorphic-git/http/node')).default;
+  }
+  return { store, git, http };
+};
 
 // リポジトリのパスを取得する関数
-const getRepoPath = () => {
+const getRepoPath = async () => {
+  const { store } = await initModules();
   const settings: AppSettings | undefined = store.get('settings');
   return settings?.rootDirectory?.path;
 };
 
-const getGitSettings = () => {
+const getGitSettings = async () => {
+  const { store } = await initModules();
   const settings: AppSettings | undefined = store.get('settings');
   return settings?.git;
 };
@@ -28,9 +40,10 @@ const getGitSettings = () => {
 export function setupGitHandlers() {
   // リポジトリの状態を取得
   ipcMain.handle('git:status', async () => {
-    const repoPath = getRepoPath();
+    const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
+    const { git } = await initModules();
     const status = await git.statusMatrix({
       fs: fs,
       dir: repoPath,
@@ -42,9 +55,10 @@ export function setupGitHandlers() {
 
   // 変更のステージング
   ipcMain.handle('git:add', async (event, filepath: string | string[]) => {
-    const repoPath = getRepoPath();
+    const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
+    const { git } = await initModules();
     await git.add({
       fs: fs,
       dir: repoPath,
@@ -55,9 +69,10 @@ export function setupGitHandlers() {
 
   // 変更のステージング解除
   ipcMain.handle('git:unstage', async (event, filepath: string) => {
-    const repoPath = getRepoPath();
+    const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
+    const { git } = await initModules();
     await git.resetIndex({
       fs: fs,
       dir: repoPath,
@@ -68,12 +83,13 @@ export function setupGitHandlers() {
 
   // コミット
   ipcMain.handle('git:commit', async (event, message) => {
-    const repoPath = getRepoPath();
+    const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
-    const gitSettings = getGitSettings();
+    const gitSettings = await getGitSettings();
     if (!gitSettings) throw new Error('Gitの設定が設定されていません');
 
+    const { git } = await initModules();
     const sha = await git.commit({
       fs: fs,
       dir: repoPath,
@@ -89,11 +105,12 @@ export function setupGitHandlers() {
 
   // プッシュ
   ipcMain.handle('git:push', async (_) => {
-    const repoPath = getRepoPath();
+    const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
-    const gitSettings = getGitSettings();
+    const gitSettings = await getGitSettings();
     if (!gitSettings) throw new Error('Gitの設定が設定されていません');
 
+    const { git, http } = await initModules();
     // モック実装 - 実際には isomorphic-git を使用
     await git.push({
       http,
@@ -110,12 +127,13 @@ export function setupGitHandlers() {
 
   // プル
   ipcMain.handle('git:pull', async (event) => {
-    const repoPath = getRepoPath();
+    const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
-    const gitSettings = getGitSettings();
+    const gitSettings = await getGitSettings();
     if (!gitSettings) throw new Error('Gitの設定が設定されていません');
 
+    const { git, http } = await initModules();
     await git.pull({
       http,
       fs: fs,

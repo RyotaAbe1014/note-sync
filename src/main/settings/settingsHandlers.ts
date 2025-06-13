@@ -1,6 +1,4 @@
 import { ipcMain } from 'electron';
-// @ts-ignore
-import Store from 'electron-store';
 
 import { AppSettings } from '../../types/appSettings';
 
@@ -47,17 +45,27 @@ const schema = {
   },
 };
 
-const appSettingsStore = new Store<AppSettings>({
-  name: 'app-settings',
-  schema,
-});
+let appSettingsStore: any;
+
+const initStore = async () => {
+  if (!appSettingsStore) {
+    const Store = (await import('electron-store')).default;
+    appSettingsStore = new Store<AppSettings>({
+      name: 'app-settings',
+      schema,
+    });
+  }
+  return appSettingsStore;
+};
 
 export function setupAppSettingsHandlers() {
   ipcMain.handle('app:get-settings', async (_) => {
-    return appSettingsStore.get('settings');
+    const store = await initStore();
+    return store.get('settings');
   });
 
   ipcMain.handle('app:set-settings', async (_, settings) => {
-    appSettingsStore.set('settings', settings);
+    const store = await initStore();
+    store.set('settings', settings);
   });
 }
