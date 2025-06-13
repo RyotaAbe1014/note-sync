@@ -116,7 +116,6 @@ describe('MainContent', () => {
     );
     expect(screen.queryByTestId('dirty-indicator')).not.toBeInTheDocument();
   });
-
   test('Cmd/Ctrl+S で saveFile が呼ばれる', () => {
     renderMainContent({ selectedFile: 'test.md' }, { content: 'test' });
 
