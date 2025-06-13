@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setupDialogHandlers } from './dialogHandlers';
 
-var handleMock: ReturnType<typeof vi.fn>;
-var showOpenDialogMock: ReturnType<typeof vi.fn>;
+let handleMock: ReturnType<typeof vi.fn>;
+let showOpenDialogMock: ReturnType<typeof vi.fn>;
 
 vi.mock('electron', () => {
   handleMock = vi.fn();
