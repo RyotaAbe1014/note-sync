@@ -74,7 +74,7 @@ export const Editor = ({ initialContent, className, ref, onDirtyChange }: Editor
         <div className="mb-4">
           <ToolbarPlugin />
         </div>
-        <div className="rounded-md border border-gray-300 p-4">
+        <div className="rounded-md border-0 p-4">
           <RichTextPlugin
             contentEditable={
               <div id="editor" className="editor h-[calc(100vh-330px)] overflow-y-auto" ref={onRef}>
