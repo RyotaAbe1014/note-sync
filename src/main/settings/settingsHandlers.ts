@@ -44,6 +44,10 @@ const schema = {
       },
     },
   },
+  theme: {
+    type: 'string',
+    default: 'system',
+  },
 };
 
 let appSettingsStore: any;

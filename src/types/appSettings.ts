@@ -13,4 +13,5 @@ export type AppSettings = {
     openai: string;
     // add other ai providers here
   };
+  theme: 'light' | 'dark' | 'system';
 };

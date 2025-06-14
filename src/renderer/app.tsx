@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import clsx from 'clsx';
@@ -8,6 +8,7 @@ import { AppSettings } from './components/AppSettings/AppSettings';
 import { Header } from './components/Layout/Header';
 import { MainContent } from './components/Layout/MainContent';
 import { useGitSettings } from './hooks/useGitSettings';
+import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
 
 // 開発モード専用のStagewise統合
@@ -48,6 +49,14 @@ export default function App() {
 
   const { Toast, showToast } = useToast();
   const { hasGitSettings } = useGitSettings({ showToast });
+  const { updateTheme } = useTheme();
+
+  // 設定変更時にテーマを更新
+  useEffect(() => {
+    if (!isSettingsOpen) {
+      updateTheme();
+    }
+  }, [isSettingsOpen, updateTheme]);
 
   // ファイルが選択されたときの処理
   const handleFileSelect = async (filePath: string) => {
