@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron';
+import { BrowserWindow, app, session } from 'electron';
 import path from 'node:path';
 
 import { setupGenerativeAiHandlers } from './ai/generativeAiHandler';
@@ -40,8 +40,34 @@ const createWindow = () => {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // Open the DevTools only in development
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.webContents.openDevTools();
+  }
+
+  // Set Content Security Policy
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline'", // unsafe-inline is needed for Vite HMR in dev
+          "style-src 'self' 'unsafe-inline'", // unsafe-inline is needed for Tailwind
+          "img-src 'self' data: https: blob:",
+          "font-src 'self' data:",
+          "connect-src 'self' https://api.openai.com https://api.anthropic.com https://api.github.com ws://localhost:* wss://localhost:*", // WebSocket for Vite HMR
+          "media-src 'self'",
+          "object-src 'none'",
+          "frame-src 'none'",
+          "worker-src 'self'",
+          "form-action 'self'",
+          "base-uri 'self'",
+          "manifest-src 'self'",
+        ].join('; '),
+      },
+    });
+  });
 };
 
 // This method will be called when Electron has finished
