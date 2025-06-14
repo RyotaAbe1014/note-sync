@@ -35,25 +35,36 @@ export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions
     setIsStreaming(false);
   }, [isStreaming]);
 
+  const onChunkRef = useRef(onChunk);
+  const onCompleteRef = useRef(onComplete);
+  const onErrorRef = useRef(onError);
+
   useEffect(() => {
+    onChunkRef.current = onChunk;
+    onCompleteRef.current = onComplete;
+    onErrorRef.current = onError;
+  });
+
+  useEffect(() => {
+    console.log('useEffect');
     const handleChunk = (_event: any, chunk: string) => {
       console.log('チャンク受信:', chunk);
       fullTextRef.current += chunk;
       setStreamedText(fullTextRef.current);
-      onChunk?.(chunk);
+      onChunkRef.current?.(chunk);
     };
 
     const handleEnd = (_event: any) => {
       console.log('ストリーム終了');
       setIsStreaming(false);
-      onComplete?.(fullTextRef.current);
+      onCompleteRef.current?.(fullTextRef.current);
     };
 
     const handleError = (_event: any, errorMessage: string) => {
       console.log('ストリームエラー:', errorMessage);
       setIsStreaming(false);
       setError(errorMessage);
-      onError?.(errorMessage);
+      onErrorRef.current?.(errorMessage);
     };
 
     // リスナーを登録
@@ -67,7 +78,7 @@ export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions
       window.api.electron?.ipcRenderer?.removeListener('ai:stream:end', handleEnd);
       window.api.electron?.ipcRenderer?.removeListener('ai:stream:error', handleError);
     };
-  }, [onChunk, onComplete, onError]);
+  }, []);
 
   return {
     isStreaming,
