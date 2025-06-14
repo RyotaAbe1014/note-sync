@@ -20,6 +20,7 @@ export const AppSettings = () => {
     apiKeys: {
       openai: '',
     },
+    theme: 'system',
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -212,6 +213,64 @@ export const AppSettings = () => {
                 />
                 <label className="label">
                   <span className="label-text-alt">OpenAIのAPIキーを入力してください</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* テーマ設定 */}
+          <div className="form-control">
+            <h3 className="mb-4 text-lg font-medium">テーマ設定</h3>
+            <div className="space-y-4">
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">システム設定に従う</span>
+                  <input
+                    type="radio"
+                    name="theme"
+                    className="radio checked:bg-primary"
+                    checked={settings.theme === 'system'}
+                    onChange={() =>
+                      setSettings((prev: AppSettingsType) => ({
+                        ...prev,
+                        theme: 'system',
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">ライトモード</span>
+                  <input
+                    type="radio"
+                    name="theme"
+                    className="radio checked:bg-primary"
+                    checked={settings.theme === 'light'}
+                    onChange={() =>
+                      setSettings((prev: AppSettingsType) => ({
+                        ...prev,
+                        theme: 'light',
+                      }))
+                    }
+                  />
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer">
+                  <span className="label-text">ダークモード</span>
+                  <input
+                    type="radio"
+                    name="theme"
+                    className="radio checked:bg-primary"
+                    checked={settings.theme === 'dark'}
+                    onChange={() =>
+                      setSettings((prev: AppSettingsType) => ({
+                        ...prev,
+                        theme: 'dark',
+                      }))
+                    }
+                  />
                 </label>
               </div>
             </div>
