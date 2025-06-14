@@ -57,15 +57,15 @@ export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions
     };
 
     // リスナーを登録
-    (window as any).api?.electron?.ipcRenderer?.on('ai:stream:chunk', handleChunk);
-    (window as any).api?.electron?.ipcRenderer?.on('ai:stream:end', handleEnd);
-    (window as any).api?.electron?.ipcRenderer?.on('ai:stream:error', handleError);
+    window.api.electron?.ipcRenderer?.on('ai:stream:chunk', handleChunk);
+    window.api.electron?.ipcRenderer?.on('ai:stream:end', handleEnd);
+    window.api.electron?.ipcRenderer?.on('ai:stream:error', handleError);
 
     // クリーンアップ
     return () => {
-      (window as any).api?.electron?.ipcRenderer?.removeListener('ai:stream:chunk', handleChunk);
-      (window as any).api?.electron?.ipcRenderer?.removeListener('ai:stream:end', handleEnd);
-      (window as any).api?.electron?.ipcRenderer?.removeListener('ai:stream:error', handleError);
+      window.api.electron?.ipcRenderer?.removeListener('ai:stream:chunk', handleChunk);
+      window.api.electron?.ipcRenderer?.removeListener('ai:stream:end', handleEnd);
+      window.api.electron?.ipcRenderer?.removeListener('ai:stream:error', handleError);
     };
   }, [onChunk, onComplete, onError]);
 
