@@ -9,22 +9,22 @@ import path from 'path';
  * 送信元がアプリケーション自身からのものかを検証
  */
 export function validateSender(event: IpcMainInvokeEvent | IpcMainEvent): void {
-  const frame = event.senderFrame;
+  // WebContentsから直接URLを取得（より信頼性が高い）
+  const webContents = event.sender;
+  const url = webContents.getURL();
 
-  if (!frame) {
-    throw new Error('Sender frame is not available');
-  }
-
-  // file:// プロトコルからの送信のみ許可
-  if (!frame.url.startsWith('file://')) {
-    throw new Error(`Unauthorized sender: ${frame.url}`);
-  }
-
-  // 開発環境の場合は localhost も許可
+  // 開発環境の場合
   if (process.env.NODE_ENV === 'development') {
-    if (!frame.url.startsWith('file://') && !frame.url.startsWith('http://localhost')) {
-      throw new Error(`Unauthorized sender in development: ${frame.url}`);
+    // Viteの開発サーバーURLを許可
+    if (url && (url.startsWith('http://localhost:') || url.startsWith('file://'))) {
+      return;
     }
+    throw new Error(`Unauthorized sender in development: ${url || 'unknown'}`);
+  }
+
+  // 本番環境の場合
+  if (!url || !url.startsWith('file://')) {
+    throw new Error(`Unauthorized sender: ${url || 'unknown'}`);
   }
 }
 
