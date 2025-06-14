@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { AppSettings } from '../../types/appSettings';
+import { validateFilePath, validateSender } from '../security/ipcSecurity';
 
 let store: any;
 let git: any;
@@ -39,7 +40,8 @@ const getGitSettings = async () => {
 
 export function setupGitHandlers() {
   // リポジトリの状態を取得
-  ipcMain.handle('git:status', async () => {
+  ipcMain.handle('git:status', async (event) => {
+    validateSender(event);
     const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
@@ -55,8 +57,17 @@ export function setupGitHandlers() {
 
   // 変更のステージング
   ipcMain.handle('git:add', async (event, filepath: string | string[]) => {
+    validateSender(event);
     const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
+    // ファイルパスの検証
+    const paths = Array.isArray(filepath) ? filepath : [filepath];
+    paths.forEach((p) => {
+      if (typeof p === 'string') {
+        validateFilePath(p, repoPath);
+      }
+    });
 
     const { git } = await initModules();
     await git.add({
@@ -69,8 +80,11 @@ export function setupGitHandlers() {
 
   // 変更のステージング解除
   ipcMain.handle('git:unstage', async (event, filepath: string) => {
+    validateSender(event);
     const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
+
+    validateFilePath(filepath, repoPath);
 
     const { git } = await initModules();
     await git.resetIndex({
@@ -83,6 +97,13 @@ export function setupGitHandlers() {
 
   // コミット
   ipcMain.handle('git:commit', async (event, message) => {
+    validateSender(event);
+
+    // コミットメッセージの検証
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+      throw new Error('Commit message is required');
+    }
+
     const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 
@@ -104,7 +125,8 @@ export function setupGitHandlers() {
   });
 
   // プッシュ
-  ipcMain.handle('git:push', async (_) => {
+  ipcMain.handle('git:push', async (event) => {
+    validateSender(event);
     const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
     const gitSettings = await getGitSettings();
@@ -127,6 +149,7 @@ export function setupGitHandlers() {
 
   // プル
   ipcMain.handle('git:pull', async (event) => {
+    validateSender(event);
     const repoPath = await getRepoPath();
     if (!repoPath) throw new Error('リポジトリのパスが設定されていません');
 

@@ -3,6 +3,7 @@ import { streamText } from 'ai';
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { validateSender } from '../security/ipcSecurity';
 
 let store: any;
 
@@ -27,6 +28,7 @@ const activeStreams = new Map<number, AbortController>();
 
 export function setupStreamHandlers() {
   ipcMain.on('ai:stream:start', async (event, prompt: string) => {
+    validateSender(event);
     const webContentsId = event.sender.id;
 
     try {
@@ -87,6 +89,7 @@ export function setupStreamHandlers() {
   });
 
   ipcMain.on('ai:stream:cancel', (event) => {
+    validateSender(event);
     const webContentsId = event.sender.id;
 
     if (activeStreams.has(webContentsId)) {

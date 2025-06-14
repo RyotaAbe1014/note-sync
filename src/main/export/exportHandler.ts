@@ -3,6 +3,8 @@ import { exec } from 'node:child_process';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import { validateCommandArgs, validateFilePath, validateSender } from '../security/ipcSecurity';
+
 const execPromise = promisify(exec);
 
 type ExportFormat = 'pdf' | 'epub';
@@ -37,6 +39,12 @@ async function checkPandocAvailability(): Promise<boolean> {
 // checkPandocAvailability(); // setupExportHandlers 内で呼び出すように変更
 
 async function convertDocument(filePath: string, format: ExportFormat): Promise<ExportResult> {
+  // ファイルパスとフォーマットの追加検証
+  validateFilePath(filePath);
+  if (!['pdf', 'epub'].includes(format)) {
+    throw new Error('Invalid export format');
+  }
+
   // キャッシュされた結果を確認 (setupExportHandlers で事前にチェックされるため、ここでのチェックは必須ではないが念のため残す)
   if (isPandocAvailable === false) {
     // checkPandocAvailability が完了していることを前提とする
@@ -49,8 +57,17 @@ async function convertDocument(filePath: string, format: ExportFormat): Promise<
     const title = path.basename(filePath, path.extname(filePath));
     const outputPath = `${filePath}.${format}`;
 
+    // コマンド引数の配列として構築し、危険な文字をチェック
+    const args = [filePath, '-o', outputPath, '--metadata', `title=${title}`];
+
+    if (format === 'epub') {
+      args.push('--css=style.css');
+    }
+
+    // 危険なコマンド引数をチェック
+    validateCommandArgs(args);
+
     // シェルインジェクション対策としてパスとタイトルをエスケープ
-    // JSON.stringify はシェルによっては不完全な場合があるため、より堅牢なエスケープ方法を検討する価値あり
     const escapedFilePath = JSON.stringify(filePath);
     const escapedOutputPath = JSON.stringify(outputPath);
     const escapedTitle = JSON.stringify(title);
@@ -106,11 +123,15 @@ export function setupExportHandlers() {
 
   // PDF変換
   ipcMain.handle('export:export-pdf', (event, filePath: string) => {
+    validateSender(event);
+    validateFilePath(filePath);
     return handleExport('pdf', filePath);
   });
 
   // EPUB変換
   ipcMain.handle('export:export-epub', (event, filePath: string) => {
+    validateSender(event);
+    validateFilePath(filePath);
     return handleExport('epub', filePath);
   });
 }

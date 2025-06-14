@@ -3,6 +3,7 @@ import { generateText } from 'ai';
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { validateSender } from '../security/ipcSecurity';
 
 let store: any;
 
@@ -23,7 +24,8 @@ const getOpenAIKey = async () => {
 };
 
 export function setupGenerativeAiHandlers() {
-  ipcMain.handle('ai:get-inline-response', async (_, prompt: string) => {
+  ipcMain.handle('ai:get-inline-response', async (event, prompt: string) => {
+    validateSender(event);
     const openaiKey = await getOpenAIKey();
     if (!openaiKey) {
       throw new Error('OpenAI API key is not set');

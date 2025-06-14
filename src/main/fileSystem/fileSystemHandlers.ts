@@ -4,6 +4,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 
+import { validateFilePath, validateSender } from '../security/ipcSecurity';
+
 async function writeFileWithDir(filePath: string, content: string): Promise<void> {
   const dirPath = path.dirname(filePath);
   await fs.mkdir(dirPath, { recursive: true });
@@ -14,6 +16,7 @@ export function setupFileSystemHandlers() {
   // ディレクトリ内のファイル一覧を取得
   ipcMain.handle('fs:list-files', async (event, dirPath) => {
     try {
+      validateSender(event);
       const basePath = dirPath || app.getPath('userData');
       await fs.mkdir(basePath, { recursive: true });
 
@@ -34,6 +37,8 @@ export function setupFileSystemHandlers() {
   // ファイルの読み込み
   ipcMain.handle('fs:read-file', async (event, filePath) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
       const content = await fs.readFile(filePath, 'utf-8');
       return content;
     } catch (error) {
@@ -45,6 +50,8 @@ export function setupFileSystemHandlers() {
   // ファイルの情報を取得
   ipcMain.handle('fs:get-file-info', async (event, filePath) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
       const stats = await fs.stat(filePath);
       return {
         size: stats.size,
@@ -59,6 +66,8 @@ export function setupFileSystemHandlers() {
   // 大きなファイルを部分的に読み込む
   ipcMain.handle('fs:read-file-chunk', async (event, filePath, start, end) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
       // ファイルを開いて指定された範囲を読み込む
       const fileHandle = await fs.open(filePath, 'r');
       const buffer = Buffer.alloc(end - start);
@@ -75,6 +84,8 @@ export function setupFileSystemHandlers() {
   ipcMain.handle('fs:read-file-lines', async (event, filePath, startLine, lineCount) => {
     return new Promise((resolve, reject) => {
       try {
+        validateSender(event);
+        validateFilePath(filePath);
         const lines: string[] = [];
         let currentLine = 0;
 
@@ -111,6 +122,8 @@ export function setupFileSystemHandlers() {
   // ファイルの書き込み
   ipcMain.handle('fs:write-file', async (event, filePath, content) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
       await writeFileWithDir(filePath, content);
       return true;
     } catch (error) {
@@ -122,6 +135,8 @@ export function setupFileSystemHandlers() {
   // ファイルの追加
   ipcMain.handle('fs:add-file', async (event, filePath, content) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
       await writeFileWithDir(filePath, content);
       return true;
     } catch (error) {
@@ -133,6 +148,12 @@ export function setupFileSystemHandlers() {
   // ファイルのリネーム
   ipcMain.handle('fs:rename-file', async (event, filePath, newName) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
+      // newName にもパス区切り文字が含まれていないかチェック
+      if (newName.includes('/') || newName.includes('\\')) {
+        throw new Error('New name cannot contain path separators');
+      }
       await fs.rename(filePath, path.join(path.dirname(filePath), newName));
       return true;
     } catch (error) {
@@ -144,6 +165,8 @@ export function setupFileSystemHandlers() {
   // ファイルの削除
   ipcMain.handle('fs:remove-file', async (event, filePath) => {
     try {
+      validateSender(event);
+      validateFilePath(filePath);
       await fs.unlink(filePath);
       return true;
     } catch (error) {
@@ -155,6 +178,8 @@ export function setupFileSystemHandlers() {
   // ディレクトリの作成
   ipcMain.handle('fs:create-directory', async (event, dirPath) => {
     try {
+      validateSender(event);
+      validateFilePath(dirPath);
       await fs.mkdir(dirPath, { recursive: true });
       return true;
     } catch (error) {
@@ -166,6 +191,11 @@ export function setupFileSystemHandlers() {
   // ディレクトリのリネーム
   ipcMain.handle('fs:rename-directory', async (event, dirPath, newName) => {
     try {
+      validateSender(event);
+      validateFilePath(dirPath);
+      if (newName.includes('/') || newName.includes('\\')) {
+        throw new Error('New name cannot contain path separators');
+      }
       await fs.rename(dirPath, path.join(path.dirname(dirPath), newName));
       return true;
     } catch (error) {
@@ -177,6 +207,8 @@ export function setupFileSystemHandlers() {
   // ディレクトリの削除
   ipcMain.handle('fs:remove-directory', async (event, dirPath) => {
     try {
+      validateSender(event);
+      validateFilePath(dirPath);
       await fs.rm(dirPath, { recursive: true, force: true });
       return true;
     } catch (error) {
