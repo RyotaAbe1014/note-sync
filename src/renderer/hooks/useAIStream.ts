@@ -23,7 +23,7 @@ export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions
       fullTextRef.current = '';
 
       // レンダラーから送信
-      (window as any).api?.electron?.ipcRenderer?.send('ai:stream:start', prompt);
+      window.api.electron?.ipcRenderer?.send('ai:stream:start', prompt);
     },
     [isStreaming]
   );
@@ -31,7 +31,7 @@ export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions
   const cancelStream = useCallback(() => {
     if (!isStreaming) return;
 
-    (window as any).api?.electron?.ipcRenderer?.send('ai:stream:cancel');
+    window.api.electron?.ipcRenderer?.send('ai:stream:cancel');
     setIsStreaming(false);
   }, [isStreaming]);
 
