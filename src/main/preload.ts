@@ -3,61 +3,66 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 import { AppSettings } from '../types/appSettings';
+import { IPC_CHANNELS } from './constants';
 
 // レンダラープロセスに公開するAPI
 contextBridge.exposeInMainWorld('api', {
   // アプリケーション設定
   app: {
-    getSettings: () => ipcRenderer.invoke('app:get-settings'),
-    setSettings: (settings: AppSettings) => ipcRenderer.invoke('app:set-settings', settings),
+    getSettings: () => ipcRenderer.invoke(IPC_CHANNELS.APP_GET_SETTINGS),
+    setSettings: (settings: AppSettings) =>
+      ipcRenderer.invoke(IPC_CHANNELS.APP_SET_SETTINGS, settings),
   },
 
   // ダイアログ操作
   dialog: {
-    selectDirectory: () => ipcRenderer.invoke('dialog:select-directory'),
+    selectDirectory: () => ipcRenderer.invoke(IPC_CHANNELS.DIALOG_SELECT_DIRECTORY),
   },
 
   // ファイルシステム操作
   fs: {
-    listFiles: (dirPath: string | null) => ipcRenderer.invoke('fs:list-files', dirPath),
-    readFile: (filePath: string) => ipcRenderer.invoke('fs:read-file', filePath),
-    getFileInfo: (filePath: string) => ipcRenderer.invoke('fs:get-file-info', filePath),
+    listFiles: (dirPath: string | null) => ipcRenderer.invoke(IPC_CHANNELS.FS_LIST_FILES, dirPath),
+    readFile: (filePath: string) => ipcRenderer.invoke(IPC_CHANNELS.FS_READ_FILE, filePath),
+    getFileInfo: (filePath: string) => ipcRenderer.invoke(IPC_CHANNELS.FS_GET_FILE_INFO, filePath),
     readFileChunk: (filePath: string, start: number, end: number) =>
-      ipcRenderer.invoke('fs:read-file-chunk', filePath, start, end),
+      ipcRenderer.invoke(IPC_CHANNELS.FS_READ_FILE_CHUNK, filePath, start, end),
     readFileLines: (filePath: string, startLine: number, lineCount: number) =>
-      ipcRenderer.invoke('fs:read-file-lines', filePath, startLine, lineCount),
+      ipcRenderer.invoke(IPC_CHANNELS.FS_READ_FILE_LINES, filePath, startLine, lineCount),
     writeFile: (filePath: string, content: string) =>
-      ipcRenderer.invoke('fs:write-file', filePath, content),
+      ipcRenderer.invoke(IPC_CHANNELS.FS_WRITE_FILE, filePath, content),
     addFile: (filePath: string, content: string) =>
-      ipcRenderer.invoke('fs:add-file', filePath, content),
+      ipcRenderer.invoke(IPC_CHANNELS.FS_ADD_FILE, filePath, content),
     renameFile: (filePath: string, newName: string) =>
-      ipcRenderer.invoke('fs:rename-file', filePath, newName),
-    removeFile: (filePath: string) => ipcRenderer.invoke('fs:remove-file', filePath),
-    createDirectory: (dirPath: string) => ipcRenderer.invoke('fs:create-directory', dirPath),
+      ipcRenderer.invoke(IPC_CHANNELS.FS_RENAME_FILE, filePath, newName),
+    removeFile: (filePath: string) => ipcRenderer.invoke(IPC_CHANNELS.FS_REMOVE_FILE, filePath),
+    createDirectory: (dirPath: string) =>
+      ipcRenderer.invoke(IPC_CHANNELS.FS_CREATE_DIRECTORY, dirPath),
     renameDirectory: (dirPath: string, newName: string) =>
-      ipcRenderer.invoke('fs:rename-directory', dirPath, newName),
-    removeDirectory: (dirPath: string) => ipcRenderer.invoke('fs:remove-directory', dirPath),
+      ipcRenderer.invoke(IPC_CHANNELS.FS_RENAME_DIRECTORY, dirPath, newName),
+    removeDirectory: (dirPath: string) =>
+      ipcRenderer.invoke(IPC_CHANNELS.FS_REMOVE_DIRECTORY, dirPath),
   },
 
   // エクスポート
   export: {
-    exportPdf: (filePath: string) => ipcRenderer.invoke('export:export-pdf', filePath),
-    exportEpub: (filePath: string) => ipcRenderer.invoke('export:export-epub', filePath),
+    exportPdf: (filePath: string) => ipcRenderer.invoke(IPC_CHANNELS.EXPORT_PDF, filePath),
+    exportEpub: (filePath: string) => ipcRenderer.invoke(IPC_CHANNELS.EXPORT_EPUB, filePath),
   },
 
   // Git操作
   git: {
-    add: (filepath: string) => ipcRenderer.invoke('git:add', filepath),
-    unstage: (filepath: string) => ipcRenderer.invoke('git:unstage', filepath),
-    commit: (message: string) => ipcRenderer.invoke('git:commit', message),
-    push: () => ipcRenderer.invoke('git:push'),
-    pull: () => ipcRenderer.invoke('git:pull'),
-    status: () => ipcRenderer.invoke('git:status'),
+    add: (filepath: string) => ipcRenderer.invoke(IPC_CHANNELS.GIT_ADD, filepath),
+    unstage: (filepath: string) => ipcRenderer.invoke(IPC_CHANNELS.GIT_UNSTAGE, filepath),
+    commit: (message: string) => ipcRenderer.invoke(IPC_CHANNELS.GIT_COMMIT, message),
+    push: () => ipcRenderer.invoke(IPC_CHANNELS.GIT_PUSH),
+    pull: () => ipcRenderer.invoke(IPC_CHANNELS.GIT_PULL),
+    status: () => ipcRenderer.invoke(IPC_CHANNELS.GIT_STATUS),
   },
 
   // AI操作
   ai: {
-    getInlineResponse: (prompt: string) => ipcRenderer.invoke('ai:get-inline-response', prompt),
+    getInlineResponse: (prompt: string) =>
+      ipcRenderer.invoke(IPC_CHANNELS.AI_GET_INLINE_RESPONSE, prompt),
   },
 
   // 直接ipcRendererにアクセス（ストリーミング用）

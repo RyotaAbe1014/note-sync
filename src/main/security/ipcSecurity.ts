@@ -1,6 +1,8 @@
 import { IpcMainEvent, IpcMainInvokeEvent } from 'electron';
 import path from 'path';
 
+import { IPC_CHANNELS, IpcChannel } from '../constants';
+
 /**
  * IPCセキュリティ検証ユーティリティ
  */
@@ -88,36 +90,9 @@ export function validateCommandArgs(args: string[]): void {
  */
 export function validateApiAccess(operation: string): void {
   // 将来的に操作ごとの権限管理を実装
-  const allowedOperations = [
-    'ai:get-inline-response',
-    'ai:stream:start',
-    'ai:stream:cancel',
-    'dialog:select-directory',
-    'export:export-pdf',
-    'export:export-epub',
-    'fs:list-files',
-    'fs:read-file',
-    'fs:get-file-info',
-    'fs:read-file-chunk',
-    'fs:read-file-lines',
-    'fs:write-file',
-    'fs:add-file',
-    'fs:rename-file',
-    'fs:remove-file',
-    'fs:create-directory',
-    'fs:rename-directory',
-    'fs:remove-directory',
-    'git:status',
-    'git:add',
-    'git:unstage',
-    'git:commit',
-    'git:push',
-    'git:pull',
-    'app:get-settings',
-    'app:set-settings',
-  ];
+  const allowedOperations: IpcChannel[] = Object.values(IPC_CHANNELS);
 
-  if (!allowedOperations.includes(operation)) {
+  if (!allowedOperations.includes(operation as IpcChannel)) {
     throw new Error(`Unknown operation: ${operation}`);
   }
 }

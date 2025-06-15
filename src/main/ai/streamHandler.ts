@@ -3,6 +3,7 @@ import { streamText } from 'ai';
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { IPC_CHANNELS } from '../constants';
 import { validateSender } from '../security/ipcSecurity';
 
 let store: any;
@@ -27,7 +28,7 @@ const getOpenAIKey = async () => {
 const activeStreams = new Map<number, AbortController>();
 
 export function setupStreamHandlers() {
-  ipcMain.on('ai:stream:start', async (event, prompt: string) => {
+  ipcMain.on(IPC_CHANNELS.AI_STREAM_START, async (event, prompt: string) => {
     validateSender(event);
     const webContentsId = event.sender.id;
 
@@ -40,7 +41,7 @@ export function setupStreamHandlers() {
 
       const openaiKey = await getOpenAIKey();
       if (!openaiKey) {
-        event.sender.send('ai:stream:error', 'OpenAI API key is not set');
+        event.sender.send(IPC_CHANNELS.AI_STREAM_ERROR, 'OpenAI API key is not set');
         return;
       }
 
@@ -67,28 +68,28 @@ export function setupStreamHandlers() {
           break;
         }
 
-        event.sender.send('ai:stream:chunk', textPart);
+        event.sender.send(IPC_CHANNELS.AI_STREAM_CHUNK, textPart);
       }
 
       // 正常終了
       activeStreams.delete(webContentsId);
-      event.sender.send('ai:stream:end');
+      event.sender.send(IPC_CHANNELS.AI_STREAM_END);
     } catch (error) {
       activeStreams.delete(webContentsId);
 
       // AbortErrorの場合はキャンセルとして処理
       if (error instanceof Error && error.name === 'AbortError') {
-        event.sender.send('ai:stream:end');
+        event.sender.send(IPC_CHANNELS.AI_STREAM_END);
       } else {
         event.sender.send(
-          'ai:stream:error',
+          IPC_CHANNELS.AI_STREAM_ERROR,
           error instanceof Error ? error.message : 'Unknown error'
         );
       }
     }
   });
 
-  ipcMain.on('ai:stream:cancel', (event) => {
+  ipcMain.on(IPC_CHANNELS.AI_STREAM_CANCEL, (event) => {
     validateSender(event);
     const webContentsId = event.sender.id;
 
@@ -97,6 +98,6 @@ export function setupStreamHandlers() {
       activeStreams.delete(webContentsId);
     }
 
-    event.sender.send('ai:stream:end');
+    event.sender.send(IPC_CHANNELS.AI_STREAM_END);
   });
 }
