@@ -1,5 +1,5 @@
 /**
- * IPC�����p
+ * IPCチャンネル定数
  */
 export const IPC_CHANNELS = {
   // App settings
@@ -44,5 +44,5 @@ export const IPC_CHANNELS = {
   AI_STREAM_ERROR: 'ai:stream:error',
 } as const;
 
-// ���
+// 型定義
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
