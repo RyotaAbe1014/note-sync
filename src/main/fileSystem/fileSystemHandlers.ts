@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 
+import { IPC_CHANNELS } from '../constants';
 import { validateFilePath, validateSender } from '../security/ipcSecurity';
 
 async function writeFileWithDir(filePath: string, content: string): Promise<void> {
@@ -14,7 +15,7 @@ async function writeFileWithDir(filePath: string, content: string): Promise<void
 
 export function setupFileSystemHandlers() {
   // ディレクトリ内のファイル一覧を取得
-  ipcMain.handle('fs:list-files', async (event, dirPath) => {
+  ipcMain.handle(IPC_CHANNELS.FS_LIST_FILES, async (event, dirPath) => {
     try {
       validateSender(event);
       const basePath = dirPath || app.getPath('userData');
@@ -35,7 +36,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルの読み込み
-  ipcMain.handle('fs:read-file', async (event, filePath) => {
+  ipcMain.handle(IPC_CHANNELS.FS_READ_FILE, async (event, filePath) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -48,7 +49,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルの情報を取得
-  ipcMain.handle('fs:get-file-info', async (event, filePath) => {
+  ipcMain.handle(IPC_CHANNELS.FS_GET_FILE_INFO, async (event, filePath) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -64,7 +65,7 @@ export function setupFileSystemHandlers() {
   });
 
   // 大きなファイルを部分的に読み込む
-  ipcMain.handle('fs:read-file-chunk', async (event, filePath, start, end) => {
+  ipcMain.handle(IPC_CHANNELS.FS_READ_FILE_CHUNK, async (event, filePath, start, end) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -81,7 +82,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルを行単位で読み込む
-  ipcMain.handle('fs:read-file-lines', async (event, filePath, startLine, lineCount) => {
+  ipcMain.handle(IPC_CHANNELS.FS_READ_FILE_LINES, async (event, filePath, startLine, lineCount) => {
     return new Promise((resolve, reject) => {
       try {
         validateSender(event);
@@ -120,7 +121,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルの書き込み
-  ipcMain.handle('fs:write-file', async (event, filePath, content) => {
+  ipcMain.handle(IPC_CHANNELS.FS_WRITE_FILE, async (event, filePath, content) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -133,7 +134,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルの追加
-  ipcMain.handle('fs:add-file', async (event, filePath, content) => {
+  ipcMain.handle(IPC_CHANNELS.FS_ADD_FILE, async (event, filePath, content) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -146,7 +147,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルのリネーム
-  ipcMain.handle('fs:rename-file', async (event, filePath, newName) => {
+  ipcMain.handle(IPC_CHANNELS.FS_RENAME_FILE, async (event, filePath, newName) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -163,7 +164,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ファイルの削除
-  ipcMain.handle('fs:remove-file', async (event, filePath) => {
+  ipcMain.handle(IPC_CHANNELS.FS_REMOVE_FILE, async (event, filePath) => {
     try {
       validateSender(event);
       validateFilePath(filePath);
@@ -176,7 +177,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ディレクトリの作成
-  ipcMain.handle('fs:create-directory', async (event, dirPath) => {
+  ipcMain.handle(IPC_CHANNELS.FS_CREATE_DIRECTORY, async (event, dirPath) => {
     try {
       validateSender(event);
       validateFilePath(dirPath);
@@ -189,7 +190,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ディレクトリのリネーム
-  ipcMain.handle('fs:rename-directory', async (event, dirPath, newName) => {
+  ipcMain.handle(IPC_CHANNELS.FS_RENAME_DIRECTORY, async (event, dirPath, newName) => {
     try {
       validateSender(event);
       validateFilePath(dirPath);
@@ -205,7 +206,7 @@ export function setupFileSystemHandlers() {
   });
 
   // ディレクトリの削除
-  ipcMain.handle('fs:remove-directory', async (event, dirPath) => {
+  ipcMain.handle(IPC_CHANNELS.FS_REMOVE_DIRECTORY, async (event, dirPath) => {
     try {
       validateSender(event);
       validateFilePath(dirPath);

@@ -3,6 +3,7 @@ import { generateText } from 'ai';
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { IPC_CHANNELS } from '../constants';
 import { validateSender } from '../security/ipcSecurity';
 
 let store: any;
@@ -24,7 +25,7 @@ const getOpenAIKey = async () => {
 };
 
 export function setupGenerativeAiHandlers() {
-  ipcMain.handle('ai:get-inline-response', async (event, prompt: string) => {
+  ipcMain.handle(IPC_CHANNELS.AI_GET_INLINE_RESPONSE, async (event, prompt: string) => {
     validateSender(event);
     const openaiKey = await getOpenAIKey();
     if (!openaiKey) {

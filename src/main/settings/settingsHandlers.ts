@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { IPC_CHANNELS } from '../constants';
 import { validateSender } from '../security/ipcSecurity';
 
 const schema = {
@@ -64,13 +65,13 @@ const initStore = async () => {
 };
 
 export function setupAppSettingsHandlers() {
-  ipcMain.handle('app:get-settings', async (event) => {
+  ipcMain.handle(IPC_CHANNELS.APP_GET_SETTINGS, async (event) => {
     validateSender(event);
     const store = await initStore();
     return store.get('settings');
   });
 
-  ipcMain.handle('app:set-settings', async (event, settings) => {
+  ipcMain.handle(IPC_CHANNELS.APP_SET_SETTINGS, async (event, settings) => {
     validateSender(event);
     const store = await initStore();
     store.set('settings', settings);

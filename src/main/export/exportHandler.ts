@@ -3,6 +3,7 @@ import { exec } from 'node:child_process';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import { IPC_CHANNELS } from '../constants';
 import { validateCommandArgs, validateFilePath, validateSender } from '../security/ipcSecurity';
 
 const execPromise = promisify(exec);
@@ -122,14 +123,14 @@ export function setupExportHandlers() {
     });
 
   // PDF変換
-  ipcMain.handle('export:export-pdf', (event, filePath: string) => {
+  ipcMain.handle(IPC_CHANNELS.EXPORT_PDF, (event, filePath: string) => {
     validateSender(event);
     validateFilePath(filePath);
     return handleExport('pdf', filePath);
   });
 
   // EPUB変換
-  ipcMain.handle('export:export-epub', (event, filePath: string) => {
+  ipcMain.handle(IPC_CHANNELS.EXPORT_EPUB, (event, filePath: string) => {
     validateSender(event);
     validateFilePath(filePath);
     return handleExport('epub', filePath);

@@ -1,9 +1,10 @@
 import { dialog, ipcMain } from 'electron';
 
+import { IPC_CHANNELS } from '../constants';
 import { validateSender } from '../security/ipcSecurity';
 
 export function setupDialogHandlers() {
-  ipcMain.handle('dialog:select-directory', async (event) => {
+  ipcMain.handle(IPC_CHANNELS.DIALOG_SELECT_DIRECTORY, async (event) => {
     validateSender(event);
     const result = await dialog.showOpenDialog({
       properties: ['openDirectory'],
