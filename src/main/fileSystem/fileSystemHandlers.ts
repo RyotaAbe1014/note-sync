@@ -6,6 +6,7 @@ import { createInterface } from 'node:readline';
 
 import { IPC_CHANNELS } from '../constants';
 import { validateFilePath, validateSender } from '../security/ipcSecurity';
+import { ISearchOptions, searchFiles } from './fileSearchHandler';
 
 async function writeFileWithDir(filePath: string, content: string): Promise<void> {
   const dirPath = path.dirname(filePath);
@@ -217,4 +218,22 @@ export function setupFileSystemHandlers() {
       throw error;
     }
   });
+
+  // ファイル検索
+  ipcMain.handle(
+    IPC_CHANNELS.FS_SEARCH_FILES,
+    async (event, rootPath, searchTerm, options: ISearchOptions) => {
+      try {
+        validateSender(event);
+        if (rootPath) {
+          validateFilePath(rootPath);
+        }
+        const results = await searchFiles(rootPath, searchTerm, options);
+        return results;
+      } catch (error) {
+        console.error('Error searching files:', error);
+        throw error;
+      }
+    }
+  );
 }
