@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import clsx from 'clsx';
-import { ChevronLeft, ChevronRight, Folder, GitBranch } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Folder, GitBranch, Search } from 'lucide-react';
 
 import { FileTree } from '../FileTree/FileTree';
 import { GitControls } from '../GitOps/GitControls';
+import { Search as SearchComponent } from '../Search';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -25,6 +26,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onFileSelect,
   onSettingsClick,
 }) => {
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [rootDir, setRootDir] = useState<string | null>(null);
+
+  // ルートディレクトリを取得
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const savedSettings = await window.api.app.getSettings();
+        if (savedSettings) {
+          setRootDir(savedSettings.rootDirectory.path);
+        }
+      } catch (error) {
+        console.error('設定の読み込みに失敗しました:', error);
+      }
+    };
+    loadSettings();
+  }, []);
   return (
     <div
       className={`transition-all duration-300 ease-in-out h-full bg-base-100 rounded-lg shadow-md border border-gray-100 ${
@@ -48,12 +66,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </label>
         {/* ファイルタブ内容 */}
         <div className="tab-content bg-base-100 border-base-300">
-          <FileTree
-            onFileSelect={onFileSelect}
-            onSettingsClick={onSettingsClick}
-            currentFile={selectedFile}
-            isDirty={isDirty}
-          />
+          <div className="flex items-center justify-end p-2 border-b border-base-200">
+            <button
+              className={`btn btn-sm btn-ghost gap-1 ${isSearchMode ? 'btn-active' : ''}`}
+              onClick={() => setIsSearchMode(!isSearchMode)}
+            >
+              <Search className="h-4 w-4" />
+              検索
+            </button>
+          </div>
+          {isSearchMode ? (
+            <SearchComponent
+              rootPath={rootDir}
+              onFileSelect={(filePath) => {
+                onFileSelect(filePath);
+                setIsSearchMode(false);
+              }}
+            />
+          ) : (
+            <FileTree
+              onFileSelect={onFileSelect}
+              onSettingsClick={onSettingsClick}
+              currentFile={selectedFile}
+              isDirty={isDirty}
+            />
+          )}
         </div>
         {hasGitSettings && (
           <>
