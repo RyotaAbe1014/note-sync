@@ -3,6 +3,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 import { AppSettings } from '../types/appSettings';
+import { ISearchOptions } from '../types/search';
 import { IPC_CHANNELS } from './constants';
 
 // レンダラープロセスに公開するAPI
@@ -41,6 +42,8 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.invoke(IPC_CHANNELS.FS_RENAME_DIRECTORY, dirPath, newName),
     removeDirectory: (dirPath: string) =>
       ipcRenderer.invoke(IPC_CHANNELS.FS_REMOVE_DIRECTORY, dirPath),
+    searchFiles: (rootPath: string | null, searchTerm: string, options: ISearchOptions) =>
+      ipcRenderer.invoke(IPC_CHANNELS.FS_SEARCH_FILES, rootPath, searchTerm, options),
   },
 
   // エクスポート

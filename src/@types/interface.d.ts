@@ -1,5 +1,6 @@
 import { AppSettings } from '../types/appSettings';
 import { StatusMatrix } from '../types/gitStatus';
+import { ISearchOptions, ISearchResult } from '../types/search';
 
 interface FileInfo {
   name: string;
@@ -40,6 +41,11 @@ declare global {
         createDirectory: (dirPath: string) => Promise<boolean>;
         renameDirectory: (dirPath: string, newName: string) => Promise<boolean>;
         removeDirectory: (dirPath: string) => Promise<boolean>;
+        searchFiles: (
+          rootPath: string | null,
+          searchTerm: string,
+          options: ISearchOptions
+        ) => Promise<ISearchResult[]>;
       };
       export: {
         exportPdf: (filePath: string) => Promise<string>;
