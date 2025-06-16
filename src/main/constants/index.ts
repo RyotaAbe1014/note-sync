@@ -22,6 +22,7 @@ export const IPC_CHANNELS = {
   FS_CREATE_DIRECTORY: 'fs:create-directory',
   FS_RENAME_DIRECTORY: 'fs:rename-directory',
   FS_REMOVE_DIRECTORY: 'fs:remove-directory',
+  FS_SEARCH_FILES: 'fs:search-files',
 
   // Export
   EXPORT_PDF: 'export:export-pdf',
