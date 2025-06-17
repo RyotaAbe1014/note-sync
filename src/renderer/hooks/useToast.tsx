@@ -34,7 +34,7 @@ export const useToast = () => {
   const Toast = () => {
     return (
       toast.message && (
-        <div className="toast toast-end toast-top z-50 fixed">
+        <div className="toast toast-center toast-top z-50 fixed">
           <div
             className={`alert ${toast.type === 'success' ? 'alert-success' : 'alert-error'} flex justify-between`}
           >
