@@ -24,21 +24,6 @@ const checkSquirrelStartup = async (): Promise<boolean> => {
   return false;
 };
 
-/**
- * アプリケーションの単一インスタンス実行をチェックします。
- * 既に他のインスタンスが実行中の場合、現在のインスタンスを終了します。
- *
- * @returns {Promise<boolean>} 他のインスタンスが既に実行中の場合はtrue、単一インスタンスロックを取得できた場合はfalse
- */
-const preventMultipleInstances = async (): Promise<boolean> => {
-  const gotTheLock = app.requestSingleInstanceLock();
-  if (!gotTheLock) {
-    app.quit();
-    return true;
-  }
-  return false;
-};
-
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -90,51 +75,52 @@ const createWindow = () => {
   });
 };
 
-app.on('second-instance', () => {
-  // 2次インスタンスが起動した場合、既存のウィンドウを復元してフォーカスする
-  const mainWindow = BrowserWindow.getAllWindows()[0];
-  if (mainWindow) {
-    if (mainWindow.isMinimized()) mainWindow.restore();
-    mainWindow.focus();
-  }
-});
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', () => {
+    // 2次インスタンスが起動した場合、既存のウィンドウを復元してフォーカスする
+    const mainWindow = BrowserWindow.getAllWindows()[0];
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', async () => {
-  const shouldQuit = await checkSquirrelStartup();
-  if (shouldQuit) return;
-
-  const isSingleInstance = await preventMultipleInstances();
-  if (isSingleInstance) return;
-
-  createWindow();
-  setupAppSettingsHandlers();
-  setupDialogHandlers();
-  setupFileSystemHandlers();
-  setupGitHandlers();
-  setupExportHandlers();
-  setupGenerativeAiHandlers();
-  setupStreamHandlers();
-});
-
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
+  // This method will be called when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  app.on('ready', async () => {
+    const shouldQuit = await checkSquirrelStartup();
+    if (shouldQuit) return;
     createWindow();
-  }
-});
+    setupAppSettingsHandlers();
+    setupDialogHandlers();
+    setupFileSystemHandlers();
+    setupGitHandlers();
+    setupExportHandlers();
+    setupGenerativeAiHandlers();
+    setupStreamHandlers();
+  });
+
+  // Quit when all windows are closed, except on macOS. There, it's common
+  // for applications and their menu bar to stay active until the user quits
+  // explicitly with Cmd + Q.
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+  app.on('activate', () => {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (app.isReady() && BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+}
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
