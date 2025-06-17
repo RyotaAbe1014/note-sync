@@ -9,10 +9,30 @@ import { setupFileSystemHandlers } from './fileSystem/fileSystemHandlers';
 import { setupGitHandlers } from './git/gitHandlers';
 import { setupAppSettingsHandlers } from './settings/settingsHandlers';
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-const checkSquirrelStartup = async () => {
+/**
+ * Windows環境でのSquirrelインストーラーによる起動をチェックし、
+ * インストール/アンインストール時のショートカット作成/削除を処理します。
+ *
+ * @returns {Promise<boolean>} Squirrelによる起動の場合はtrue、通常起動の場合はfalse
+ */
+const checkSquirrelStartup = async (): Promise<boolean> => {
   const started = (await import('electron-squirrel-startup')).default;
   if (started) {
+    app.quit();
+    return true;
+  }
+  return false;
+};
+
+/**
+ * アプリケーションの単一インスタンス実行をチェックします。
+ * 既に他のインスタンスが実行中の場合、現在のインスタンスを終了します。
+ *
+ * @returns {Promise<boolean>} 他のインスタンスが既に実行中の場合はtrue、単一インスタンスロックを取得できた場合はfalse
+ */
+const checkSingleInstance = async (): Promise<boolean> => {
+  const gotTheLock = app.requestSingleInstanceLock();
+  if (!gotTheLock) {
     app.quit();
     return true;
   }
@@ -76,6 +96,9 @@ const createWindow = () => {
 app.on('ready', async () => {
   const shouldQuit = await checkSquirrelStartup();
   if (shouldQuit) return;
+
+  const isSingleInstance = await checkSingleInstance();
+  if (isSingleInstance) return;
 
   createWindow();
   setupAppSettingsHandlers();
