@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { act, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -20,9 +22,11 @@ vi.mock('../../hooks/useFileSave', () => ({
 
 vi.mock('../Editor/Editor', () => ({
   Editor: ({ onDirtyChange }: { onDirtyChange: (d: boolean) => void }) => {
-    if (typeof mockDirtyState === 'boolean') {
-      onDirtyChange(mockDirtyState);
-    }
+    React.useEffect(() => {
+      if (typeof mockDirtyState === 'boolean') {
+        onDirtyChange(mockDirtyState);
+      }
+    }, [onDirtyChange]);
     return <div data-testid="editor" />;
   },
 }));

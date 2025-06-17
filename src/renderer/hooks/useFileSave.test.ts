@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useFileSave } from './useFileSave';
 
@@ -10,9 +10,16 @@ const mockEditorRef = {
 
 describe('useFileSave', () => {
   const mockShowToast = vi.fn();
+  const originalConsoleError = console.error;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // テスト中の意図的なエラーログを抑制
+    console.error = vi.fn();
+  });
+
+  afterEach(() => {
+    console.error = originalConsoleError;
   });
 
   describe('saveFile', () => {

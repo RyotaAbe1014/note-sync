@@ -198,7 +198,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
           </button>
         </div>
       ) : (
-        <div className="card-body p-4">
+        <div className="card-body flex flex-col p-4 h-full">
           <div className="flex items-center justify-between border-b border-base-200 pb-3">
             <button
               onClick={handleBackClick}
@@ -261,7 +261,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
               <p className="ml-3 text-base-content/70">読み込み中...</p>
             </div>
           ) : isSearchMode && searchResults.length > 0 ? (
-            <div className="h-[calc(100vh-250px)] overflow-y-auto p-0">
+            <div className="flex-1 overflow-y-auto p-0">
               <SearchResults
                 results={searchResults}
                 onFileClick={handleSearchFileClick}
@@ -270,7 +270,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
               />
             </div>
           ) : (
-            <ul className="menu h-[calc(100vh-250px)] w-full overflow-y-auto p-0">
+            <ul className="menu flex-1 w-full overflow-y-auto p-0">
               {files.length === 0 ? (
                 <p className="flex flex-col items-center justify-center rounded-md bg-base-200 py-8">
                   <Sparkles className="mb-2 h-10 w-10 text-base-content/50" />

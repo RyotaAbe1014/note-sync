@@ -49,11 +49,13 @@ describe('AppSettings', () => {
       render(<AppSettings />);
 
       // Then: 主要な要素が表示される
-      expect(screen.getByText('アプリケーション設定')).toBeInTheDocument();
-      expect(screen.getByText('ルートディレクトリ設定')).toBeInTheDocument();
-      expect(screen.getByText('Git設定')).toBeInTheDocument();
-      expect(screen.getByText('APIキー設定')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: '設定を保存' })).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('アプリケーション設定')).toBeInTheDocument();
+        expect(screen.getByText('ルートディレクトリ設定')).toBeInTheDocument();
+        expect(screen.getByText('Git設定')).toBeInTheDocument();
+        expect(screen.getByText('APIキー設定')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: '設定を保存' })).toBeInTheDocument();
+      });
     });
 
     test('保存された設定が読み込まれて表示される', async () => {

@@ -1,13 +1,20 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useGitSettings } from './useGitSettings';
 
 describe('useGitSettings', () => {
   const mockShowToast = vi.fn();
+  const originalConsoleError = console.error;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // テスト中の意図的なエラーログを抑制
+    console.error = vi.fn();
+  });
+
+  afterEach(() => {
+    console.error = originalConsoleError;
   });
 
   it('ルートディレクトリが設定されていると hasGitSettings が true になる', async () => {

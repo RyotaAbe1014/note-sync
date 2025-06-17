@@ -1,11 +1,19 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useFileLoader } from './useFileLoader';
 
 describe('useFileLoader', () => {
+  const originalConsoleError = console.error;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    // テスト中の意図的なエラーログを抑制
+    console.error = vi.fn();
+  });
+
+  afterEach(() => {
+    console.error = originalConsoleError;
   });
 
   it('ファイルパスがnullの場合、初期状態を返す', () => {
