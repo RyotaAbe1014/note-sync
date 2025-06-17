@@ -44,7 +44,12 @@ describe('setupGenerativeAiHandlers', () => {
     expect(handleMock).toHaveBeenCalledWith('ai:get-inline-response', expect.any(Function));
 
     const handler = handleMock.mock.calls[0][1] as any;
-    const result = await handler({}, '質問');
+    const mockEvent = {
+      sender: {
+        getURL: vi.fn().mockReturnValue('file:///mock/path'),
+      },
+    };
+    const result = await handler(mockEvent, '質問');
 
     expect(createOpenAIMock).toHaveBeenCalledWith({
       apiKey: 'test-key',
@@ -62,7 +67,12 @@ describe('setupGenerativeAiHandlers', () => {
 
     setupGenerativeAiHandlers();
     const handler = handleMock.mock.calls[0][1] as any;
+    const mockEvent = {
+      sender: {
+        getURL: vi.fn().mockReturnValue('file:///mock/path'),
+      },
+    };
 
-    await expect(handler({}, '質問')).rejects.toThrow('OpenAI API key is not set');
+    await expect(handler(mockEvent, '質問')).rejects.toThrow('OpenAI API key is not set');
   });
 });

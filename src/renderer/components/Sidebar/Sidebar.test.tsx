@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, test, vi } from 'vitest';
 
@@ -11,33 +11,43 @@ vi.mock('../FileTree/FileTree', () => ({
 vi.mock('../GitOps/GitControls', () => ({
   GitControls: () => <div data-testid="gitcontrols" />,
 }));
+vi.mock('../Search', () => ({
+  Search: () => <div data-testid="search" />,
+}));
 
 const defaultProps = {
   hasGitSettings: false,
   selectedFile: null as string | null,
+  isDirty: false,
   onFileSelect: vi.fn(),
   onSettingsClick: vi.fn(),
 };
 
 describe('Sidebar', () => {
-  test('isOpenがtrueのときChevronLeftアイコンが表示される', () => {
+  test('isOpenがtrueのときChevronLeftアイコンが表示される', async () => {
     const onToggle = vi.fn();
     render(<Sidebar isOpen={true} onToggle={onToggle} {...defaultProps} />);
 
-    const button = screen.getByRole('button');
-    const icon = button.querySelector('svg');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('lucide-chevron-left');
+    await waitFor(() => {
+      const buttons = screen.getAllByRole('button');
+      const toggleButton = buttons.find((button) => button.querySelector('.lucide-chevron-left'));
+      expect(toggleButton).toBeInTheDocument();
+      const icon = toggleButton?.querySelector('svg');
+      expect(icon).toHaveClass('lucide-chevron-left');
+    });
   });
 
-  test('isOpenがfalseのときChevronRightアイコンが表示される', () => {
+  test('isOpenがfalseのときChevronRightアイコンが表示される', async () => {
     const onToggle = vi.fn();
     render(<Sidebar isOpen={false} onToggle={onToggle} {...defaultProps} />);
 
-    const button = screen.getByRole('button');
-    const icon = button.querySelector('svg');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveClass('lucide-chevron-right');
+    await waitFor(() => {
+      const buttons = screen.getAllByRole('button');
+      const toggleButton = buttons[0]; // トグルボタンは最初のボタン
+      const icon = toggleButton.querySelector('svg');
+      expect(icon).toBeInTheDocument();
+      expect(icon).toHaveClass('lucide-chevron-right');
+    });
   });
 
   test('ボタンをクリックするとonToggleが呼ばれる', async () => {
@@ -45,8 +55,14 @@ describe('Sidebar', () => {
     const user = userEvent.setup();
     render(<Sidebar isOpen={false} onToggle={onToggle} {...defaultProps} />);
 
-    const button = screen.getByRole('button');
-    await user.click(button);
+    await waitFor(() => {
+      const buttons = screen.getAllByRole('button');
+      expect(buttons.length).toBeGreaterThan(0);
+    });
+
+    const buttons = screen.getAllByRole('button');
+    const toggleButton = buttons[0]; // トグルボタンは最初のボタン
+    await user.click(toggleButton);
 
     expect(onToggle).toHaveBeenCalledTimes(1);
   });

@@ -34,6 +34,7 @@ describe('setupStreamHandlers', () => {
     sender: {
       id: 1,
       send: vi.fn(),
+      getURL: vi.fn().mockReturnValue('file:///mock/path'),
     },
   };
 

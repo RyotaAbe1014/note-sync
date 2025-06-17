@@ -2,21 +2,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setupDialogHandlers } from './dialogHandlers';
 
-let handleMock: ReturnType<typeof vi.fn>;
-let showOpenDialogMock: ReturnType<typeof vi.fn>;
+const { handleMock, showOpenDialogMock } = vi.hoisted(() => ({
+  handleMock: vi.fn(),
+  showOpenDialogMock: vi.fn(),
+}));
 
-vi.mock('electron', () => {
-  handleMock = vi.fn();
-  showOpenDialogMock = vi.fn();
-  return {
-    ipcMain: {
-      handle: handleMock,
-    },
-    dialog: {
-      showOpenDialog: showOpenDialogMock,
-    },
-  };
-});
+vi.mock('electron', () => ({
+  ipcMain: {
+    handle: handleMock,
+  },
+  dialog: {
+    showOpenDialog: showOpenDialogMock,
+  },
+}));
 
 describe('setupDialogHandlers', () => {
   beforeEach(() => {
@@ -30,7 +28,12 @@ describe('setupDialogHandlers', () => {
     expect(handleMock).toHaveBeenCalledWith('dialog:select-directory', expect.any(Function));
 
     const handler = handleMock.mock.calls[0][1] as any;
-    const result = await handler({});
+    const mockEvent = {
+      sender: {
+        getURL: vi.fn().mockReturnValue('file:///mock/path'),
+      },
+    };
+    const result = await handler(mockEvent);
 
     expect(showOpenDialogMock).toHaveBeenCalled();
     expect(result).toBe('/path');
@@ -41,7 +44,12 @@ describe('setupDialogHandlers', () => {
 
     setupDialogHandlers();
     const handler = handleMock.mock.calls[0][1] as any;
-    const result = await handler({});
+    const mockEvent = {
+      sender: {
+        getURL: vi.fn().mockReturnValue('file:///mock/path'),
+      },
+    };
+    const result = await handler(mockEvent);
 
     expect(result).toBeNull();
   });

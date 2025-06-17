@@ -216,7 +216,6 @@ export const FileTree: React.FC<FileTreeProps> = ({
               onClick={() => setIsSearchMode(!isSearchMode)}
             >
               <Search className="h-4 w-4" />
-              検索
             </button>
           </div>
 
@@ -262,7 +261,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
               <p className="ml-3 text-base-content/70">読み込み中...</p>
             </div>
           ) : isSearchMode && searchResults.length > 0 ? (
-            <div className="h-[calc(100vh-250px)] overflow-y-auto">
+            <div className="h-[calc(100vh-250px)] overflow-y-auto p-0">
               <SearchResults
                 results={searchResults}
                 onFileClick={handleSearchFileClick}
