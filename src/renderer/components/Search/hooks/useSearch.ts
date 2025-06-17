@@ -7,7 +7,7 @@ export const useSearch = () => {
   const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const showToast = useToast();
+  const { showToast } = useToast();
 
   const search = useCallback(
     async (rootPath: string | null, searchTerm: string, options: ISearchOptions) => {
@@ -20,7 +20,7 @@ export const useSearch = () => {
         setSearchResults(results);
 
         if (results.length === 0) {
-          showToast('検索結果が見つかりませんでした', 'info');
+          showToast('検索結果が見つかりませんでした', 'success');
         }
       } catch (error) {
         const errorMessage =
