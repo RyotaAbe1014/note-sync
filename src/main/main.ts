@@ -30,7 +30,7 @@ const checkSquirrelStartup = async (): Promise<boolean> => {
  *
  * @returns {Promise<boolean>} 他のインスタンスが既に実行中の場合はtrue、単一インスタンスロックを取得できた場合はfalse
  */
-const checkSingleInstance = async (): Promise<boolean> => {
+const preventMultipleInstances = async (): Promise<boolean> => {
   const gotTheLock = app.requestSingleInstanceLock();
   if (!gotTheLock) {
     app.quit();
@@ -90,6 +90,15 @@ const createWindow = () => {
   });
 };
 
+app.on('second-instance', () => {
+  // 2次インスタンスが起動した場合、既存のウィンドウを復元してフォーカスする
+  const mainWindow = BrowserWindow.getAllWindows()[0];
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+  }
+});
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -97,7 +106,7 @@ app.on('ready', async () => {
   const shouldQuit = await checkSquirrelStartup();
   if (shouldQuit) return;
 
-  const isSingleInstance = await checkSingleInstance();
+  const isSingleInstance = await preventMultipleInstances();
   if (isSingleInstance) return;
 
   createWindow();
