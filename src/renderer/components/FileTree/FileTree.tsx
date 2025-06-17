@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
-import { ChevronLeft, FileIcon, FolderIcon, Sparkles } from 'lucide-react';
+import { ChevronLeft, FileIcon, FolderIcon, Search, Sparkles, X } from 'lucide-react';
 
+import { ISearchOptions, ISearchResult } from '../../../types/search';
 import { useToast } from '../../hooks/useToast';
 import { FileMenu, FileTreeItem } from '../FileMenu/FileMenu';
+import { SearchResults } from '../Search/SearchResults';
+import { useSearch } from '../Search/hooks/useSearch';
 
 interface FileTreeProps {
   onFileSelect?: (filePath: string) => void;
@@ -24,7 +27,10 @@ export const FileTree: React.FC<FileTreeProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<FileTreeItem | null>(null);
   const [menuPosition, setMenuPosition] = useState<{ x: number; y: number } | null>(null);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const { showToast } = useToast();
+  const { searchResults, isSearching, searchError, search, clearSearch } = useSearch();
 
   // ディレクトリの内容を読み込む
   const loadDirectory = async (dirPath: string | null) => {
@@ -56,6 +62,53 @@ export const FileTree: React.FC<FileTreeProps> = ({
     };
     loadSettings();
   }, []);
+
+  // 検索処理
+  const handleSearch = useCallback(async () => {
+    if (searchTerm.trim()) {
+      const options: ISearchOptions = {
+        searchIn: 'filename',
+        caseSensitive: false,
+        useRegex: false,
+        maxResults: 100,
+      };
+      await search(rootDir, searchTerm.trim(), options);
+    }
+  }, [searchTerm, search, rootDir]);
+
+  const handleSearchClear = useCallback(() => {
+    setSearchTerm('');
+    clearSearch();
+  }, [clearSearch]);
+
+  const handleSearchKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        handleSearch();
+      } else if (e.key === 'Escape') {
+        handleSearchClear();
+      }
+    },
+    [handleSearch, handleSearchClear]
+  );
+
+  const handleSearchFileClick = useCallback(
+    (filePath: string) => {
+      // ファイルを選択
+      if (onFileSelect) {
+        onFileSelect(filePath);
+      }
+      // 該当ディレクトリに移動
+      const dirPath = filePath.substring(0, filePath.lastIndexOf('/'));
+      if (dirPath !== currentDir) {
+        loadDirectory(dirPath || rootDir);
+      }
+      // 検索モードを終了
+      setIsSearchMode(false);
+      handleSearchClear();
+    },
+    [onFileSelect, currentDir, rootDir, handleSearchClear]
+  );
 
   // ディレクトリをクリックしたときの処理
   const handleDirectoryClick = (dirPath: string) => {
@@ -158,12 +211,64 @@ export const FileTree: React.FC<FileTreeProps> = ({
             <span className="ml-2 max-w-[70%] truncate text-sm font-medium text-base-content/70">
               {currentDir === rootDir ? 'ルート' : currentDir}
             </span>
+            <button
+              className={`btn btn-sm btn-ghost gap-1 ${isSearchMode ? 'btn-active' : ''}`}
+              onClick={() => setIsSearchMode(!isSearchMode)}
+            >
+              <Search className="h-4 w-4" />
+              検索
+            </button>
           </div>
+
+          {isSearchMode && (
+            <div className="mb-3">
+              <div className="flex items-center gap-2 p-2 bg-base-200 rounded-lg">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                    placeholder="ファイルを検索..."
+                    disabled={isSearching}
+                    className="input input-sm w-full pr-8"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={handleSearchClear}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-xs"
+                      aria-label="検索をクリア"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+                <button
+                  onClick={handleSearch}
+                  disabled={isSearching || !searchTerm.trim()}
+                  className="btn btn-sm btn-primary"
+                  aria-label="検索"
+                >
+                  <Search className="h-4 w-4" />
+                  検索
+                </button>
+              </div>
+            </div>
+          )}
 
           {loading ? (
             <div className="flex h-40 items-center justify-center">
               <span className="loading loading-spinner loading-md text-primary"></span>
               <p className="ml-3 text-base-content/70">読み込み中...</p>
+            </div>
+          ) : isSearchMode && searchResults.length > 0 ? (
+            <div className="h-[calc(100vh-250px)] overflow-y-auto">
+              <SearchResults
+                results={searchResults}
+                onFileClick={handleSearchFileClick}
+                isLoading={isSearching}
+                error={searchError}
+              />
             </div>
           ) : (
             <ul className="menu h-[calc(100vh-250px)] w-full overflow-y-auto p-0">
