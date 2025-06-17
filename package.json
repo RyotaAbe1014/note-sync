@@ -88,7 +88,7 @@
     "ai": "^4.3.16",
     "clsx": "^2.1.1",
     "electron-squirrel-startup": "^1.0.1",
-    "electron-store": "^10.0.1",
+    "electron-store": "^10.1.0",
     "env-cmd": "^10.1.0",
     "isomorphic-git": "^1.30.3",
     "jotai": "^2.12.5",
