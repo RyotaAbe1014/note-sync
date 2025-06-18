@@ -9,21 +9,6 @@ import { setupFileSystemHandlers } from './fileSystem/fileSystemHandlers';
 import { setupGitHandlers } from './git/gitHandlers';
 import { setupAppSettingsHandlers } from './settings/settingsHandlers';
 
-/**
- * Windows環境でのSquirrelインストーラーによる起動をチェックし、
- * インストール/アンインストール時のショートカット作成/削除を処理します。
- *
- * @returns {Promise<boolean>} Squirrelによる起動の場合はtrue、通常起動の場合はfalse
- */
-const checkSquirrelStartup = async (): Promise<boolean> => {
-  const started = (await import('electron-squirrel-startup')).default;
-  if (started) {
-    app.quit();
-    return true;
-  }
-  return false;
-};
-
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -91,9 +76,7 @@ if (!gotTheLock) {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
-  app.on('ready', async () => {
-    const shouldQuit = await checkSquirrelStartup();
-    if (shouldQuit) return;
+  app.on('ready', () => {
     createWindow();
     setupAppSettingsHandlers();
     setupDialogHandlers();
