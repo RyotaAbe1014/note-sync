@@ -1,138 +1,139 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+このファイルは、Claude Code (claude.ai/code) がこのリポジトリでコード作業を行う際のガイダンスを提供します。
 
-## Project Overview
+## プロジェクト概要
 
-NoteSync is an Electron desktop application for markdown note-taking with Git integration, built with React, TypeScript, and Lexical editor framework. The application supports rich text editing, file management, version control, and AI-powered features.
+NoteSyncは、React、TypeScript、Lexicalエディターフレームワークで構築された、Git統合機能を持つMarkdownノート作成用のElectronデスクトップアプリケーションです。リッチテキスト編集、ファイル管理、バージョン管理、AI機能をサポートしています。
 
-## Essential Commands
+## 必須コマンド
 
-### Development
-
-```bash
-npm install          # Install dependencies and set up git hooks
-npm start           # Start Electron app in development mode
-npm run test:watch  # Run tests in watch mode during development
-```
-
-### Code Quality
+### 開発
 
 ```bash
-npm run format      # Format code with Prettier
-npm run lint        # Run ESLint
-npm test           # Run all tests once
+npm install          # 依存関係をインストールし、Gitフックを設定
+npm start           # 開発モードでElectronアプリを起動
+npm run test:watch  # 開発中にテストをウォッチモードで実行
 ```
 
-### Build & Distribution
+### コード品質
 
 ```bash
-npm run package    # Create packaged app without installers
-npm run make       # Build distributables (DMG, EXE, etc.)
-npm run publish    # Publish to S3 (requires AWS credentials in .env)
+npm run format      # Prettierでコードをフォーマット
+npm run lint        # ESLintを実行
+npm test           # 全テストを一度実行
 ```
 
-## Architecture Overview
+### ビルド & 配布
 
-### Process Architecture
+```bash
+npm run package    # インストーラーなしでパッケージ化されたアプリを作成
+npm run make       # 配布可能ファイルを作成（DMG、EXEなど）
+npm run publish    # S3に公開（.envファイルにAWS認証情報が必要）
+```
 
-- **Main Process** (`src/main/`): Handles system operations, file I/O, Git operations, and native dialogs
-- **Renderer Process** (`src/renderer/`): React application with UI components
-- **Preload Script** (`src/main/preload.ts`): Secure bridge between main and renderer processes
+## アーキテクチャ概要
 
-### IPC Communication Pattern
+### プロセスアーキテクチャ
 
-All renderer-to-main communication goes through the preload script's exposed APIs:
+- **メインプロセス** (`src/main/`): システム操作、ファイルI/O、Git操作、ネイティブダイアログを処理
+- **レンダラープロセス** (`src/renderer/`): UIコンポーネントを持つReactアプリケーション
+- **プリロードスクリプト** (`src/main/preload.ts`): メインとレンダラープロセス間のセキュアなブリッジ
 
-- `window.app` - Application settings
-- `window.dialog` - System dialogs
-- `window.fs` - File system operations
-- `window.export` - Export functionality
-- `window.git` - Git operations
-- `window.ai` - AI integrations
+### IPC通信パターン
 
-### State Management
+レンダラーからメインへの全ての通信は、プリロードスクリプトの公開APIを通じて行われます：
 
-- Uses Jotai for minimal global state (primarily toast notifications)
-- Most state is component-local
-- Git state managed through `useGitControl` hook
-- File state managed through custom hooks (`useFileLoader`, `useFileSave`)
+- `window.app` - アプリケーション設定
+- `window.dialog` - システムダイアログ
+- `window.fs` - ファイルシステム操作
+- `window.export` - エクスポート機能
+- `window.git` - Git操作
+- `window.ai` - AI統合
 
-### Editor Architecture
+### 状態管理
 
-- Lexical framework with extensive plugin system
-- Supports markdown, code highlighting, tables, and inline AI
-- Two-way markdown conversion
-- Auto-save and unsaved changes tracking
+- 最小限のグローバル状態（主にトースト通知）にJotaiを使用
+- ほとんどの状態はコンポーネントローカル
+- Git状態は`useGitControl`フックで管理
+- ファイル状態はカスタムフック（`useFileLoader`、`useFileSave`）で管理
 
-### Key Technologies
+### エディターアーキテクチャ
 
-- **Electron Forge**: Build and packaging
-- **Vite**: Fast bundling and HMR
-- **Vitest**: Testing framework
-- **Tailwind CSS + DaisyUI**: Styling
-- **isomorphic-git**: Git operations
-- **Lexical**: Rich text editor
+- 広範なプラグインシステムを持つLexicalフレームワーク
+- Markdown、コードハイライト、テーブル、インラインAIをサポート
+- 双方向Markdown変換
+- 自動保存と未保存変更の追跡
 
-## Development Workflow
+### 主要技術
 
-1. **Feature Development**
+- **Electron Forge**: ビルドとパッケージング
+- **Vite**: 高速バンドリングとHMR
+- **Vitest**: テストフレームワーク
+- **Tailwind CSS + DaisyUI**: スタイリング
+- **isomorphic-git**: Git操作
+- **Lexical**: リッチテキストエディター
 
-   - Create feature branch from main
-   - Components go in `src/renderer/components/[FeatureName]/`
-   - Add tests alongside components (`*.test.tsx`)
-   - Use existing UI patterns from DaisyUI
+## 開発ワークフロー
 
-2. **Testing**
+1. **機能開発**
 
-   - Write tests using Vitest and React Testing Library
-   - Mock Electron APIs are pre-configured in `src/test/setup.ts`
-   - Run `npm run test:watch` during development
+   - mainから機能ブランチを作成
+   - コンポーネントは`src/renderer/components/[FeatureName]/`に配置
+   - コンポーネントと並行してテストを追加（`*.test.tsx`）
+   - DaisyUIの既存UIパターンを使用
 
-3. **Pre-commit**
+2. **テスト**
 
-   - Husky automatically runs Prettier on staged files
-   - Ensure tests pass before committing
+   - VitestとReact Testing Libraryを使用してテストを作成
+   - Electron APIのモックは`src/test/setup.ts`で事前設定済み
+   - 開発中は`npm run test:watch`を実行
 
-4. **Building**
-   - Use `npm run make` to create platform-specific builds
-   - Builds are configured in `forge.config.ts`
+3. **プリコミット**
 
-## Important Patterns
+   - Huskyがステージされたファイルで自動的にPrettierを実行
+   - コミット前にテストが通ることを確認
+   - セマンティックコミットメッセージを使用（例: `feat:`, `fix:`, `docs:`, `chore:`, `test:`）
 
-### Custom Hooks
+4. **ビルド**
+   - プラットフォーム固有のビルドを作成するには`npm run make`を使用
+   - ビルドは`forge.config.ts`で設定
 
-The codebase extensively uses custom hooks for logic encapsulation:
+## 重要なパターン
 
-- File operations: `useFileLoader`, `useFileSave`
-- Git operations: `useGitControl`
-- UI feedback: `useToast`
-- Shortcuts: `useSaveShortcut`
+### カスタムフック
 
-### File System Operations
+コードベースはロジックのカプセル化のためにカスタムフックを広範囲に使用：
 
-- All file operations are promise-based
-- Large files use chunked reading
-- Progress tracking available for file operations
+- ファイル操作: `useFileLoader`、`useFileSave`
+- Git操作: `useGitControl`
+- UIフィードバック: `useToast`
+- ショートカット: `useSaveShortcut`
 
-### Git Integration
+### ファイルシステム操作
 
-- Uses status matrix pattern from isomorphic-git
-- Token-based authentication for remote operations
-- File-level staging/unstaging support
+- 全てのファイル操作はPromiseベース
+- 大きなファイルはチャンク読み込みを使用
+- ファイル操作の進捗追跡が利用可能
 
-### Security
+### Git統合
 
-- Context isolation enabled
-- No direct Node.js access in renderer
-- IPC channels are strictly defined and typed
+- isomorphic-gitのステータスマトリックスパターンを使用
+- リモート操作のトークンベース認証
+- ファイルレベルのステージング/アンステージングサポート
 
-## Special Considerations
+### セキュリティ
 
-1. **Japanese Localization**: The app is primarily in Japanese. Test descriptions and UI text should follow this convention.
+- コンテキスト分離が有効
+- レンダラーでのNode.jsへの直接アクセスなし
+- IPCチャンネルは厳密に定義され型付けされている
 
-2. **Development-Only Features**: Stagewise toolbar is loaded only in development mode and excluded from production builds.
+## 特別な考慮事項
 
-3. **Environment Variables**: AWS credentials for S3 publishing should be in `.env` file (not committed to git).
+1. **日本語ローカライゼーション**: アプリは主に日本語です。テストの説明とUIテキストはこの慣例に従ってください。
 
-4. **Performance**: Large files are handled with streaming and chunked reading. The editor uses virtual scrolling for long documents.
+2. **開発限定機能**: Stagewiseツールバーは開発モードでのみ読み込まれ、プロダクションビルドから除外されます。
+
+3. **環境変数**: S3公開用のAWS認証情報は`.env`ファイルに記載してください（gitにコミットしない）。
+
+4. **パフォーマンス**: 大きなファイルはストリーミングとチャンク読み込みで処理されます。エディターは長いドキュメントに仮想スクロールを使用します。
