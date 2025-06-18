@@ -27,6 +27,7 @@ window.api = {
       { name: 'test.md', path: '/test/path/test.md', isDirectory: false },
       { name: 'notes', path: '/test/path/notes', isDirectory: true },
     ]),
+    searchFiles: vi.fn().mockResolvedValue([]),
     getFileInfo: vi.fn().mockResolvedValue({}),
     readFileChunk: vi.fn().mockResolvedValue(''),
     readFileLines: vi.fn().mockResolvedValue(''),
