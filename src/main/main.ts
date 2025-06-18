@@ -1,4 +1,4 @@
-import { BrowserWindow, app, session } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import path from 'node:path';
 
 import { setupGenerativeAiHandlers } from './ai/generativeAiHandler';
