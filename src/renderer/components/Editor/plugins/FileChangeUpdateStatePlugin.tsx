@@ -52,6 +52,7 @@ export function FileChangeUpdateStatePlugin({
             editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined);
           });
 
+          // エディタをスクロールトップに移動
           requestAnimationFrame(() => {
             const editorElement = document.getElementById('editor');
             if (editorElement) {
