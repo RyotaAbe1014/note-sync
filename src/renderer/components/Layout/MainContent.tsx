@@ -106,7 +106,7 @@ export function MainContent({
               </div>
             )}
 
-            {!isLoading && fileContent && (
+            {!isLoading && fileContent !== null && fileContent !== undefined && (
               <Editor
                 initialContent={fileContent}
                 ref={editorRef}
