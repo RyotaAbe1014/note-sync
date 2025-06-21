@@ -13,14 +13,12 @@ interface FileTreeProps {
   onFileSelect?: (filePath: string) => void;
   onSettingsClick: () => void;
   currentFile: string | null;
-  isDirty: boolean;
 }
 
 export const FileTree: React.FC<FileTreeProps> = ({
   onFileSelect,
   onSettingsClick,
   currentFile,
-  isDirty,
 }) => {
   const [files, setFiles] = useState<FileTreeItem[]>([]);
   const [rootDir, setRootDir] = useState<string | null>(null);
@@ -306,14 +304,8 @@ export const FileTree: React.FC<FileTreeProps> = ({
                       ) : (
                         <FileIcon className="h-5 w-5 min-w-5 text-base-content/70" />
                       )}
-                      <span className="truncate ml-2 flex items-center" title={file.name}>
+                      <span className="truncate ml-2" title={file.name}>
                         {file.name}
-                        {currentFile === file.path && isDirty && (
-                          <span
-                            data-testid="dirty-indicator"
-                            className="ml-1 inline-block w-2 h-2 rounded-full bg-error"
-                          />
-                        )}
                       </span>
                     </button>
                   </li>
