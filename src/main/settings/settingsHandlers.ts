@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { IPC_CHANNELS } from '../common/constants';
 import { validateSender } from '../common/security/ipcSecurity';
-import { IPC_CHANNELS } from '../constants';
 
 const schema = {
   rootDirectory: {

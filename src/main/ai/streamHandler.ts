@@ -3,8 +3,8 @@ import { streamText } from 'ai';
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { IPC_CHANNELS } from '../common/constants';
 import { validateSender } from '../common/security/ipcSecurity';
-import { IPC_CHANNELS } from '../constants';
 
 let store: any;
 
