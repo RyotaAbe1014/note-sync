@@ -54,7 +54,7 @@ export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions
       onChunkRef.current?.(chunk);
     };
 
-    const handleEnd = (_event: any) => {
+    const handleEnd = () => {
       console.log('ストリーム終了');
       setIsStreaming(false);
       onCompleteRef.current?.(fullTextRef.current);

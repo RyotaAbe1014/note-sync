@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { ISearchOptions, ISearchResult } from '../../../../types/search';
+import type { ISearchOptions, ISearchResult } from '../../../../types/search';
 import { useToast } from '../../../hooks/useToast';
 
 export const useSearch = () => {
