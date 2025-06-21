@@ -18,9 +18,9 @@ import {
 import { GenerativeAIForm } from './GenerativeAIForm';
 import { TRANSFORMERS } from './MarkdownTransformers';
 
-interface GenerativeAIPayload {
+type GenerativeAIPayload = {
   anchorKey: string;
-}
+};
 
 export const GENERATIVE_AI_COMMAND: LexicalCommand<GenerativeAIPayload> =
   createCommand('GENERATIVE_AI_COMMAND');

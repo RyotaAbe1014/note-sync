@@ -5,10 +5,10 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 
 import { TRANSFORMERS } from './MarkdownTransformers';
 
-interface UnsavedChangesPluginProps {
+type UnsavedChangesPluginProps = {
   initialContent: string;
   setIsDirty: (dirty: boolean) => void;
-}
+};
 
 export const UnsavedChangesPlugin = ({ initialContent, setIsDirty }: UnsavedChangesPluginProps) => {
   const [editor] = useLexicalComposerContext();

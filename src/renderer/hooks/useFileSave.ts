@@ -4,10 +4,10 @@ import { EditorRefType } from '../components/Editor/Editor';
 
 type ToastType = 'info' | 'success' | 'warning' | 'error';
 
-interface UseFileSaveProps {
+type UseFileSaveProps = {
   showToast: (message: string, type: ToastType) => void;
   setIsDirty: (dirty: boolean) => void;
-}
+};
 
 export function useFileSave({ showToast, setIsDirty }: UseFileSaveProps) {
   const editorRef = useRef<EditorRefType>(null);

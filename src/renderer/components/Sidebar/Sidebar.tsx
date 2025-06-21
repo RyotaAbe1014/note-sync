@@ -6,14 +6,14 @@ import { ChevronLeft, ChevronRight, Folder, GitBranch } from 'lucide-react';
 import { FileTree } from '../FileTree/FileTree';
 import { GitControls } from '../GitOps/GitControls';
 
-interface SidebarProps {
+type SidebarProps = {
   isOpen: boolean;
   onToggle: () => void;
   hasGitSettings: boolean;
   selectedFile: string | null;
   onFileSelect: (filePath: string) => void;
   onSettingsClick: () => void;
-}
+};
 
 export const Sidebar: React.FC<SidebarProps> = ({
   isOpen,

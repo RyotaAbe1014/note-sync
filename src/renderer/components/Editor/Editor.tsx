@@ -26,12 +26,12 @@ function onError(error: Error) {
   console.error(error);
 }
 
-interface EditorProps {
+type EditorProps = {
   initialContent: string;
   className?: string;
   ref?: React.Ref<EditorRefType>;
   onDirtyChange: (dirty: boolean) => void;
-}
+};
 
 export interface EditorRefType {
   getMarkdown: () => string;

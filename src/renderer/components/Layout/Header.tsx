@@ -1,9 +1,9 @@
 import { Settings, Undo2 } from 'lucide-react';
 
-interface HeaderProps {
+type HeaderProps = {
   isSettingsOpen: boolean;
   onToggleSettings: () => void;
-}
+};
 
 export function Header({ isSettingsOpen, onToggleSettings }: HeaderProps) {
   return (
