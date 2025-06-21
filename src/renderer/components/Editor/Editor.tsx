@@ -38,7 +38,7 @@ export interface EditorRefType {
 }
 
 export const Editor = ({ initialContent, className, ref, onDirtyChange }: EditorProps) => {
-  const [_, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
+  const [, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const savePluginRef = useRef<{ getMarkdown: () => string }>(null);
 
   // 外部のrefに内部のsavePluginRefの機能を公開

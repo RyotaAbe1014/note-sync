@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { ChevronLeft, FileIcon, FolderIcon, Search, Sparkles, X } from 'lucide-react';
 
-import { ISearchOptions, ISearchResult } from '../../../types/search';
+import type { ISearchOptions } from '../../../types/search';
 import { useToast } from '../../hooks/useToast';
 import { FileMenu, FileTreeItem } from '../FileMenu/FileMenu';
 import { SearchResults } from '../Search/SearchResults';

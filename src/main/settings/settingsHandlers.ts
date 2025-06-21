@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 
-import { AppSettings } from '../../types/appSettings';
+import type { AppSettings } from '../../types/appSettings';
 import { IPC_CHANNELS } from '../common/constants';
 import { validateSender } from '../common/security/ipcSecurity';
 

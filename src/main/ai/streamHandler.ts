@@ -2,7 +2,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { streamText } from 'ai';
 import { ipcMain } from 'electron';
 
-import { AppSettings } from '../../types/appSettings';
+import type { AppSettings } from '../../types/appSettings';
 import { IPC_CHANNELS } from '../common/constants';
 import { validateSender } from '../common/security/ipcSecurity';
 
