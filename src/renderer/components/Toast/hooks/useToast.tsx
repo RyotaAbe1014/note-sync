@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 
-import { useAtom } from 'jotai';
+import { useSetAtom } from 'jotai';
 
 import { toastAtom } from '../../../stores/toastAtom';
 
 const TOAST_TIMEOUT_MS = 3000;
 
 export const useToast = () => {
-  const [toast, setToast] = useAtom(toastAtom);
+  const setToast = useSetAtom(toastAtom);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const showToast = (message: string, type: 'success' | 'error') => {
