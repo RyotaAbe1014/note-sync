@@ -9,11 +9,11 @@ import { FileMenu, FileTreeItem } from '../FileMenu/FileMenu';
 import { SearchResults } from '../Search/SearchResults';
 import { useSearch } from '../Search/hooks/useSearch';
 
-interface FileTreeProps {
+type FileTreeProps = {
   onFileSelect?: (filePath: string) => void;
   onSettingsClick: () => void;
   currentFile: string | null;
-}
+};
 
 export const FileTree: React.FC<FileTreeProps> = ({
   onFileSelect,

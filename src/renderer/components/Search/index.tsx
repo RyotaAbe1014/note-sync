@@ -5,10 +5,10 @@ import { SearchBar } from './SearchBar';
 import { SearchResults } from './SearchResults';
 import { useSearch } from './hooks/useSearch';
 
-interface ISearchProps {
+type ISearchProps = {
   rootPath: string | null;
   onFileSelect: (filePath: string) => void;
-}
+};
 
 export const Search: React.FC<ISearchProps> = ({ rootPath, onFileSelect }) => {
   const { searchResults, isSearching, searchError, search, clearSearch } = useSearch();

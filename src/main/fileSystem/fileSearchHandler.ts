@@ -22,12 +22,12 @@ export interface ISearchResult {
   }[];
 }
 
-interface ISearchContext {
+type ISearchContext = {
   searchPattern: RegExp | string;
   options: Required<Omit<ISearchOptions, 'excludeDirs'>> & { excludeDirs: string[] };
   results: ISearchResult[];
   visited: Set<string>;
-}
+};
 
 const DEFAULT_EXCLUDE_DIRS = ['.git', 'node_modules', '.next', 'dist', 'build'];
 

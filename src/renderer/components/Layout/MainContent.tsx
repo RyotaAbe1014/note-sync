@@ -10,7 +10,7 @@ import { Sidebar } from '../Sidebar/Sidebar';
 
 type ToastType = 'info' | 'success' | 'warning' | 'error';
 
-interface MainContentProps {
+type MainContentProps = {
   isSidebarOpen: boolean;
   onToggleSidebar: () => void;
   hasGitSettings: boolean;
@@ -18,7 +18,7 @@ interface MainContentProps {
   onFileSelect: (filePath: string) => void;
   onSettingsClick: () => void;
   showToast: (message: string, type: ToastType) => void;
-}
+};
 
 export function MainContent({
   isSidebarOpen,

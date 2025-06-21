@@ -2,21 +2,21 @@ import { AppSettings } from '../types/appSettings';
 import { StatusMatrix } from '../types/gitStatus';
 import { ISearchOptions, ISearchResult } from '../types/search';
 
-interface FileInfo {
+type FileInfo = {
   name: string;
   isDirectory: boolean;
   path: string;
-}
+};
 
-interface FileStats {
+type FileStats = {
   size: number;
   isLargeFile: boolean;
-}
+};
 
-interface GitAuthor {
+type GitAuthor = {
   name: string;
   email: string;
-}
+};
 
 declare global {
   interface Window {

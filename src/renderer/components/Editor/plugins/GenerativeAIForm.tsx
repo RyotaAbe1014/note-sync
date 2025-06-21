@@ -4,11 +4,11 @@ import { AlertCircle, ArrowRight, Check, Loader2, RefreshCw, Zap, ZapOff } from 
 
 import { useAIStream } from '../../../hooks/useAIStream';
 
-interface GenerativeAIFormProps {
+type GenerativeAIFormProps = {
   onSubmit: (prompt: string) => void;
   onClose: () => void;
   enableStreaming?: boolean;
-}
+};
 
 export function GenerativeAIForm({
   onSubmit,

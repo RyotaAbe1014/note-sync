@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 
 import { Search, X } from 'lucide-react';
 
-interface ISearchBarProps {
+type ISearchBarProps = {
   onSearch: (searchTerm: string) => void;
   onClear: () => void;
   placeholder?: string;
   disabled?: boolean;
-}
+};
 
 export const SearchBar: React.FC<ISearchBarProps> = ({
   onSearch,

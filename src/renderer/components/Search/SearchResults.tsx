@@ -4,12 +4,12 @@ import { FileIcon } from 'lucide-react';
 
 import { ISearchResult } from '../../../types/search';
 
-interface ISearchResultsProps {
+type ISearchResultsProps = {
   results: ISearchResult[];
   onFileClick: (filePath: string) => void;
   isLoading?: boolean;
   error?: string | null;
-}
+};
 
 export const SearchResults: React.FC<ISearchResultsProps> = ({
   results,

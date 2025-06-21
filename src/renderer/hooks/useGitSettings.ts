@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 type ToastType = 'info' | 'success' | 'warning' | 'error';
 
-interface UseGitSettingsProps {
+type UseGitSettingsProps = {
   showToast: (message: string, type: ToastType) => void;
-}
+};
 
 export function useGitSettings({ showToast }: UseGitSettingsProps) {
   const [hasGitSettings, setHasGitSettings] = useState<boolean>(false);

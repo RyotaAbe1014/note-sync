@@ -14,10 +14,10 @@ const execPromise = promisify(exec);
 
 type ExportFormat = 'pdf' | 'epub';
 
-interface ExportResult {
+type ExportResult = {
   success: boolean;
   outputPath: string;
-}
+};
 
 // Pandocが利用可能かどうかのキャッシュ
 let isPandocAvailable: boolean | null = null;

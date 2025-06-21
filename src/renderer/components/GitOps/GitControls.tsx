@@ -7,9 +7,9 @@ import { GitActionButtons } from './components/GitActionButtons';
 import { GitStatusDisplay } from './components/GitStatusDisplay';
 import { useGitControl } from './hooks/useGitControl';
 
-interface GitControlsProps {
+type GitControlsProps = {
   selectedFile: string | null;
-}
+};
 
 export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   const {

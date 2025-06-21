@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { getFileNameFromPath } from '../functions/getFileName';
 
-interface UseGitControlProps {
+type UseGitControlProps = {
   selectedFile: string | null;
-}
+};
 
 export const useGitControl = ({ selectedFile }: UseGitControlProps) => {
   const [commitMessage, setCommitMessage] = useState<string>('');
