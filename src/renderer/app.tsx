@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -10,34 +9,6 @@ import { MainContent } from './components/Layout/MainContent';
 import { useGitSettings } from './hooks/useGitSettings';
 import { useTheme } from './hooks/useTheme';
 import { useToast } from './hooks/useToast';
-
-// 開発モード専用のStagewise統合
-if (process.env.NODE_ENV === 'development') {
-  const initStagewise = async () => {
-    try {
-      const { StagewiseToolbar } = await import('@stagewise/toolbar-react');
-
-      // Stagewiseツールバー用の専用DOM要素を作成
-      const stagewiseContainer = document.createElement('div');
-      stagewiseContainer.id = 'stagewise-toolbar-container';
-      document.body.appendChild(stagewiseContainer);
-
-      // Stagewise設定
-      const stagewiseConfig = {
-        // @ts-ignore
-        plugins: [],
-      };
-
-      // 別のReactルートでStagewiseツールバーをレンダリング
-      const stagewiseRoot = createRoot(stagewiseContainer);
-      stagewiseRoot.render(React.createElement(StagewiseToolbar, { config: stagewiseConfig }));
-    } catch (error) {
-      console.warn('Stagewise toolbar could not be loaded:', error);
-    }
-  };
-
-  initStagewise();
-}
 
 const root = createRoot(document.body);
 root.render(<App />);

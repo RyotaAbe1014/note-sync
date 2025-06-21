@@ -37,7 +37,6 @@
     "@electron-forge/plugin-vite": "^7.8.1",
     "@electron-forge/publisher-s3": "^7.8.1",
     "@electron/fuses": "^1.8.0",
-    "@stagewise/toolbar-react": "^0.4.5",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@trivago/prettier-plugin-sort-imports": "^5.2.2",
