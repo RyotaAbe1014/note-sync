@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 import { AppSettings } from '../../types/appSettings';
+import { validateFilePath, validateSender } from '../common/security/ipcSecurity';
 import { IPC_CHANNELS } from '../constants';
-import { validateFilePath, validateSender } from '../security/ipcSecurity';
 
 let store: any;
 let git: any;

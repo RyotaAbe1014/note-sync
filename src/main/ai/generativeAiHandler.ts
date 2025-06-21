@@ -3,8 +3,8 @@ import { generateText } from 'ai';
 import { ipcMain } from 'electron';
 
 import { AppSettings } from '../../types/appSettings';
+import { validateSender } from '../common/security/ipcSecurity';
 import { IPC_CHANNELS } from '../constants';
-import { validateSender } from '../security/ipcSecurity';
 
 let store: any;
 

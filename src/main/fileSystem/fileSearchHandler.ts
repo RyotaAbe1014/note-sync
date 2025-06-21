@@ -2,7 +2,7 @@ import { app } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import { validateFilePath } from '../security/ipcSecurity';
+import { validateFilePath } from '../common/security/ipcSecurity';
 
 export interface ISearchOptions {
   searchIn: 'filename' | 'content' | 'both';

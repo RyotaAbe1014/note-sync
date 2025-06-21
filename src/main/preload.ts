@@ -4,7 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 import { AppSettings } from '../types/appSettings';
 import { ISearchOptions } from '../types/search';
-import { IPC_CHANNELS } from './constants';
+import { IPC_CHANNELS } from './common/constants';
 
 // レンダラープロセスに公開するAPI
 contextBridge.exposeInMainWorld('api', {

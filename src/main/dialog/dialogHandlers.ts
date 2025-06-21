@@ -1,7 +1,7 @@
 import { dialog, ipcMain } from 'electron';
 
+import { validateSender } from '../common/security/ipcSecurity';
 import { IPC_CHANNELS } from '../constants';
-import { validateSender } from '../security/ipcSecurity';
 
 export function setupDialogHandlers() {
   ipcMain.handle(IPC_CHANNELS.DIALOG_SELECT_DIRECTORY, async (event) => {
