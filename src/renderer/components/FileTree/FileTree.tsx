@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import clsx from 'clsx';
 import { ChevronLeft, FileIcon, FolderIcon, Search, Sparkles, X } from 'lucide-react';
 
 import { ISearchOptions, ISearchResult } from '../../../types/search';
@@ -12,14 +13,12 @@ interface FileTreeProps {
   onFileSelect?: (filePath: string) => void;
   onSettingsClick: () => void;
   currentFile: string | null;
-  isDirty: boolean;
 }
 
 export const FileTree: React.FC<FileTreeProps> = ({
   onFileSelect,
   onSettingsClick,
   currentFile,
-  isDirty,
 }) => {
   const [files, setFiles] = useState<FileTreeItem[]>([]);
   const [rootDir, setRootDir] = useState<string | null>(null);
@@ -285,9 +284,11 @@ export const FileTree: React.FC<FileTreeProps> = ({
                   >
                     <button
                       type="button"
-                      className={`tooltip tooltip-bottom flex w-full items-center px-4 py-2 ${isDisabled(file) ? 'btn-disabled' : ''} ${
-                        selectedFile?.path === file.path ? 'active' : ''
-                      }`}
+                      className={clsx('tooltip tooltip-bottom flex w-full items-center px-4 py-2', {
+                        'btn-disabled': isDisabled(file),
+                        active: selectedFile?.path === file.path,
+                        'bg-primary/10': currentFile === file.path,
+                      })}
                       onClick={() =>
                         file.isDirectory
                           ? handleDirectoryClick(file.path)
@@ -303,14 +304,8 @@ export const FileTree: React.FC<FileTreeProps> = ({
                       ) : (
                         <FileIcon className="h-5 w-5 min-w-5 text-base-content/70" />
                       )}
-                      <span className="truncate ml-2 flex items-center" title={file.name}>
+                      <span className="truncate ml-2" title={file.name}>
                         {file.name}
-                        {currentFile === file.path && isDirty && (
-                          <span
-                            data-testid="dirty-indicator"
-                            className="ml-1 inline-block w-2 h-2 rounded-full bg-error"
-                          />
-                        )}
                       </span>
                     </button>
                   </li>

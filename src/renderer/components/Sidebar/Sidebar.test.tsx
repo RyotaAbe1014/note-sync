@@ -18,7 +18,6 @@ vi.mock('../Search', () => ({
 const defaultProps = {
   hasGitSettings: false,
   selectedFile: null as string | null,
-  isDirty: false,
   onFileSelect: vi.fn(),
   onSettingsClick: vi.fn(),
 };
