@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import clsx from 'clsx';
 import { ChevronLeft, FileIcon, FolderIcon, Search, Sparkles, X } from 'lucide-react';
 
 import { ISearchOptions, ISearchResult } from '../../../types/search';
@@ -285,9 +286,11 @@ export const FileTree: React.FC<FileTreeProps> = ({
                   >
                     <button
                       type="button"
-                      className={`tooltip tooltip-bottom flex w-full items-center px-4 py-2 ${isDisabled(file) ? 'btn-disabled' : ''} ${
-                        selectedFile?.path === file.path ? 'active' : ''
-                      }`}
+                      className={clsx('tooltip tooltip-bottom flex w-full items-center px-4 py-2', {
+                        'btn-disabled': isDisabled(file),
+                        active: selectedFile?.path === file.path,
+                        'bg-primary/10': currentFile === file.path,
+                      })}
                       onClick={() =>
                         file.isDirectory
                           ? handleDirectoryClick(file.path)
