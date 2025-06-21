@@ -6,9 +6,10 @@ import clsx from 'clsx';
 import { AppSettings } from './components/AppSettings/AppSettings';
 import { Header } from './components/Layout/Header';
 import { MainContent } from './components/Layout/MainContent';
+import { Toast } from './components/Toast/Toast';
+import { useToast } from './components/Toast/hooks/useToast';
 import { useGitSettings } from './hooks/useGitSettings';
 import { useTheme } from './hooks/useTheme';
-import { useToast } from './hooks/useToast';
 
 const root = createRoot(document.body);
 root.render(<App />);
@@ -18,7 +19,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
-  const { Toast, showToast } = useToast();
+  const { showToast } = useToast();
   const { hasGitSettings } = useGitSettings({ showToast });
   const { updateTheme } = useTheme();
 

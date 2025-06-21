@@ -6,7 +6,7 @@ import { useSearch } from './useSearch';
 
 // Mock useToast hook
 const mockShowToast = vi.fn();
-vi.mock('../../../hooks/useToast', () => ({
+vi.mock('../../Toast/hooks/useToast', () => ({
   useToast: () => ({
     showToast: mockShowToast,
   }),

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import type { ISearchOptions, ISearchResult } from '../../../../types/search';
-import { useToast } from '../../../hooks/useToast';
+import { useToast } from '../../Toast/hooks/useToast';
 
 export const useSearch = () => {
   const [searchResults, setSearchResults] = useState<ISearchResult[]>([]);

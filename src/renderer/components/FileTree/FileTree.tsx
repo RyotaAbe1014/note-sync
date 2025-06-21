@@ -4,10 +4,10 @@ import clsx from 'clsx';
 import { ChevronLeft, FileIcon, FolderIcon, Search, Sparkles, X } from 'lucide-react';
 
 import type { ISearchOptions } from '../../../types/search';
-import { useToast } from '../../hooks/useToast';
 import { FileMenu, FileTreeItem } from '../FileMenu/FileMenu';
 import { SearchResults } from '../Search/SearchResults';
 import { useSearch } from '../Search/hooks/useSearch';
+import { useToast } from '../Toast/hooks/useToast';
 
 type FileTreeProps = {
   onFileSelect?: (filePath: string) => void;

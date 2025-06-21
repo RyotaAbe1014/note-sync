@@ -2,7 +2,7 @@ import { act, renderHook } from '@testing-library/react';
 import { useAtom } from 'jotai';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { toastAtom } from '../stores/toastAtom';
+import { toastAtom } from '../../../stores/toastAtom';
 import { useToast } from './useToast';
 
 // Helper hook to access toast atom alongside useToast

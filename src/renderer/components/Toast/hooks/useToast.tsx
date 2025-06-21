@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 import { useAtom } from 'jotai';
-import { X } from 'lucide-react';
 
-import { toastAtom } from '../stores/toastAtom';
+import { toastAtom } from '../../../stores/toastAtom';
 
 const TOAST_TIMEOUT_MS = 3000;
 
@@ -31,22 +30,5 @@ export const useToast = () => {
     };
   }, []);
 
-  const Toast = () => {
-    return (
-      toast.message && (
-        <div className="toast toast-center toast-top z-50 fixed">
-          <div
-            className={`alert ${toast.type === 'success' ? 'alert-success' : 'alert-error'} flex justify-between`}
-          >
-            <span>{toast.message}</span>
-            <button className="btn btn-sm btn-circle btn-ghost" onClick={clearToast}>
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      )
-    );
-  };
-
-  return { Toast, showToast };
+  return { showToast, clearToast };
 };
