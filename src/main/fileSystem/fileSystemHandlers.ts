@@ -4,8 +4,8 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createInterface } from 'node:readline';
 
+import { IPC_CHANNELS } from '../common/constants';
 import { validateFilePath, validateSender } from '../common/security/ipcSecurity';
-import { IPC_CHANNELS } from '../constants';
 import { ISearchOptions, searchFiles } from './fileSearchHandler';
 
 async function writeFileWithDir(filePath: string, content: string): Promise<void> {

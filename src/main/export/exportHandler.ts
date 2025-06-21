@@ -3,12 +3,12 @@ import { exec } from 'node:child_process';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import { IPC_CHANNELS } from '../common/constants';
 import {
   validateCommandArgs,
   validateFilePath,
   validateSender,
 } from '../common/security/ipcSecurity';
-import { IPC_CHANNELS } from '../constants';
 
 const execPromise = promisify(exec);
 
