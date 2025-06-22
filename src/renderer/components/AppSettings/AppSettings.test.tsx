@@ -38,6 +38,7 @@ describe('AppSettings', () => {
       rootDirectory: { path: '' },
       git: { token: '', author: { name: '', email: '' } },
       apiKeys: { openai: '' },
+      theme: 'system',
     });
   });
 
@@ -67,6 +68,7 @@ describe('AppSettings', () => {
           author: { name: 'Test User', email: 'test@example.com' },
         },
         apiKeys: { openai: 'test-api-key' },
+        theme: 'system',
       };
       mockApi.app.getSettings.mockResolvedValue(savedSettings);
 
@@ -110,6 +112,7 @@ describe('AppSettings', () => {
         rootDirectory: { path: '/test/directory' },
         git: { token: '', author: { name: '', email: '' } },
         apiKeys: { openai: '' },
+        theme: 'system',
       };
       mockApi.app.getSettings.mockResolvedValue(settingsWithDirectory);
 
