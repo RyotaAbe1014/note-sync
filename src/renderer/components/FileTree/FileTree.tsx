@@ -13,12 +13,14 @@ type FileTreeProps = {
   onFileSelect?: (filePath: string) => void;
   onSettingsClick: () => void;
   currentFile: string | null;
+  refreshTrigger?: number;
 };
 
 export const FileTree: React.FC<FileTreeProps> = ({
   onFileSelect,
   onSettingsClick,
   currentFile,
+  refreshTrigger,
 }) => {
   const [files, setFiles] = useState<FileTreeItem[]>([]);
   const [rootDir, setRootDir] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
     }
   };
 
-  // 初期ロード
+  // 初期ロードと設定変更時の再読み込み
   useEffect(() => {
     const loadSettings = async () => {
       try {
@@ -60,7 +62,7 @@ export const FileTree: React.FC<FileTreeProps> = ({
       }
     };
     loadSettings();
-  }, []);
+  }, [refreshTrigger]);
 
   // 検索処理
   const handleSearch = useCallback(async () => {

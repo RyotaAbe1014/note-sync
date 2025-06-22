@@ -13,6 +13,7 @@ type SidebarProps = {
   selectedFile: string | null;
   onFileSelect: (filePath: string) => void;
   onSettingsClick: () => void;
+  refreshTrigger?: number;
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -22,6 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedFile,
   onFileSelect,
   onSettingsClick,
+  refreshTrigger,
 }) => {
   return (
     <div
@@ -50,6 +52,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             onFileSelect={onFileSelect}
             onSettingsClick={onSettingsClick}
             currentFile={selectedFile}
+            refreshTrigger={refreshTrigger}
           />
         </div>
         {hasGitSettings && (

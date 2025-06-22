@@ -18,15 +18,18 @@ export default function App() {
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
 
   const { showToast } = useToast();
   const { hasGitSettings } = useGitSettings({ showToast });
   const { updateTheme } = useTheme();
 
-  // 設定変更時にテーマを更新
+  // 設定変更時にテーマを更新し、FileTreeを再読み込み
   useEffect(() => {
     if (!isSettingsOpen) {
       updateTheme();
+      // 設定画面から戻った時にFileTreeコンポーネントの再読み込みをトリガー
+      setRefreshTrigger(Date.now());
     }
   }, [isSettingsOpen, updateTheme]);
 
@@ -58,6 +61,7 @@ export default function App() {
             onFileSelect={handleFileSelect}
             onSettingsClick={toggleSettings}
             showToast={showToast}
+            refreshTrigger={refreshTrigger}
           />
         </div>
       </main>

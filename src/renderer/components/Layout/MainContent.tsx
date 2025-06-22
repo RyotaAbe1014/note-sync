@@ -18,6 +18,7 @@ type MainContentProps = {
   onFileSelect: (filePath: string) => void;
   onSettingsClick: () => void;
   showToast: (message: string, type: ToastType) => void;
+  refreshTrigger?: number;
 };
 
 export function MainContent({
@@ -28,6 +29,7 @@ export function MainContent({
   onFileSelect,
   onSettingsClick,
   showToast,
+  refreshTrigger,
 }: MainContentProps) {
   const [isDirty, setIsDirty] = useState(false);
   // ファイルローダーフック
@@ -59,9 +61,9 @@ export function MainContent({
         onToggle={onToggleSidebar}
         hasGitSettings={hasGitSettings}
         selectedFile={selectedFile}
-        isDirty={isDirty}
         onFileSelect={onFileSelect}
         onSettingsClick={onSettingsClick}
+        refreshTrigger={refreshTrigger}
       />
 
       {/* エディター */}
