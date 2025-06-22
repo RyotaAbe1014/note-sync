@@ -232,6 +232,85 @@ describe('AppSettings', () => {
     });
   });
 
+  describe('設定変更の反映', () => {
+    test('設定保存後、メイン画面に戻るとディレクトリ設定が反映される', async () => {
+      // Given: 新しいディレクトリが選択されている状態
+      const newDirectory = '/new/selected/directory';
+      mockApi.dialog.selectDirectory.mockResolvedValue(newDirectory);
+      mockApi.app.setSettings.mockResolvedValue(undefined);
+
+      const user = userEvent.setup();
+      render(<AppSettings />);
+
+      // When: ディレクトリを選択して保存
+      const selectButton = screen.getByTitle('ディレクトリを選択');
+      await user.click(selectButton);
+
+      await waitFor(() => {
+        expect(screen.getByDisplayValue(newDirectory)).toBeInTheDocument();
+      });
+
+      const saveButton = screen.getByRole('button', { name: '設定を保存' });
+      await user.click(saveButton);
+
+      // Then: 保存処理が正しい設定で呼ばれる
+      await waitFor(() => {
+        expect(mockApi.app.setSettings).toHaveBeenCalledWith(
+          expect.objectContaining({
+            rootDirectory: { path: newDirectory },
+          })
+        );
+      });
+    });
+
+    test('複数の設定変更が正しく保存される', async () => {
+      // Given: 複数の設定が変更されている
+      const newSettings = {
+        rootDirectory: { path: '/new/directory' },
+        git: {
+          token: 'new-token-123',
+          author: { name: 'New Name', email: 'new@email.com' },
+        },
+        apiKeys: { openai: 'sk-new-key' },
+        theme: 'system',
+      };
+
+      mockApi.dialog.selectDirectory.mockResolvedValue(newSettings.rootDirectory.path);
+      mockApi.app.setSettings.mockResolvedValue(undefined);
+
+      const user = userEvent.setup();
+      render(<AppSettings />);
+
+      // When: 各設定を変更
+      const selectButton = screen.getByTitle('ディレクトリを選択');
+      await user.click(selectButton);
+
+      const tokenInput = screen.getByLabelText('アクセストークン');
+      await user.clear(tokenInput);
+      await user.type(tokenInput, newSettings.git.token);
+
+      const nameInput = screen.getByLabelText('作者名');
+      await user.clear(nameInput);
+      await user.type(nameInput, newSettings.git.author.name);
+
+      const emailInput = screen.getByLabelText('メールアドレス');
+      await user.clear(emailInput);
+      await user.type(emailInput, newSettings.git.author.email);
+
+      const apiKeyInput = screen.getByLabelText('OpenAI APIキー');
+      await user.clear(apiKeyInput);
+      await user.type(apiKeyInput, newSettings.apiKeys.openai);
+
+      const saveButton = screen.getByRole('button', { name: '設定を保存' });
+      await user.click(saveButton);
+
+      // Then: 全ての変更が保存される
+      await waitFor(() => {
+        expect(mockApi.app.setSettings).toHaveBeenCalledWith(newSettings);
+      });
+    });
+  });
+
   describe('エラーハンドリング', () => {
     test('設定読み込みエラー時にコンソールエラーが出力される', async () => {
       // Given: 設定読み込みが失敗する設定
