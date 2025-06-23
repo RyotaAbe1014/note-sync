@@ -4,15 +4,15 @@ import path from 'node:path';
 
 import { validateFilePath } from '../common/security/ipcSecurity';
 
-export interface ISearchOptions {
+export type ISearchOptions = {
   searchIn: 'filename' | 'content' | 'both';
   caseSensitive?: boolean;
   useRegex?: boolean;
   maxResults?: number;
   excludeDirs?: string[];
-}
+};
 
-export interface ISearchResult {
+export type ISearchResult = {
   path: string;
   name: string;
   matches?: {
@@ -20,7 +20,7 @@ export interface ISearchResult {
     content: string;
     highlight: [number, number];
   }[];
-}
+};
 
 type ISearchContext = {
   searchPattern: RegExp | string;

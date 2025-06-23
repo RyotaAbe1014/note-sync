@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export interface UseAIStreamOptions {
+export type UseAIStreamOptions = {
   onChunk?: (chunk: string) => void;
   onComplete?: (fullText: string) => void;
   onError?: (error: string) => void;
-}
+};
 
 export function useAIStream({ onChunk, onComplete, onError }: UseAIStreamOptions = {}) {
   const [isStreaming, setIsStreaming] = useState(false);
