@@ -33,9 +33,9 @@ type EditorProps = {
   onDirtyChange: (dirty: boolean) => void;
 };
 
-export interface EditorRefType {
+export type EditorRefType = {
   getMarkdown: () => string;
-}
+};
 
 export const Editor = ({ initialContent, className, ref, onDirtyChange }: EditorProps) => {
   const [, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
