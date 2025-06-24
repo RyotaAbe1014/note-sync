@@ -1,4 +1,4 @@
-import { useImperativeHandle, useRef, useState } from 'react';
+import { useImperativeHandle, useRef } from 'react';
 
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin';
@@ -38,7 +38,6 @@ export type EditorRefType = {
 };
 
 export const Editor = ({ initialContent, className, ref, onDirtyChange }: EditorProps) => {
-  const [, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const savePluginRef = useRef<{ getMarkdown: () => string }>(null);
 
   // 外部のrefに内部のsavePluginRefの機能を公開
@@ -62,12 +61,6 @@ export const Editor = ({ initialContent, className, ref, onDirtyChange }: Editor
     nodes,
   };
 
-  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
-    if (_floatingAnchorElem !== null) {
-      setFloatingAnchorElem(_floatingAnchorElem);
-    }
-  };
-
   return (
     <div className={`mx-auto w-full rounded-lg bg-white p-4 shadow-md ${className || ''}`}>
       <LexicalComposer initialConfig={initialConfig}>
@@ -77,7 +70,7 @@ export const Editor = ({ initialContent, className, ref, onDirtyChange }: Editor
         <div className="rounded-md border-0 p-4">
           <RichTextPlugin
             contentEditable={
-              <div id="editor" className="editor h-[calc(100vh-330px)] overflow-y-auto" ref={onRef}>
+              <div id="editor" className="editor h-[calc(100vh-330px)] overflow-y-auto">
                 <ContentEditable
                   className="outline-none"
                   aria-placeholder={'メモを入力してください...'}
