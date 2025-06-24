@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron';
+import type Store from 'electron-store' with { 'resolution-mode': 'require' };
 import fs from 'fs';
+import type git from 'isomorphic-git' with { 'resolution-mode': 'require' };
+import type http from 'isomorphic-git/http/node' with { 'resolution-mode': 'require' };
 import path from 'path';
-
-// Note: Avoid direct type-only imports from CommonJS modules under TS 4.x NodeNext.
-//       We fall back to 'any' for external library types to sidestep the limitation.
 
 import type { AppSettings } from '../../types/appSettings';
 import { IPC_CHANNELS } from '../common/constants';
@@ -11,9 +11,9 @@ import { validateFilePath, validateSender } from '../common/security/ipcSecurity
 
 // Types
 type GitModules = {
-  store: any; // Using 'any' to avoid import-type limitation in TS 4.x
-  git: any;
-  http: any;
+  store: Store<AppSettings>;
+  git: typeof git;
+  http: typeof http;
 };
 
 type GitConfig = {
