@@ -1,8 +1,7 @@
-import { toastAtom } from '@/renderer/stores/toastAtom';
-
 import { useAtomValue } from 'jotai';
 import { X } from 'lucide-react';
 
+import { toastAtom } from '../../stores/toastAtom';
 import { useToast } from './hooks/useToast';
 
 export const Toast = () => {
