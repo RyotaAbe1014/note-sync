@@ -43,5 +43,10 @@ updates:
           - "@electron-forge/plugin-vite"
         exclude-patterns:
           - "@electron/fuses"
+      tailwind-dependencies:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "prettier-plugin-tailwindcss"
     reviewers:
       - RyotaAbe1014
