@@ -58,7 +58,8 @@ export function useFileLoader(filePath: string | null, onLoadComplete?: (content
     let loadedContent = '';
 
     try {
-      while (true) {
+      let hasMore = true;
+      while (hasMore) {
         // 行単位で読み込む
         const chunk = await window.api.fs.readFileLines(path, startLine, LINES_PER_CHUNK);
 
@@ -83,7 +84,7 @@ export function useFileLoader(filePath: string | null, onLoadComplete?: (content
         await new Promise((resolve) => setTimeout(resolve, 10));
 
         if (chunk.length < LINES_PER_CHUNK) {
-          break; // 最後のチャンクなら終了
+          hasMore = false; // 最後のチャンクなら終了
         }
       }
 

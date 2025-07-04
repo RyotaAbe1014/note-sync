@@ -317,6 +317,7 @@ describe('AppSettings', () => {
   describe('エラーハンドリング', () => {
     test('設定読み込みエラー時にコンソールエラーが出力される', async () => {
       // Given: 設定読み込みが失敗する設定
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       mockApi.app.getSettings.mockRejectedValue(new Error('読み込みエラー'));
 
@@ -333,6 +334,7 @@ describe('AppSettings', () => {
 
     test('設定保存エラー時にコンソールエラーが出力される', async () => {
       // Given: 設定保存が失敗する設定
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
       mockApi.app.setSettings.mockRejectedValue(new Error('保存エラー'));
       const user = userEvent.setup();

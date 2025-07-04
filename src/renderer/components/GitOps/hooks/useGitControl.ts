@@ -1,7 +1,12 @@
-import { GitStatus, HeadStatus, StageStatus, StatusMatrix, WorkdirStatus } from '@/types/gitStatus';
-
 import { useEffect, useMemo, useState } from 'react';
 
+import {
+  GitStatus,
+  HeadStatus,
+  StageStatus,
+  StatusMatrix,
+  WorkdirStatus,
+} from '../../../../types/gitStatus';
 import { getFileNameFromPath } from '../functions/getFileName';
 
 type UseGitControlProps = {

@@ -32,6 +32,7 @@ export const GitControls: React.FC<GitControlsProps> = ({ selectedFile }) => {
   return (
     <div className="card">
       <div className="card-body">
+        {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
         <div className="flex cursor-pointer items-center justify-between" onClick={() => {}}>
           <h3 className="card-title text-lg">Git操作</h3>
           <span className="text-base-content/70"></span>
